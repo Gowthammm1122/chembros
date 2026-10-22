@@ -36,6 +36,7 @@ export const formatPrice = (price: number): string => {
   return `₹${price.toLocaleString('en-IN')}`;
 };
 
+// The 4 Core Molecule Formulations (Shown in Hero & Collection Grid)
 export const FRAGRANCES: Fragrance[] = [
   {
     id: "molecule-j",
@@ -67,7 +68,7 @@ export const FRAGRANCES: Fragrance[] = [
       maceration: "90 Days in Dark Nitrogen Vault",
       volatility: "12–14 hr skin persistence",
       ph: "5.4 botanical balance",
-      keyIsolate: "Madurai Jasmine Sambac & Betel Leaf Isolate",
+      keyIsolate: "Madurai Jasmine Sambac & Betel Leaf",
     },
   },
   {
@@ -171,37 +172,41 @@ export const FRAGRANCES: Fragrance[] = [
       keyIsolate: "Davana Absolute & Aged Rum Oak Cask",
     },
   },
-  {
-    id: "discovery-archive",
-    formulaNo: "DA",
-    name: "Discovery Archive",
-    subtitle: "The Miniature Coffret",
-    tagline: "The complete Molecule Series, in miniature.",
-    ingredientTitle: "THE MOLECULE SERIES",
-    family: "The Molecule Series",
-    price: 1299,
-    currency: "₹",
-    image: "/images/ripplewater.png",
-    sizes: [
-      { ml: 12, price: 1299 },
-    ],
-    sizeLabel: "4 × 3ml Extrait",
-    liquidColor: "rgba(215, 175, 110, 0.45)",
-    liquidGradient: "linear-gradient(180deg, rgba(235, 195, 130, 0.4) 0%, rgba(195, 145, 65, 0.55) 100%)",
-    pedestalHeight: 200,
-    description: "The Discovery Archive gathers all four signatures of the Molecule Series into a single hand-numbered coffret — four 3ml extraits, hand-poured and boxed in our embossed molecule case. Find your molecule before committing to a full bottle.",
-    character: "The complete Molecule Series, in miniature.",
-    olfactoryPyramid: {
-      top: ["Bergamot", "Green leaf", "Saffron"],
-      heart: ["Jasmine sambac", "Tuberose", "Red champaca"],
-      base: ["White musk", "Sandalwood", "Amber"],
-    },
-    labSpec: {
-      ratio: "4 × 3ml Extrait Coffret",
-      maceration: "Complete 4-Piece Miniature Set",
-      volatility: "High Discovery Experience",
-      ph: "Botanical Standard",
-      keyIsolate: "All 4 Extrait Formulations",
-    },
-  },
 ];
+
+// Separate Standalone Card: The Discovery Archive (4x3ml Miniature Set)
+export const DISCOVERY_ARCHIVE: Fragrance = {
+  id: "discovery-archive",
+  formulaNo: "DA",
+  name: "Discovery Archive",
+  subtitle: "The Miniature Coffret",
+  tagline: "The complete Molecule Series, in miniature.",
+  ingredientTitle: "THE MOLECULE SERIES",
+  family: "The Molecule Series",
+  price: 1299,
+  currency: "₹",
+  image: "/images/discovery-archive-coffret.png",
+  sizes: [
+    { ml: 12, price: 1299 },
+  ],
+  sizeLabel: "4 × 3ml Extrait",
+  liquidColor: "rgba(215, 175, 110, 0.45)",
+  liquidGradient: "linear-gradient(180deg, rgba(235, 195, 130, 0.4) 0%, rgba(195, 145, 65, 0.55) 100%)",
+  pedestalHeight: 200,
+  description: "The Discovery Archive gathers all four signatures of the Molecule Series into a single hand-numbered coffret — four 3ml extraits, hand-poured and boxed in our embossed molecule case. Find your molecule before committing to a full bottle.",
+  character: "The complete Molecule Series, in miniature.",
+  olfactoryPyramid: {
+    top: ["Bergamot", "Green leaf", "Saffron"],
+    heart: ["Jasmine sambac", "Tuberose", "Red champaca"],
+    base: ["White musk", "Sandalwood", "Amber"],
+  },
+  labSpec: {
+    ratio: "4 × 3ml Extrait Coffret",
+    maceration: "25% Natural Oil Concentration",
+    volatility: "Unisex • 8+ Hours",
+    ph: "Botanical Standard",
+    keyIsolate: "All 4 Extrait Formulations",
+  },
+};
+
+export const ALL_PRODUCTS: Fragrance[] = [...FRAGRANCES, DISCOVERY_ARCHIVE];

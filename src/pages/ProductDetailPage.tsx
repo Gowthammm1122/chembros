@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
-import { FRAGRANCES, Fragrance, formatPrice } from '../data/fragrances';
+import { ALL_PRODUCTS, FRAGRANCES, Fragrance, formatPrice } from '../data/fragrances';
 import { PerfumeBottle } from '../components/PerfumeBottle';
 import { useCart } from '../context/CartContext';
 import { 
@@ -119,8 +119,8 @@ export const ProductDetailPage: React.FC = () => {
   const navigate = useNavigate();
   const { addToCart, openCart } = useCart();
 
-  // Find target fragrance or default to Molecule J
-  const fragrance: Fragrance = FRAGRANCES.find(f => f.id === id) || FRAGRANCES[0];
+  // Find target product across all products (or default to Molecule J)
+  const fragrance: Fragrance = ALL_PRODUCTS.find(f => f.id === id) || FRAGRANCES[0];
   const [selectedSize, setSelectedSize] = useState<number>(fragrance.sizes[0]?.ml || 50);
   const [quantity, setQuantity] = useState<number>(1);
   const [addedNotice, setAddedNotice] = useState<boolean>(false);
@@ -140,7 +140,7 @@ export const ProductDetailPage: React.FC = () => {
   // Other products for "The Molecule Series" section
   const otherFragrances = FRAGRANCES.filter(f => f.id !== fragrance.id);
 
-  // Price for the selected size
+  // Price for selected size
   const currentPrice = fragrance.sizes.find(s => s.ml === selectedSize)?.price || fragrance.price;
 
   // Add to Bag
@@ -188,22 +188,22 @@ export const ProductDetailPage: React.FC = () => {
   ).toFixed(1);
 
   return (
-    <div className="pt-20 sm:pt-24 pb-24 bg-[#0A0D10] min-h-screen text-[#E6ECF0] selection:bg-[#C5A059]/30">
+    <div className="pt-20 sm:pt-24 pb-24 bg-[#FAFBFD] min-h-screen text-[#0A2533]">
       
       {/* 1. Subtle Breadcrumbs */}
-      <nav aria-label="Breadcrumb" className="border-b border-white/[0.08] bg-[#07090C]">
-        <div className="max-w-7xl mx-auto px-6 sm:px-12 py-3.5 flex items-center justify-between text-xs font-mono text-[#829CA9]">
+      <nav aria-label="Breadcrumb" className="border-b border-[#0A2533]/10 bg-white">
+        <div className="max-w-7xl mx-auto px-6 sm:px-12 py-3.5 flex items-center justify-between text-xs font-mono text-[#5A7785]">
           <div className="flex items-center gap-2 tracking-wider uppercase">
-            <Link to="/" className="hover:text-white transition-colors">HOME</Link>
+            <Link to="/" className="hover:text-[#087A91] transition-colors">HOME</Link>
             <span>/</span>
-            <Link to="/collection" className="hover:text-white transition-colors">COLLECTIONS</Link>
+            <Link to="/collection" className="hover:text-[#087A91] transition-colors">COLLECTIONS</Link>
             <span>/</span>
-            <span className="text-[#C5A059] font-medium">{fragrance.name.toUpperCase()}</span>
+            <span className="text-[#087A91] font-semibold">{fragrance.name.toUpperCase()}</span>
           </div>
 
           <Link
             to="/collection"
-            className="hidden sm:inline-flex items-center gap-1.5 text-xs text-[#829CA9] hover:text-[#C5A059] transition-colors"
+            className="hidden sm:inline-flex items-center gap-1.5 text-xs text-[#5A7785] hover:text-[#087A91] transition-colors"
           >
             <ArrowLeft className="w-3.5 h-3.5" />
             <span>ALL FRAGRANCES</span>
@@ -211,13 +211,13 @@ export const ProductDetailPage: React.FC = () => {
         </div>
       </nav>
 
-      {/* 2. Main Product Showcase Grid (Matching Screenshot 1-4) */}
+      {/* 2. Main Product Showcase Grid (Restyled to Chem Bros Light Theme) */}
       <section className="max-w-7xl mx-auto px-6 sm:px-12 py-10 lg:py-16">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-16 items-start">
           
           {/* Left Visual Stage (lg:col-span-6) */}
           <div className="lg:col-span-6 lg:sticky lg:top-28">
-            <div className="relative min-h-[480px] sm:min-h-[580px] border border-white/10 bg-[#0E1318] flex flex-col justify-between overflow-hidden shadow-2xl rounded-xs group">
+            <div className="relative min-h-[480px] sm:min-h-[580px] border border-[#0A2533]/10 bg-gradient-to-b from-[#F8FAFB] via-[#EFF5F8] to-[#E6EFF3] flex flex-col justify-between overflow-hidden shadow-[0_8px_30px_rgba(10,37,51,0.05)] rounded-xs group">
               
               {/* Product Visual Container */}
               <div className="relative w-full h-full min-h-[480px] sm:min-h-[580px] flex items-center justify-center p-6 sm:p-10">
@@ -226,9 +226,9 @@ export const ProductDetailPage: React.FC = () => {
                     <img
                       src={fragrance.image}
                       alt={fragrance.name}
-                      className="w-full h-full object-cover object-center transform group-hover:scale-105 transition-transform duration-700 select-none"
+                      className="w-full h-full object-cover object-center transform group-hover:scale-105 transition-transform duration-700 select-none shadow-sm"
                     />
-                    <div className="absolute inset-0 bg-gradient-to-t from-[#0A0D10]/60 via-transparent to-transparent pointer-events-none" />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-transparent pointer-events-none" />
                   </div>
                 ) : (
                   <div className="my-auto py-8 flex flex-col items-center justify-center transform group-hover:scale-105 transition-transform duration-700 select-none">
@@ -242,19 +242,19 @@ export const ProductDetailPage: React.FC = () => {
                   </div>
                 )}
 
-                {/* Hover to Zoom / Mode Pill */}
+                {/* View Switcher Pill */}
                 <div className="absolute bottom-4 right-4 z-10 flex items-center gap-2">
                   {fragrance.image && (
                     <button
                       type="button"
                       onClick={() => setViewMode(viewMode === 'photo' ? 'bottle' : 'photo')}
-                      className="px-3 py-1 bg-black/75 hover:bg-black text-[#D4AF37] border border-[#D4AF37]/30 text-[10px] font-mono tracking-widest uppercase backdrop-blur-md transition-colors cursor-pointer rounded-xs flex items-center gap-1.5"
+                      className="px-3 py-1 bg-white/90 hover:bg-white text-[#0A2533] border border-[#0A2533]/15 text-[10px] font-mono tracking-widest uppercase backdrop-blur-md transition-colors cursor-pointer rounded-xs flex items-center gap-1.5 shadow-xs font-medium"
                     >
-                      <RotateCcw className="w-3 h-3" />
+                      <RotateCcw className="w-3 h-3 text-[#087A91]" />
                       <span>{viewMode === 'photo' ? '3D FLACON VIEW' : 'STUDIO PHOTO'}</span>
                     </button>
                   )}
-                  <span className="px-3 py-1 bg-black/60 text-white/70 border border-white/10 text-[10px] font-mono tracking-widest uppercase backdrop-blur-md hidden sm:inline-flex items-center gap-1.5">
+                  <span className="px-3 py-1 bg-white/70 text-[#5A7785] border border-[#0A2533]/10 text-[10px] font-mono tracking-widest uppercase backdrop-blur-md hidden sm:inline-flex items-center gap-1.5">
                     <Maximize2 className="w-3 h-3" />
                     <span>HOVER TO ZOOM</span>
                   </span>
@@ -269,7 +269,9 @@ export const ProductDetailPage: React.FC = () => {
                   type="button"
                   onClick={() => setViewMode('photo')}
                   className={`w-20 h-20 border overflow-hidden transition-all cursor-pointer rounded-xs ${
-                    viewMode === 'photo' ? 'border-[#C5A059] ring-1 ring-[#C5A059]' : 'border-white/15 opacity-60 hover:opacity-100'
+                    viewMode === 'photo' 
+                      ? 'border-[#087A91] ring-2 ring-[#087A91]/30 shadow-xs' 
+                      : 'border-[#0A2533]/15 opacity-70 hover:opacity-100'
                   }`}
                 >
                   <img src={fragrance.image} alt="Studio view" className="w-full h-full object-cover" />
@@ -278,8 +280,10 @@ export const ProductDetailPage: React.FC = () => {
               <button
                 type="button"
                 onClick={() => setViewMode('bottle')}
-                className={`w-20 h-20 border p-2 bg-[#0E1318] flex items-center justify-center transition-all cursor-pointer rounded-xs ${
-                  viewMode === 'bottle' ? 'border-[#C5A059] ring-1 ring-[#C5A059]' : 'border-white/15 opacity-60 hover:opacity-100'
+                className={`w-20 h-20 border p-2 bg-[#F8FAFB] flex items-center justify-center transition-all cursor-pointer rounded-xs ${
+                  viewMode === 'bottle' 
+                    ? 'border-[#087A91] ring-2 ring-[#087A91]/30 shadow-xs' 
+                    : 'border-[#0A2533]/15 opacity-70 hover:opacity-100'
                 }`}
               >
                 <div className="w-full h-full flex items-center justify-center scale-50 pointer-events-none">
@@ -293,67 +297,67 @@ export const ProductDetailPage: React.FC = () => {
           <div className="lg:col-span-6 flex flex-col justify-start">
             
             {/* Top Ingredient / Category Title */}
-            <span className="text-xs font-mono tracking-[0.25em] uppercase text-[#C5A059] font-medium mb-1.5 block">
+            <span className="text-xs font-mono tracking-[0.25em] uppercase text-[#087A91] font-semibold mb-1.5 block">
               {fragrance.ingredientTitle || fragrance.family.toUpperCase()}
             </span>
 
             {/* Product Title (Large Serif) */}
-            <h1 className="font-display font-normal text-4xl sm:text-5xl text-white tracking-tight leading-tight">
+            <h1 className="font-display font-light text-4xl sm:text-5xl text-[#0A2533] tracking-tight leading-tight">
               {fragrance.name}
             </h1>
 
             {/* Italic Tagline */}
             {fragrance.tagline && (
-              <p className="mt-1.5 text-base sm:text-lg font-serif italic text-[#C5B39A]">
+              <p className="mt-1.5 text-base sm:text-lg font-serif italic text-[#4A6775]">
                 {fragrance.tagline}
               </p>
             )}
 
             {/* Price & Size Display */}
-            <div className="mt-6 flex items-baseline gap-3 pb-6 border-b border-white/10">
-              <span className="font-display text-3xl sm:text-4xl text-[#D4AF37] font-semibold tabular-nums">
+            <div className="mt-6 flex items-baseline gap-3 pb-6 border-b border-[#0A2533]/10">
+              <span className="font-display text-3xl sm:text-4xl text-[#0A2533] font-semibold tabular-nums">
                 {formatPrice(currentPrice)}
               </span>
-              <span className="text-sm font-mono text-[#829CA9]">
+              <span className="text-sm font-mono text-[#5A7785]">
                 {fragrance.sizeLabel || `${selectedSize} ml`}
               </span>
             </div>
 
-            {/* Narrative Story Prose (Simple, evocative, no AI slop) */}
-            <div className="mt-6 text-sm sm:text-base text-[#B0C3CD] leading-relaxed font-light">
+            {/* Narrative Story Prose (Simple, evocative, clean) */}
+            <div className="mt-6 text-sm sm:text-base text-[#3A5563] leading-relaxed font-light">
               <p>{fragrance.description}</p>
             </div>
 
-            {/* Clean NOTE PYRAMID (Exact layout from screenshots) */}
-            <div className="mt-8 pt-6 border-t border-white/10">
-              <h3 className="font-mono text-xs tracking-[0.25em] text-[#C5A059] uppercase font-semibold mb-4">
+            {/* Clean NOTE PYRAMID in Our Theme */}
+            <div className="mt-8 p-5 bg-white border border-[#0A2533]/10 rounded-xs shadow-xs">
+              <h3 className="font-mono text-xs tracking-[0.25em] text-[#087A91] uppercase font-semibold mb-3">
                 NOTE PYRAMID
               </h3>
 
               <div className="space-y-3 font-mono text-xs">
-                <div className="grid grid-cols-12 gap-2 py-1.5 border-b border-white/5">
-                  <span className="col-span-3 text-[#C5A059] tracking-wider uppercase font-semibold">
+                <div className="grid grid-cols-12 gap-2 py-2 border-b border-[#0A2533]/5">
+                  <span className="col-span-3 text-[#087A91] tracking-wider uppercase font-semibold">
                     TOP
                   </span>
-                  <span className="col-span-9 text-white">
+                  <span className="col-span-9 text-[#0A2533] font-medium">
                     {fragrance.olfactoryPyramid.top.join(', ')}
                   </span>
                 </div>
 
-                <div className="grid grid-cols-12 gap-2 py-1.5 border-b border-white/5">
-                  <span className="col-span-3 text-[#C5A059] tracking-wider uppercase font-semibold">
+                <div className="grid grid-cols-12 gap-2 py-2 border-b border-[#0A2533]/5">
+                  <span className="col-span-3 text-[#087A91] tracking-wider uppercase font-semibold">
                     HEART
                   </span>
-                  <span className="col-span-9 text-white">
+                  <span className="col-span-9 text-[#0A2533] font-medium">
                     {fragrance.olfactoryPyramid.heart.join(', ')}
                   </span>
                 </div>
 
-                <div className="grid grid-cols-12 gap-2 py-1.5">
-                  <span className="col-span-3 text-[#C5A059] tracking-wider uppercase font-semibold">
+                <div className="grid grid-cols-12 gap-2 py-2">
+                  <span className="col-span-3 text-[#087A91] tracking-wider uppercase font-semibold">
                     BASE
                   </span>
-                  <span className="col-span-9 text-white">
+                  <span className="col-span-9 text-[#0A2533] font-medium">
                     {fragrance.olfactoryPyramid.base.join(' & ')}
                   </span>
                 </div>
@@ -363,9 +367,9 @@ export const ProductDetailPage: React.FC = () => {
             {/* Size Switcher (if product has 50ml / 100ml options) */}
             {fragrance.sizes.length > 1 && (
               <div className="mt-8">
-                <div className="flex items-center justify-between text-xs font-mono tracking-wider uppercase text-[#829CA9] mb-2.5">
+                <div className="flex items-center justify-between text-xs font-mono tracking-wider uppercase text-[#5A7785] mb-2.5">
                   <span>FLACON SIZE</span>
-                  <span className="text-[#C5A059]">{selectedSize} ML</span>
+                  <span className="text-[#087A91] font-semibold">{selectedSize} ML</span>
                 </div>
                 <div className="grid grid-cols-2 gap-3">
                   {fragrance.sizes.map(s => (
@@ -375,49 +379,51 @@ export const ProductDetailPage: React.FC = () => {
                       onClick={() => setSelectedSize(s.ml)}
                       className={`p-3.5 border text-left font-mono transition-all cursor-pointer rounded-xs flex items-center justify-between ${
                         selectedSize === s.ml
-                          ? 'border-[#C5A059] bg-[#C5A059]/10 text-white'
-                          : 'border-white/15 bg-white/[0.02] text-[#829CA9] hover:border-white/30'
+                          ? 'border-[#0A2533] bg-[#0A2533] text-white shadow-xs'
+                          : 'border-[#0A2533]/15 bg-white text-[#0A2533] hover:border-[#087A91]'
                       }`}
                     >
                       <span className="text-xs font-semibold">{s.ml} ML</span>
-                      <span className="text-xs font-medium text-[#D4AF37]">{formatPrice(s.price)}</span>
+                      <span className={`text-xs font-medium ${selectedSize === s.ml ? 'text-white/90' : 'text-[#087A91]'}`}>
+                        {formatPrice(s.price)}
+                      </span>
                     </button>
                   ))}
                 </div>
               </div>
             )}
 
-            {/* Actions: Quantity + Gold ADD TO CART Button + BUY NOW */}
+            {/* Actions: Quantity + Primary ADD TO CART Button + BUY NOW */}
             <div className="mt-8 space-y-3">
               <div className="flex items-center gap-3">
                 {/* Quantity Selector: [- 1 +] */}
-                <div className="flex items-center border border-white/20 bg-[#0E1318] h-13 px-2 rounded-xs shrink-0">
+                <div className="flex items-center border border-[#0A2533]/20 bg-[#F4F8FA] h-13 px-2 rounded-xs shrink-0">
                   <button
                     type="button"
                     onClick={() => setQuantity(Math.max(1, quantity - 1))}
-                    className="p-2 text-[#829CA9] hover:text-white cursor-pointer"
+                    className="p-2 text-[#5A7785] hover:text-[#0A2533] cursor-pointer"
                     aria-label="Decrease quantity"
                   >
                     <Minus className="w-3.5 h-3.5" />
                   </button>
-                  <span className="w-8 text-center font-mono font-semibold text-sm tabular-nums text-white">
+                  <span className="w-8 text-center font-mono font-semibold text-sm tabular-nums text-[#0A2533]">
                     {quantity}
                   </span>
                   <button
                     type="button"
                     onClick={() => setQuantity(quantity + 1)}
-                    className="p-2 text-[#829CA9] hover:text-white cursor-pointer"
+                    className="p-2 text-[#5A7785] hover:text-[#0A2533] cursor-pointer"
                     aria-label="Increase quantity"
                   >
                     <Plus className="w-3.5 h-3.5" />
                   </button>
                 </div>
 
-                {/* Main Gold Button: ADD TO CART — ₹2,699 → */}
+                {/* Main Action Button: ADD TO CART */}
                 <button
                   type="button"
                   onClick={handleAddToCart}
-                  className="flex-1 h-13 bg-[#C5A059] hover:bg-[#D4AF37] text-[#0A0D10] font-mono text-xs uppercase tracking-[0.16em] font-bold flex items-center justify-center gap-2 transition-all shadow-lg cursor-pointer rounded-xs active:scale-[0.99]"
+                  className="flex-1 h-13 bg-[#0A2533] hover:bg-[#087A91] text-white font-mono text-xs uppercase tracking-[0.16em] font-bold flex items-center justify-center gap-2 transition-all shadow-md cursor-pointer rounded-xs active:scale-[0.99]"
                 >
                   <span>ADD TO CART — {formatPrice(currentPrice * quantity)}</span>
                   <ArrowRight className="w-4 h-4 stroke-[2.5]" />
@@ -428,38 +434,38 @@ export const ProductDetailPage: React.FC = () => {
               <button
                 type="button"
                 onClick={handleBuyNow}
-                className="w-full h-11 bg-white/[0.06] hover:bg-white/[0.1] text-white border border-white/20 font-mono text-xs uppercase tracking-[0.16em] font-semibold flex items-center justify-center gap-2 transition-all cursor-pointer rounded-xs"
+                className="w-full h-11 bg-white hover:bg-[#F0F6F9] text-[#0A2533] hover:text-[#087A91] border border-[#0A2533]/25 hover:border-[#087A91] font-mono text-xs uppercase tracking-[0.16em] font-semibold flex items-center justify-center gap-2 transition-all cursor-pointer rounded-xs shadow-xs"
               >
-                <Zap className="w-3.5 h-3.5 text-[#D4AF37]" />
+                <Zap className="w-3.5 h-3.5 text-[#087A91]" />
                 <span>BUY NOW • INSTANT CHECKOUT</span>
               </button>
             </div>
 
             {/* Added Notification */}
             {addedNotice && (
-              <div className="mt-3.5 p-3.5 bg-emerald-950/60 border border-emerald-500/40 text-emerald-200 text-xs font-mono flex items-center justify-between rounded-xs animate-in fade-in">
+              <div className="mt-3.5 p-3.5 bg-emerald-50 border border-emerald-400/50 text-emerald-800 text-xs font-mono flex items-center justify-between rounded-xs animate-in fade-in">
                 <div className="flex items-center gap-2">
-                  <Check className="w-4 h-4 text-emerald-400" />
+                  <Check className="w-4 h-4 text-emerald-600" />
                   <span>{fragrance.name} added to your bag.</span>
                 </div>
                 <button 
                   type="button"
                   onClick={() => openCart()}
-                  className="underline font-semibold text-white hover:text-emerald-300 cursor-pointer"
+                  className="underline font-semibold text-emerald-900 hover:text-emerald-700 cursor-pointer"
                 >
                   View Bag
                 </button>
               </div>
             )}
 
-            {/* Trust Bullet Points (Matching Screenshots) */}
-            <div className="mt-8 pt-6 border-t border-white/10 space-y-2 text-xs font-mono text-[#829CA9]">
+            {/* Trust Bullet Points */}
+            <div className="mt-8 pt-6 border-t border-[#0A2533]/10 space-y-2 text-xs font-mono text-[#5A7785]">
               <div className="flex items-center gap-2">
-                <span className="text-[#C5A059]">•</span>
+                <span className="text-[#087A91] font-bold">•</span>
                 <span>Complimentary shipping on orders over ₹1,500</span>
               </div>
               <div className="flex items-center gap-2">
-                <span className="text-[#C5A059]">•</span>
+                <span className="text-[#087A91] font-bold">•</span>
                 <span>7-day returns on unopened bottles or damaged goods</span>
               </div>
             </div>
@@ -469,36 +475,36 @@ export const ProductDetailPage: React.FC = () => {
         </div>
       </section>
 
-      {/* 3. Customer Reviews Section */}
-      <section id="reviews" className="max-w-7xl mx-auto px-6 sm:px-12 py-16 border-t border-white/10">
-        <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 pb-8 border-b border-white/10">
+      {/* 3. Customer Reviews Section in Our Theme */}
+      <section id="reviews" className="max-w-7xl mx-auto px-6 sm:px-12 py-16 border-t border-[#0A2533]/10 bg-white">
+        <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 pb-8 border-b border-[#0A2533]/10">
           <div>
-            <div className="flex items-center gap-2 font-mono text-xs tracking-[0.25em] text-[#C5A059] uppercase mb-1 font-semibold">
-              <span className="w-3 h-[1px] bg-[#C5A059]" />
+            <div className="flex items-center gap-2 font-mono text-xs tracking-[0.25em] text-[#087A91] uppercase mb-1 font-semibold">
+              <span className="w-3 h-[1px] bg-[#087A91]" />
               <span>COMMUNITY IMPRESSIONS</span>
             </div>
-            <h2 className="font-display text-3xl sm:text-4xl font-light text-white tracking-tight">
+            <h2 className="font-display text-3xl sm:text-4xl font-light text-[#0A2533] tracking-tight">
               Customer Reviews
             </h2>
           </div>
 
           <div className="flex flex-wrap items-center gap-4">
-            <div className="flex items-center gap-3 pr-4 border-r border-white/10">
-              <span className="font-display text-4xl text-[#D4AF37] font-semibold">{averageRating}</span>
+            <div className="flex items-center gap-3 pr-4 border-r border-[#0A2533]/10">
+              <span className="font-display text-4xl text-[#0A2533] font-semibold">{averageRating}</span>
               <div>
-                <div className="flex items-center text-amber-400">
+                <div className="flex items-center text-amber-500">
                   {[...Array(5)].map((_, i) => (
                     <Star key={i} className="w-3.5 h-3.5 fill-amber-400 stroke-amber-400" />
                   ))}
                 </div>
-                <span className="text-[11px] font-mono text-[#829CA9]">Based on {reviews.length} reviews</span>
+                <span className="text-[11px] font-mono text-[#5A7785]">Based on {reviews.length} reviews</span>
               </div>
             </div>
 
             <button
               type="button"
               onClick={() => setShowReviewForm(!showReviewForm)}
-              className="px-4 py-2 bg-[#C5A059] hover:bg-[#D4AF37] text-[#0A0D10] font-mono text-xs uppercase tracking-wider font-bold transition-colors cursor-pointer rounded-xs"
+              className="px-4 py-2 bg-[#0A2533] hover:bg-[#087A91] text-white font-mono text-xs uppercase tracking-wider font-semibold transition-colors cursor-pointer rounded-xs shadow-xs"
             >
               {showReviewForm ? 'CANCEL' : 'WRITE A REVIEW'}
             </button>
@@ -506,8 +512,8 @@ export const ProductDetailPage: React.FC = () => {
         </div>
 
         {reviewSubmitted && (
-          <div className="mt-6 p-4 bg-emerald-950/60 border border-emerald-500/40 text-emerald-200 text-xs font-mono flex items-center gap-2.5 rounded-xs">
-            <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0" />
+          <div className="mt-6 p-4 bg-emerald-50 border border-emerald-400/50 text-emerald-800 text-xs font-mono flex items-center gap-2.5 rounded-xs">
+            <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
             <span>Thank you! Your verified review has been posted.</span>
           </div>
         )}
@@ -515,14 +521,14 @@ export const ProductDetailPage: React.FC = () => {
         {showReviewForm && (
           <form 
             onSubmit={handleSubmitReview}
-            className="mt-8 p-6 sm:p-8 bg-[#0E1318] border border-[#C5A059]/40 rounded-xs shadow-xl animate-in fade-in"
+            className="mt-8 p-6 sm:p-8 bg-[#F8FAFB] border border-[#0A2533]/15 rounded-xs shadow-md animate-in fade-in"
           >
-            <h3 className="font-display text-xl text-white mb-4">
+            <h3 className="font-display text-xl text-[#0A2533] mb-4">
               Write a Review for {fragrance.name}
             </h3>
 
             <div className="mb-5">
-              <label className="block text-xs font-mono uppercase tracking-wider text-[#829CA9] mb-2">
+              <label className="block text-xs font-mono uppercase tracking-wider text-[#5A7785] mb-2 font-medium">
                 Rating *
               </label>
               <div className="flex items-center gap-1.5">
@@ -538,7 +544,7 @@ export const ProductDetailPage: React.FC = () => {
                       className={`w-6 h-6 ${
                         star <= reviewRating 
                           ? 'fill-amber-400 stroke-amber-400' 
-                          : 'stroke-[#4A5D68] fill-transparent'
+                          : 'stroke-[#8DA4B0] fill-transparent'
                       }`} 
                     />
                   </button>
@@ -548,7 +554,7 @@ export const ProductDetailPage: React.FC = () => {
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
               <div>
-                <label className="block text-xs font-mono uppercase tracking-wider text-[#829CA9] mb-1.5">
+                <label className="block text-xs font-mono uppercase tracking-wider text-[#5A7785] mb-1.5 font-medium">
                   Your Name *
                 </label>
                 <input
@@ -557,12 +563,12 @@ export const ProductDetailPage: React.FC = () => {
                   value={reviewerName}
                   onChange={e => setReviewerName(e.target.value)}
                   placeholder="e.g. Priya S."
-                  className="w-full px-3.5 py-2.5 bg-[#07090C] border border-white/20 text-xs font-mono text-white focus:border-[#C5A059] outline-hidden rounded-xs"
+                  className="w-full px-3.5 py-2.5 bg-white border border-[#0A2533]/20 text-xs font-mono text-[#0A2533] focus:border-[#087A91] outline-hidden rounded-xs"
                 />
               </div>
 
               <div>
-                <label className="block text-xs font-mono uppercase tracking-wider text-[#829CA9] mb-1.5">
+                <label className="block text-xs font-mono uppercase tracking-wider text-[#5A7785] mb-1.5 font-medium">
                   City / State (Optional)
                 </label>
                 <input
@@ -570,13 +576,13 @@ export const ProductDetailPage: React.FC = () => {
                   value={reviewerLocation}
                   onChange={e => setReviewerLocation(e.target.value)}
                   placeholder="e.g. Chennai, Tamil Nadu"
-                  className="w-full px-3.5 py-2.5 bg-[#07090C] border border-white/20 text-xs font-mono text-white focus:border-[#C5A059] outline-hidden rounded-xs"
+                  className="w-full px-3.5 py-2.5 bg-white border border-[#0A2533]/20 text-xs font-mono text-[#0A2533] focus:border-[#087A91] outline-hidden rounded-xs"
                 />
               </div>
             </div>
 
             <div className="mb-4">
-              <label className="block text-xs font-mono uppercase tracking-wider text-[#829CA9] mb-1.5">
+              <label className="block text-xs font-mono uppercase tracking-wider text-[#5A7785] mb-1.5 font-medium">
                 Headline *
               </label>
               <input
@@ -585,12 +591,12 @@ export const ProductDetailPage: React.FC = () => {
                 value={reviewTitle}
                 onChange={e => setReviewTitle(e.target.value)}
                 placeholder="e.g. Scent evolution is intoxicating"
-                className="w-full px-3.5 py-2.5 bg-[#07090C] border border-white/20 text-xs font-mono text-white focus:border-[#C5A059] outline-hidden rounded-xs"
+                className="w-full px-3.5 py-2.5 bg-white border border-[#0A2533]/20 text-xs font-mono text-[#0A2533] focus:border-[#087A91] outline-hidden rounded-xs"
               />
             </div>
 
             <div className="mb-6">
-              <label className="block text-xs font-mono uppercase tracking-wider text-[#829CA9] mb-1.5">
+              <label className="block text-xs font-mono uppercase tracking-wider text-[#5A7785] mb-1.5 font-medium">
                 Your Review *
               </label>
               <textarea
@@ -599,7 +605,7 @@ export const ProductDetailPage: React.FC = () => {
                 value={reviewComment}
                 onChange={e => setReviewComment(e.target.value)}
                 placeholder="Share your experience on skin longevity, scent notes, and projection..."
-                className="w-full p-3.5 bg-[#07090C] border border-white/20 text-xs font-mono text-white focus:border-[#C5A059] outline-hidden rounded-xs resize-y"
+                className="w-full p-3.5 bg-white border border-[#0A2533]/20 text-xs font-mono text-[#0A2533] focus:border-[#087A91] outline-hidden rounded-xs resize-y"
               />
             </div>
 
@@ -607,13 +613,13 @@ export const ProductDetailPage: React.FC = () => {
               <button
                 type="button"
                 onClick={() => setShowReviewForm(false)}
-                className="px-4 py-2 border border-white/20 text-xs font-mono uppercase tracking-wider text-[#829CA9] hover:text-white cursor-pointer"
+                className="px-4 py-2 border border-[#0A2533]/20 text-xs font-mono uppercase tracking-wider text-[#5A7785] hover:text-[#0A2533] cursor-pointer"
               >
                 Cancel
               </button>
               <button
                 type="submit"
-                className="px-6 py-2.5 bg-[#C5A059] hover:bg-[#D4AF37] text-[#0A0D10] text-xs font-mono uppercase tracking-wider font-bold cursor-pointer rounded-xs"
+                className="px-6 py-2.5 bg-[#0A2533] hover:bg-[#087A91] text-white text-xs font-mono uppercase tracking-wider font-bold cursor-pointer rounded-xs shadow-xs"
               >
                 Submit Review
               </button>
@@ -625,38 +631,38 @@ export const ProductDetailPage: React.FC = () => {
           {reviews.map(review => (
             <div 
               key={review.id}
-              className="p-6 bg-[#0E1318] border border-white/[0.08] rounded-xs hover:border-[#C5A059]/30 transition-colors"
+              className="p-6 bg-white border border-[#0A2533]/10 rounded-xs hover:border-[#087A91]/40 transition-colors shadow-xs"
             >
               <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-2">
                 <div className="flex items-center gap-3">
-                  <div className="flex items-center text-amber-400">
+                  <div className="flex items-center text-amber-500">
                     {[...Array(review.rating)].map((_, i) => (
                       <Star key={i} className="w-3.5 h-3.5 fill-amber-400 stroke-amber-400" />
                     ))}
                   </div>
-                  <h4 className="font-display font-medium text-base text-white">
+                  <h4 className="font-display font-medium text-base text-[#0A2533]">
                     {review.title}
                   </h4>
                 </div>
 
-                <span className="text-[11px] font-mono text-[#829CA9]">
+                <span className="text-[11px] font-mono text-[#5A7785]">
                   {review.date}
                 </span>
               </div>
 
-              <p className="text-xs sm:text-sm font-light text-[#B0C3CD] leading-relaxed mb-3">
+              <p className="text-xs sm:text-sm font-light text-[#3A5563] leading-relaxed mb-3">
                 "{review.comment}"
               </p>
 
-              <div className="flex items-center gap-2 text-xs font-mono text-[#829CA9]">
-                <span className="font-semibold text-white">{review.author}</span>
+              <div className="flex items-center gap-2 text-xs font-mono text-[#5A7785]">
+                <span className="font-semibold text-[#0A2533]">{review.author}</span>
                 <span>•</span>
                 <span>{review.location}</span>
                 {review.verified && (
                   <>
                     <span>•</span>
-                    <span className="inline-flex items-center gap-1 text-[#C5A059] font-medium">
-                      <CheckCircle2 className="w-3 h-3" />
+                    <span className="inline-flex items-center gap-1 text-[#087A91] font-medium">
+                      <CheckCircle2 className="w-3 h-3 text-[#087A91]" />
                       <span>Verified Buyer</span>
                     </span>
                   </>
@@ -667,38 +673,44 @@ export const ProductDetailPage: React.FC = () => {
         </div>
       </section>
 
-      {/* 4. "THE MOLECULE SERIES" Grid (Exact Design from Screenshot 5) */}
-      <section className="max-w-7xl mx-auto px-6 sm:px-12 py-16 border-t border-white/10">
-        <div className="flex items-center justify-between pb-6 mb-8 border-b border-white/10">
-          <h2 className="font-mono text-sm sm:text-base tracking-[0.25em] text-white uppercase font-semibold">
-            THE MOLECULE SERIES
-          </h2>
+      {/* 4. "THE MOLECULE SERIES" Grid in Our Theme */}
+      <section className="max-w-7xl mx-auto px-6 sm:px-12 py-16 border-t border-[#0A2533]/10">
+        <div className="flex items-center justify-between pb-6 mb-8 border-b border-[#0A2533]/10">
+          <div>
+            <div className="flex items-center gap-2 font-mono text-xs tracking-[0.25em] text-[#087A91] uppercase mb-1 font-semibold">
+              <span className="w-3 h-[1px] bg-[#087A91]" />
+              <span>THE COLLECTION</span>
+            </div>
+            <h2 className="font-display text-2xl sm:text-3xl font-light text-[#0A2533] tracking-tight">
+              The Molecule Series
+            </h2>
+          </div>
 
           <Link
             to="/collection"
-            className="inline-flex items-center gap-1 text-xs font-mono text-[#C5A059] hover:text-white transition-colors uppercase tracking-wider font-semibold"
+            className="inline-flex items-center gap-1.5 text-xs font-mono text-[#0A2533] hover:text-[#087A91] transition-colors uppercase tracking-wider font-semibold border border-[#0A2533]/20 hover:border-[#087A91] px-3.5 py-1.5 bg-white shadow-xs"
           >
             <span>VIEW ALL</span>
             <ArrowRight className="w-3.5 h-3.5" />
           </Link>
         </div>
 
-        {/* 4-Card Grid matching Screenshot 5 */}
+        {/* 4-Card Grid matching Authentic Series */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-          {FRAGRANCES.filter(f => f.id !== 'discovery-archive').map(prod => (
+          {FRAGRANCES.map(prod => (
             <div
               key={prod.id}
-              className="group border border-white/10 bg-[#0E1318] rounded-xs overflow-hidden flex flex-col justify-between transition-all duration-300 hover:border-[#C5A059]/40"
+              className="group border border-[#0A2533]/10 bg-white rounded-xs overflow-hidden flex flex-col justify-between transition-all duration-300 hover:border-[#087A91]/40 shadow-[0_4px_20px_rgba(10,37,51,0.04)] hover:shadow-[0_12px_28px_rgba(10,37,51,0.08)]"
             >
               {/* Product Visual Container */}
               <Link 
                 to={`/product/${prod.id}`}
                 onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
-                className="relative h-[280px] bg-[#07090C] flex items-center justify-center overflow-hidden border-b border-white/10 cursor-pointer"
+                className="relative h-[270px] bg-gradient-to-b from-[#F8FAFB] via-[#EFF5F8] to-[#E6EFF3] flex items-center justify-center overflow-hidden border-b border-[#0A2533]/10 cursor-pointer"
               >
                 {/* Bestseller Badge */}
                 {prod.isBestseller && (
-                  <span className="absolute top-2 left-2 z-10 px-2 py-0.5 bg-[#8B0000] text-white text-[9px] font-mono tracking-widest uppercase font-semibold">
+                  <span className="absolute top-2.5 left-2.5 z-10 px-2 py-0.5 bg-[#8B0000] text-white text-[9px] font-mono tracking-widest uppercase font-semibold">
                     BESTSELLER
                   </span>
                 )}
@@ -721,32 +733,32 @@ export const ProductDetailPage: React.FC = () => {
                 <Link
                   to={`/product/${prod.id}`}
                   onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
-                  className="font-mono text-xs uppercase tracking-[0.2em] text-white font-semibold group-hover:text-[#C5A059] transition-colors"
+                  className="font-mono text-xs uppercase tracking-[0.2em] text-[#0A2533] font-semibold group-hover:text-[#087A91] transition-colors"
                 >
                   {prod.name.toUpperCase()}
                 </Link>
 
-                <span className="mt-1 text-[10px] font-mono tracking-widest uppercase text-[#C5A059]">
+                <span className="mt-1 text-[10px] font-mono tracking-widest uppercase text-[#087A91] font-medium">
                   {prod.ingredientTitle || prod.family.toUpperCase()}
                 </span>
 
-                <span className="mt-3 text-xs font-serif italic tracking-wider uppercase text-[#829CA9]">
-                  {prod.subtitle.toUpperCase()}
+                <span className="mt-2 text-xs font-serif italic tracking-wider text-[#5A7785]">
+                  {prod.subtitle}
                 </span>
 
-                <span className="mt-1 text-xs font-mono text-[#D4AF37] font-semibold tabular-nums">
+                <span className="mt-1.5 text-xs font-mono text-[#0A2533] font-semibold tabular-nums">
                   50 ml &nbsp;|&nbsp; {formatPrice(prod.price)}
                 </span>
               </div>
 
-              {/* Deep Crimson ADD TO BAG Button (Matching Screenshot 5) */}
+              {/* Authentic Crimson ADD TO BAG Button */}
               <button
                 type="button"
                 onClick={() => {
                   addToCart(prod, 50, 1);
                   openCart();
                 }}
-                className="w-full py-3 bg-[#540B13] hover:bg-[#6E0F19] text-white text-xs font-mono uppercase tracking-[0.2em] font-bold transition-colors cursor-pointer"
+                className="w-full py-3 bg-[#610718] hover:bg-[#7D0E23] text-white text-xs font-mono uppercase tracking-[0.2em] font-bold transition-colors cursor-pointer"
               >
                 ADD TO BAG
               </button>
