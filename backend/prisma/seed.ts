@@ -1,8 +1,7 @@
-import { PrismaClient } from '@prisma/client';
 import argon2 from 'argon2';
+import { prisma } from '../src/config/db.js';
 import { PyramidTier } from '../src/types/enums.js';
 
-const prisma = new PrismaClient();
 
 async function main() {
   console.log('🌱 Seeding Chem Bros database...');

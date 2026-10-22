@@ -81,9 +81,9 @@ adminRouter.get('/dashboard', async (req: Request, res: Response, next: NextFunc
         }),
       ]);
 
-    const totalRevenue = paidOrders.reduce((sum, o) => sum + o.total, 0);
+    const totalRevenue = paidOrders.reduce((sum: number, o: { total: number }) => sum + o.total, 0);
     const pendingOrders = recentOrders.filter(
-      o => o.status === 'PROCESSING' || o.status === 'PENDING'
+      (o: any) => o.status === 'PROCESSING' || o.status === 'PENDING'
     ).length;
 
     const statsObj = {
@@ -95,7 +95,7 @@ adminRouter.get('/dashboard', async (req: Request, res: Response, next: NextFunc
       unreadMessages,
     };
 
-    const formattedOrders = recentOrders.map(o => ({
+    const formattedOrders = recentOrders.map((o: any) => ({
       id: o.id,
       ref: o.orderRef,
       orderRef: o.orderRef,
@@ -121,7 +121,7 @@ adminRouter.get('/dashboard', async (req: Request, res: Response, next: NextFunc
       stats: statsObj,
       metrics: statsObj,
       recentOrders: formattedOrders,
-      lowStockVariants: lowStockVariants.map(v => ({
+      lowStockVariants: lowStockVariants.map((v: any) => ({
         id: v.id,
         name: v.product.name,
         formulaNo: v.product.formulaNo,
@@ -154,7 +154,7 @@ adminRouter.get('/orders', async (req: Request, res: Response, next: NextFunctio
       },
     });
 
-    const formatted = orders.map(o => ({
+    const formatted = orders.map((o: any) => ({
       id: o.id,
       ref: o.orderRef,
       orderRef: o.orderRef,
@@ -245,7 +245,7 @@ adminRouter.get('/products', async (req: Request, res: Response, next: NextFunct
       },
     });
 
-    const formatted = products.map(p => {
+    const formatted = products.map((p: any) => {
       const pyramidObj: { top: string[]; heart: string[]; base: string[] } = {
         top: [],
         heart: [],
@@ -265,8 +265,8 @@ adminRouter.get('/products', async (req: Request, res: Response, next: NextFunct
         }
       }
 
-      const basePrice = p.variants.length > 0 ? Math.min(...p.variants.map(v => v.price)) : 0;
-      const totalStock = p.variants.reduce((sum, v) => sum + v.stockQuantity, 0);
+      const basePrice = p.variants.length > 0 ? Math.min(...p.variants.map((v: any) => v.price)) : 0;
+      const totalStock = p.variants.reduce((sum: number, v: any) => sum + v.stockQuantity, 0);
 
       return {
         ...p,
@@ -315,7 +315,7 @@ adminRouter.post('/products', async (req: Request, res: Response, next: NextFunc
       .replace(/[^a-z0-9]+/g, '-')
       .replace(/^-|-$/g, '');
 
-    const product = await prisma.$transaction(async tx => {
+    const product = await prisma.$transaction(async (tx: any) => {
       const created = await tx.product.create({
         data: {
           name: name.trim(),
@@ -404,7 +404,7 @@ adminRouter.put('/products/:id', async (req: Request, res: Response, next: NextF
       spec,
     } = req.body;
 
-    const updated = await prisma.$transaction(async tx => {
+    const updated = await prisma.$transaction(async (tx: any) => {
       const prod = await tx.product.update({
         where: { id },
         data: {
@@ -551,7 +551,7 @@ adminRouter.delete('/products/:id', async (req: Request, res: Response, next: Ne
       return;
     }
 
-    const variantIds = product.variants.map(v => v.id);
+    const variantIds = product.variants.map((v: any) => v.id);
     const orderItemsCount = await prisma.orderItem.count({
       where: { variantId: { in: variantIds } },
     });
@@ -608,7 +608,7 @@ adminRouter.patch('/variants/:variantId', async (req: Request, res: Response, ne
 adminRouter.get('/settings', async (req: Request, res: Response, next: NextFunction) => {
   try {
     const settings = await prisma.appSetting.findMany();
-    const map = Object.fromEntries(settings.map(s => [s.key, s.value]));
+    const map = Object.fromEntries(settings.map((s: any) => [s.key, s.value]));
     res.json({
       success: true,
       data: map,
