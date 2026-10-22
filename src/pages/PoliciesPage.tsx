@@ -196,7 +196,7 @@ export const PoliciesPage: React.FC = () => {
         {/* Bottom CTA to collection */}
         <div className="mt-16 pt-8 border-t border-[#0A2533]/10 flex items-center justify-between">
           <Link
-            to="/collection"
+            to="/product/molecule-j"
             className="text-xs font-mono text-[#087A91] hover:text-[#0A2533] uppercase tracking-wider font-semibold flex items-center gap-2"
           >
             <span>EXPLORE LABORATORY COLLECTION</span>

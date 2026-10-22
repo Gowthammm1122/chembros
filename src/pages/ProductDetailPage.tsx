@@ -196,13 +196,13 @@ export const ProductDetailPage: React.FC = () => {
           <div className="flex items-center gap-2 tracking-wider uppercase">
             <Link to="/" className="hover:text-[#087A91] transition-colors">HOME</Link>
             <span>/</span>
-            <Link to="/collection" className="hover:text-[#087A91] transition-colors">COLLECTIONS</Link>
+            <Link to="/#collection" className="hover:text-[#087A91] transition-colors">COLLECTION</Link>
             <span>/</span>
             <span className="text-[#087A91] font-semibold">{fragrance.name.toUpperCase()}</span>
           </div>
 
           <Link
-            to="/collection"
+            to="/#collection"
             className="hidden sm:inline-flex items-center gap-1.5 text-xs text-[#5A7785] hover:text-[#087A91] transition-colors"
           >
             <ArrowLeft className="w-3.5 h-3.5" />
@@ -687,7 +687,7 @@ export const ProductDetailPage: React.FC = () => {
           </div>
 
           <Link
-            to="/collection"
+            to="/#collection"
             className="inline-flex items-center gap-1.5 text-xs font-mono text-[#0A2533] hover:text-[#087A91] transition-colors uppercase tracking-wider font-semibold border border-[#0A2533]/20 hover:border-[#087A91] px-3.5 py-1.5 bg-white shadow-xs"
           >
             <span>VIEW ALL</span>

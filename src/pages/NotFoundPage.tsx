@@ -33,7 +33,7 @@ export const NotFoundPage: React.FC = () => {
         </Link>
 
         <Link
-          to="/collection"
+          to="/product/molecule-j"
           className="inline-flex items-center gap-2 px-6 py-3.5 border border-[#0A2533]/20 hover:border-[#0A2533] text-[#0A2533] font-mono text-xs uppercase tracking-wider transition-colors"
         >
           <span>EXPLORE ACTIVE FORMULAS</span>

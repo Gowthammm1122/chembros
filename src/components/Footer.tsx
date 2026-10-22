@@ -73,7 +73,7 @@ export const Footer: React.FC<FooterProps> = ({
 
               <div className="mt-8 flex flex-wrap items-center gap-4">
                 <Link
-                  to="/collection"
+                  to="/product/molecule-j"
                   className="inline-flex items-center gap-3 px-7 py-3.5 bg-white hover:bg-[#48B8CE] text-[#020608] hover:text-[#020608] font-mono text-xs uppercase tracking-[0.2em] font-semibold transition-all duration-300 shadow-[0_10px_30px_rgba(255,255,255,0.1)]"
                 >
                   <span>EXPLORE ALL FORMULAS</span>
@@ -144,8 +144,8 @@ export const Footer: React.FC<FooterProps> = ({
 
           {/* Essential Minimal Links */}
           <nav className="flex flex-wrap items-center gap-6 sm:gap-8 text-xs font-mono tracking-wider text-[#A1B8C4]">
-            <Link to="/collection" className="hover:text-white transition-colors uppercase">
-              Collection
+            <Link to="/product/molecule-j" className="hover:text-white transition-colors uppercase">
+              Fragrances
             </Link>
             <Link to="/philosophy" className="hover:text-white transition-colors uppercase">
               Philosophy

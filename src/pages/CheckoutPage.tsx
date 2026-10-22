@@ -158,8 +158,8 @@ export const CheckoutPage: React.FC = () => {
       <div className="min-h-screen bg-[#FBFBFA] pt-32 pb-20 text-center">
         <h2 className="font-display text-2xl text-[#0A2533]">Your bag is empty</h2>
         <p className="text-xs font-mono text-[#5A7785] mt-2 mb-6">Please add items to proceed with checkout.</p>
-        <Link to="/collection" className="px-6 py-3 bg-[#0A2533] text-white font-mono text-xs uppercase tracking-wider">
-          Return to Collection
+        <Link to="/product/molecule-j" className="px-6 py-3 bg-[#0A2533] text-white font-mono text-xs uppercase tracking-wider">
+          Return to Fragrances
         </Link>
       </div>
     );

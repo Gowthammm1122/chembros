@@ -1,9 +1,8 @@
 import React from 'react';
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { CartProvider } from './context/CartContext';
 import { RootLayout } from './layouts/RootLayout';
 import { HomePage } from './pages/HomePage';
-import { CollectionPage } from './pages/CollectionPage';
 import { ProductDetailPage } from './pages/ProductDetailPage';
 import { PhilosophyPage } from './pages/PhilosophyPage';
 import { ConciergePage } from './pages/ConciergePage';
@@ -21,9 +20,10 @@ export default function App() {
         <Routes>
           <Route path="/" element={<RootLayout />}>
             <Route index element={<HomePage />} />
-            <Route path="collection" element={<CollectionPage />} />
-            <Route path="fragrances" element={<CollectionPage />} />
-            <Route path="shop" element={<CollectionPage />} />
+            {/* Redirect old collection/shop routes directly to the product dossier */}
+            <Route path="collection" element={<Navigate to="/product/molecule-j" replace />} />
+            <Route path="fragrances" element={<Navigate to="/product/molecule-j" replace />} />
+            <Route path="shop" element={<Navigate to="/product/molecule-j" replace />} />
             <Route path="product" element={<ProductDetailPage />} />
             <Route path="product/:id" element={<ProductDetailPage />} />
             <Route path="cart" element={<CartPage />} />

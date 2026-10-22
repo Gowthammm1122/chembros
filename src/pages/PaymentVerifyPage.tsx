@@ -189,7 +189,7 @@ export const PaymentVerifyPage: React.FC = () => {
             {/* Actions */}
             <div className="flex flex-col sm:flex-row gap-4 pt-4">
               <Link
-                to="/collection"
+                to="/product/molecule-j"
                 className="flex-1 py-3.5 bg-[#0A2533] hover:bg-[#087A91] text-white font-mono text-xs uppercase tracking-widest font-semibold flex items-center justify-center gap-2 transition-all shadow-sm"
               >
                 <span>EXPLORE CATALOGUE</span>

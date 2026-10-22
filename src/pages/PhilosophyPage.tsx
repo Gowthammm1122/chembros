@@ -139,7 +139,7 @@ export const PhilosophyPage: React.FC = () => {
             </div>
 
             <Link
-              to="/collection"
+              to="/product/molecule-j"
               className="px-8 py-3.5 bg-[#0A2533] hover:bg-[#087A91] text-white font-mono text-xs uppercase tracking-[0.2em] font-semibold flex items-center gap-2 transition-all shadow-md shrink-0"
             >
               <span>EXPLORE THE FORMULAS</span>

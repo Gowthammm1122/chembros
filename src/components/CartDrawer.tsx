@@ -92,7 +92,7 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
                   Select a signature formula from the four laboratory specimens to begin.
                 </p>
                 <Link
-                  to="/collection"
+                  to="/product/molecule-j"
                   onClick={effectiveClose}
                   className="inline-block mt-4 px-6 py-2.5 bg-[#0A2533] hover:bg-[#087A91] text-white font-mono text-xs uppercase tracking-wider transition-colors shadow-sm"
                 >

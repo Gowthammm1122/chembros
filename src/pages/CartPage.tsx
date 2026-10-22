@@ -67,7 +67,7 @@ export const CartPage: React.FC = () => {
             </h1>
           </div>
           <Link
-            to="/collection"
+            to="/product/molecule-j"
             className="hidden sm:flex items-center gap-2 text-xs font-mono uppercase tracking-wider text-[#5A7785] hover:text-[#087A91] transition-colors"
           >
             <ArrowLeft className="w-4 h-4" />
@@ -90,7 +90,7 @@ export const CartPage: React.FC = () => {
               </p>
             </div>
             <Link
-              to="/collection"
+              to="/product/molecule-j"
               className="inline-flex items-center justify-center gap-2 px-8 py-3.5 bg-[#0A2533] hover:bg-[#087A91] text-white font-mono text-xs uppercase tracking-widest transition-all duration-200 shadow-sm"
             >
               <span>EXPLORE THE COLLECTION</span>
@@ -189,7 +189,7 @@ export const CartPage: React.FC = () => {
                   Clear Bag
                 </button>
                 <Link
-                  to="/collection"
+                  to="/product/molecule-j"
                   className="text-xs font-mono text-[#087A91] hover:underline uppercase tracking-wider"
                 >
                   + Add Another Specimen
