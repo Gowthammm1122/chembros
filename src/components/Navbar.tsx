@@ -63,12 +63,12 @@ export const Navbar: React.FC<NavbarProps> = ({
 
         {/* Desktop Navigation Links */}
         <nav
-          className={`hidden md:flex items-center gap-7 lg:gap-10 text-[11px] lg:text-[12px] font-sans font-medium tracking-[0.16em] uppercase transition-colors duration-300 ${
-            isLightMode ? 'text-[#0A2533]/75' : 'text-[#DCE3E8]/75'
+          className={`hidden md:flex items-center gap-8 lg:gap-10 text-[11px] lg:text-[12px] font-sans font-medium tracking-[0.18em] uppercase transition-colors duration-300 ${
+            isLightMode ? 'text-[#0A2533]/80' : 'text-[#DCE3E8]/80'
           }`}
         >
           <NavLink
-            to="/collection"
+            to="/product/molecule-j"
             className={({ isActive }) =>
               `py-1.5 transition-colors relative after:absolute after:bottom-0 after:left-0 after:h-[1px] after:transition-all ${
                 isActive
@@ -100,62 +100,22 @@ export const Navbar: React.FC<NavbarProps> = ({
           >
             Philosophy
           </NavLink>
-
-          <button
-            onClick={effectiveOpenStory}
-            className={`py-1.5 transition-colors relative after:absolute after:bottom-0 after:left-0 after:w-0 hover:after:w-full after:h-[1px] after:transition-all cursor-pointer uppercase font-sans text-[11px] lg:text-[12px] font-medium tracking-[0.16em] ${
-              isLightMode
-                ? 'hover:text-[#0A2533] after:bg-[#0A2533]'
-                : 'hover:text-white after:bg-white'
-            }`}
-          >
-            The Chronicle
-          </button>
-
-          <NavLink
-            to="/concierge"
-            className={({ isActive }) =>
-              `py-1.5 transition-colors relative after:absolute after:bottom-0 after:left-0 after:h-[1px] after:transition-all ${
-                isActive
-                  ? isLightMode
-                    ? 'text-[#0A2533] font-semibold after:w-full after:bg-[#0A2533]'
-                    : 'text-white font-semibold after:w-full after:bg-white'
-                  : isLightMode
-                  ? 'hover:text-[#0A2533] after:w-0 hover:after:w-full after:bg-[#0A2533]'
-                  : 'hover:text-white after:w-0 hover:after:w-full after:bg-white'
-              }`
-            }
-          >
-            Concierge
-          </NavLink>
         </nav>
 
-        {/* Right Action Icons: Quick Discovery & Bag */}
+        {/* Right Action: Shopping Bag */}
         <div className="flex items-center gap-4 shrink-0">
-          <Link
-            to="/collection"
-            className={`hidden sm:inline-flex items-center gap-1.5 px-3 py-1 border text-[10px] font-mono tracking-widest uppercase transition-all ${
-              isLightMode
-                ? 'border-[#087A91]/30 text-[#087A91] hover:border-[#087A91] hover:bg-[#087A91]/5'
-                : 'border-[#48B8CE]/30 text-[#48B8CE] hover:border-[#48B8CE] hover:bg-[#48B8CE]/10'
-            }`}
-          >
-            <Sparkles className="w-3 h-3" />
-            <span>DISCOVERY KIT</span>
-          </Link>
-
           <button
             onClick={effectiveOpenCart}
             aria-label={`View shopping bag (${effectiveCartCount} items)`}
-            className={`flex items-center gap-2 py-1.5 text-[11px] lg:text-[12px] font-sans font-medium tracking-[0.16em] uppercase transition-colors cursor-pointer select-none ${
+            className={`flex items-center gap-2 py-1.5 px-3 border border-current/15 hover:border-current text-[11px] lg:text-[12px] font-sans font-medium tracking-[0.18em] uppercase transition-all cursor-pointer select-none ${
               isLightMode
-                ? 'text-[#0A2533]/85 hover:text-[#0A2533]'
-                : 'text-white/85 hover:text-white'
+                ? 'text-[#0A2533] hover:bg-[#0A2533]/5'
+                : 'text-white hover:bg-white/5'
             }`}
           >
             <ShoppingBag className="w-3.5 h-3.5 stroke-[1.6]" />
-            <span className="hidden sm:inline">BAG</span>
-            <span className="tabular-nums font-normal opacity-70">
+            <span>BAG</span>
+            <span className="tabular-nums font-semibold">
               ({effectiveCartCount})
             </span>
           </button>
@@ -187,11 +147,11 @@ export const Navbar: React.FC<NavbarProps> = ({
           }`}
         >
           <Link
-            to="/collection"
+            to="/product/molecule-j"
             onClick={() => setMobileMenuOpen(false)}
             className="hover:opacity-60 transition-opacity py-1.5"
           >
-            Fragrances & Shop
+            Fragrances
           </Link>
 
           <Link
@@ -202,25 +162,7 @@ export const Navbar: React.FC<NavbarProps> = ({
             Philosophy
           </Link>
 
-          <button
-            onClick={() => {
-              setMobileMenuOpen(false);
-              effectiveOpenStory();
-            }}
-            className="text-left hover:opacity-60 transition-opacity py-1.5 uppercase font-sans text-xs font-medium tracking-[0.18em] cursor-pointer"
-          >
-            The Chronicle
-          </button>
-
-          <Link
-            to="/concierge"
-            onClick={() => setMobileMenuOpen(false)}
-            className="hover:opacity-60 transition-opacity py-1.5"
-          >
-            Concierge & Inquiries
-          </Link>
-
-          <div className="pt-4 border-t border-current/10 flex items-center justify-between">
+          <div className="pt-3 border-t border-current/10 flex items-center justify-between">
             <button
               onClick={() => {
                 setMobileMenuOpen(false);

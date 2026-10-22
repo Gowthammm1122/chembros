@@ -6,7 +6,6 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { Navbar } from '../components/Navbar';
 import { Footer } from '../components/Footer';
 import { CartDrawer } from '../components/CartDrawer';
-import { SpecimenModal } from '../components/SpecimenModal';
 import { StoryModal, ContactModal, PolicyModal } from '../components/InfoModals';
 import { ScrollToTop } from '../components/common/ScrollToTop';
 import { useCart } from '../context/CartContext';
@@ -95,12 +94,6 @@ export const RootLayout: React.FC = () => {
       {/* Global Cart Slide-over Drawer */}
       <CartDrawer isOpen={isCartOpen} onClose={closeCart} />
 
-      {/* Global Specimen Dossier Modal */}
-      <SpecimenModal
-        fragrance={selectedFragranceForModal}
-        onClose={closeSpecimenModal}
-        onAddToCart={addToCart}
-      />
 
       {/* Global Auxiliary Modals */}
       <StoryModal isOpen={isStoryOpen} onClose={closeStory} />

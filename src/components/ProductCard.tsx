@@ -98,23 +98,24 @@ export const ProductCard: React.FC<ProductCardProps> = ({
             </span>
           </div>
 
-          <div className="flex items-center gap-1.5">
-            <button
-              onClick={() => onSelect(fragrance)}
-              className="text-[10px] font-mono tracking-wider uppercase text-[#0A2533] hover:text-[#087A91] transition-colors py-1 px-1 cursor-pointer font-medium"
+          <div className="flex items-center gap-2">
+            <Link
+              to={`/product/${fragrance.id}`}
+              className="text-[10.5px] font-mono tracking-wider uppercase text-[#0A2533] hover:text-[#087A91] transition-colors py-1 px-2 border border-[#0A2533]/20 hover:border-[#087A91] cursor-pointer font-medium"
             >
-              SPEC
-            </button>
+              DETAILS
+            </Link>
 
             <button
               onClick={() => onAddToCart(fragrance, 50)}
               aria-label={`Quick add ${fragrance.name} to cart`}
-              className="flex items-center gap-1 px-2.5 py-1.5 bg-[#0A2533] hover:bg-[#087A91] text-white border border-transparent transition-all duration-200 text-xs font-mono uppercase tracking-wider cursor-pointer shadow-sm active:scale-95"
+              className="flex items-center gap-1 px-3 py-1.5 bg-[#0A2533] hover:bg-[#087A91] text-white transition-all duration-200 text-xs font-mono uppercase tracking-wider cursor-pointer shadow-sm active:scale-95"
             >
               <Plus className="w-3 h-3" />
               <span>ADD</span>
             </button>
           </div>
+
         </div>
       </div>
     </div>

@@ -5,10 +5,11 @@ import { SignatureSpotlight } from '../components/SignatureSpotlight';
 import { ConversionSection } from '../components/ConversionSection';
 import { useCart } from '../context/CartContext';
 import { SlidersHorizontal, Sparkles, Shield, Droplets, Clock, ArrowRight } from 'lucide-react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 export const CollectionPage: React.FC = () => {
-  const { openSpecimenModal, addToCart } = useCart();
+  const navigate = useNavigate();
+  const { addToCart } = useCart();
 
   const [selectedFamily, setSelectedFamily] = useState<string>('all');
   const [sortBy, setSortBy] = useState<'formula' | 'price-asc' | 'price-desc'>('formula');
@@ -132,7 +133,7 @@ export const CollectionPage: React.FC = () => {
               key={fragrance.id}
               fragrance={fragrance}
               index={idx}
-              onSelect={openSpecimenModal}
+              onSelect={(f) => navigate(`/product/${f.id}`)}
               onAddToCart={addToCart}
             />
           ))}
@@ -184,15 +185,16 @@ export const CollectionPage: React.FC = () => {
 
       {/* 4. Signature Spotlight Feature */}
       <SignatureSpotlight
-        onSelectFragrance={openSpecimenModal}
+        onSelectFragrance={(f) => navigate(`/product/${f.id}`)}
         onAddToCart={addToCart}
       />
 
       {/* 5. Olfactory Matcher Questionnaire */}
       <ConversionSection
-        onSelectFragrance={openSpecimenModal}
+        onSelectFragrance={(f) => navigate(`/product/${f.id}`)}
         onAddToCart={addToCart}
       />
+
     </div>
   );
 };

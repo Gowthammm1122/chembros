@@ -92,9 +92,9 @@ export const Footer: React.FC<FooterProps> = ({
 
             {/* Right Column: Specimen Showcase Plinth */}
             <div className="lg:col-span-5 flex flex-col items-center justify-center">
-              <div 
-                className="w-full max-w-xs p-6 bg-white/[0.03] border border-white/10 rounded-sm backdrop-blur-sm group hover:border-[#48B8CE]/40 transition-all duration-500 cursor-pointer"
-                onClick={() => effectiveSelectFragrance(signatureFragrance)}
+              <Link 
+                to={`/product/${signatureFragrance.id}`}
+                className="w-full max-w-xs p-6 bg-white/[0.03] border border-white/10 rounded-sm backdrop-blur-sm group hover:border-[#48B8CE]/40 transition-all duration-500 block cursor-pointer"
               >
                 <div className="flex items-center justify-between text-[10px] font-mono tracking-widest text-[#7E9DAA] uppercase mb-4">
                   <span>SIGNATURE HIGHLIGHT</span>
@@ -115,8 +115,9 @@ export const Footer: React.FC<FooterProps> = ({
                   <span className="text-white font-medium">{signatureFragrance.name}</span>
                   <span className="text-[#48B8CE] font-semibold">₹4,500</span>
                 </div>
-              </div>
+              </Link>
             </div>
+
 
           </div>
         </div>
