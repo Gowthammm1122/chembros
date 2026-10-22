@@ -2,13 +2,16 @@ import { z } from 'zod';
 import dotenv from 'dotenv';
 import path from 'path';
 
-// Load environment variables from .env
+// Load environment variables from .env and .env.local
 dotenv.config({ path: path.resolve(process.cwd(), '.env') });
+dotenv.config({ path: path.resolve(process.cwd(), '.env.local') });
+dotenv.config({ path: path.resolve(process.cwd(), '../.env.local') });
 
 const envSchema = z.object({
   NODE_ENV: z.enum(['development', 'production', 'test']).default('development'),
   PORT: z.string().transform(val => parseInt(val, 10)).default('5000'),
   DATABASE_URL: z.string().min(1, 'DATABASE_URL is required'),
+  DATABASE_URL_UNPOOLED: z.string().optional(),
   SESSION_SECRET: z.string().min(32, 'SESSION_SECRET must be at least 32 characters long for security'),
   CORS_ORIGIN: z.string().default('http://localhost:3000'),
   CASHFREE_APP_ID: z.string().default('TEST_APP_ID'),
