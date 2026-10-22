@@ -3,6 +3,7 @@ import { X, Plus, Minus, Trash2, ArrowRight, ShieldCheck, CheckCircle2 } from 'l
 import { formatPrice } from '../data/fragrances';
 import { useCart, CartItem } from '../context/CartContext';
 import { Link, useNavigate } from 'react-router-dom';
+import { LiquidChromeButton } from './LiquidChromeButton';
 
 export type { CartItem };
 
@@ -192,15 +193,15 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
                 </div>
               </div>
 
-              <div className="space-y-2">
-                <button
-                  type="button"
-                  onClick={handleCheckout}
-                  className="w-full py-3.5 bg-[#0A2533] hover:bg-[#087A91] text-white font-mono text-xs uppercase tracking-[0.2em] font-semibold flex items-center justify-center gap-2 transition-all cursor-pointer shadow-md"
-                >
-                  <span>PROCEED TO CHECKOUT</span>
-                  <ArrowRight className="w-4 h-4 text-[#48B8CE]" />
-                </button>
+              <div className="space-y-3 pt-1">
+                <div className="flex justify-center w-full">
+                  <LiquidChromeButton
+                    label="PROCEED TO CHECKOUT"
+                    size={0.24}
+                    onClick={handleCheckout}
+                    aria-label="Proceed to checkout"
+                  />
+                </div>
 
                 <button
                   type="button"

@@ -1,7 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import { ALL_PRODUCTS, FRAGRANCES, Fragrance, formatPrice } from '../data/fragrances';
 import { PerfumeBottle } from '../components/PerfumeBottle';
+import { ProductCard } from '../components/ProductCard';
 import { useCart } from '../context/CartContext';
 import { 
   ArrowLeft, 
@@ -12,13 +13,14 @@ import {
   Plus, 
   Minus, 
   Check, 
-  ShoppingBag, 
   Zap, 
   CheckCircle2, 
-  Maximize2,
   Sparkles,
-  RotateCcw
+  RotateCcw,
+  Clock,
+  Droplets
 } from 'lucide-react';
+import { LiquidChromeButton } from '../components/LiquidChromeButton';
 
 interface Review {
   id: string;
@@ -124,7 +126,14 @@ export const ProductDetailPage: React.FC = () => {
   const [selectedSize, setSelectedSize] = useState<number>(fragrance.sizes[0]?.ml || 50);
   const [quantity, setQuantity] = useState<number>(1);
   const [addedNotice, setAddedNotice] = useState<boolean>(false);
-  const [viewMode, setViewMode] = useState<'photo' | 'bottle'>('photo');
+  const [activeTab, setActiveTab] = useState<'notes' | 'evolution' | 'story'>('notes');
+
+  // Sync size when fragrance changes
+  useEffect(() => {
+    setSelectedSize(fragrance.sizes[0]?.ml || 50);
+    setQuantity(1);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }, [fragrance.id]);
 
   // Customer Reviews State
   const initialReviews = REVIEWS_DATA[fragrance.id] || REVIEWS_DATA['molecule-j'];
@@ -137,8 +146,8 @@ export const ProductDetailPage: React.FC = () => {
   const [reviewComment, setReviewComment] = useState<string>('');
   const [reviewSubmitted, setReviewSubmitted] = useState<boolean>(false);
 
-  // Other products for "The Molecule Series" section
-  const otherFragrances = FRAGRANCES.filter(f => f.id !== fragrance.id);
+  // Other products for "The Collection" bottom section
+  const otherFragrances = ALL_PRODUCTS.filter(f => f.id !== fragrance.id);
 
   // Price for selected size
   const currentPrice = fragrance.sizes.find(s => s.ml === selectedSize)?.price || fragrance.price;
@@ -188,188 +197,120 @@ export const ProductDetailPage: React.FC = () => {
   ).toFixed(1);
 
   return (
-    <div className="pt-20 sm:pt-24 pb-24 bg-[#FAFBFD] min-h-screen text-[#0A2533]">
+    <div className="pt-20 sm:pt-24 pb-24 bg-[#03151D] min-h-screen text-[#DCE3E8] selection:bg-[#48B8CE]/30 selection:text-white">
       
-      {/* 1. Subtle Breadcrumbs */}
-      <nav aria-label="Breadcrumb" className="border-b border-[#0A2533]/10 bg-white">
-        <div className="max-w-7xl mx-auto px-6 sm:px-12 py-3.5 flex items-center justify-between text-xs font-mono text-[#5A7785]">
-          <div className="flex items-center gap-2 tracking-wider uppercase">
-            <Link to="/" className="hover:text-[#087A91] transition-colors">HOME</Link>
-            <span>/</span>
-            <Link to="/#collection" className="hover:text-[#087A91] transition-colors">COLLECTION</Link>
-            <span>/</span>
-            <span className="text-[#087A91] font-semibold">{fragrance.name.toUpperCase()}</span>
+      {/* 1. Sleek Atmospheric Breadcrumbs */}
+      <nav aria-label="Breadcrumb" className="border-b border-white/10 bg-[#03151D]/80 backdrop-blur-md">
+        <div className="max-w-7xl mx-auto px-6 sm:px-12 py-3.5 flex items-center justify-between text-xs font-mono text-[#A9C2CE]">
+          <div className="flex items-center gap-2.5 tracking-wider uppercase">
+            <Link to="/" className="hover:text-white transition-colors">HOME</Link>
+            <span className="text-white/30">/</span>
+            <Link to="/products" className="hover:text-white transition-colors">ALL FRAGRANCES</Link>
+            <span className="text-white/30">/</span>
+            <span className="text-[#48B8CE] font-semibold">{fragrance.name.toUpperCase()}</span>
           </div>
 
           <Link
-            to="/#collection"
-            className="hidden sm:inline-flex items-center gap-1.5 text-xs text-[#5A7785] hover:text-[#087A91] transition-colors"
+            to="/products"
+            className="inline-flex items-center gap-1.5 text-xs text-[#A9C2CE] hover:text-white transition-colors"
           >
             <ArrowLeft className="w-3.5 h-3.5" />
-            <span>ALL FRAGRANCES</span>
+            <span className="hidden sm:inline">BACK TO ALL FRAGRANCES</span>
           </Link>
         </div>
       </nav>
 
-      {/* 2. Main Product Showcase Grid (Restyled to Chem Bros Light Theme) */}
+      {/* 2. Main Product Showcase Hero Grid */}
       <section className="max-w-7xl mx-auto px-6 sm:px-12 py-10 lg:py-16">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-16 items-start">
           
-          {/* Left Visual Stage (lg:col-span-6) */}
+          {/* Left Visual Stage (lg:col-span-6) — Continuous bg1.jpeg Atmospheric Stage */}
           <div className="lg:col-span-6 lg:sticky lg:top-28">
-            <div className="relative min-h-[480px] sm:min-h-[580px] border border-[#0A2533]/10 bg-gradient-to-b from-[#F8FAFB] via-[#EFF5F8] to-[#E6EFF3] flex flex-col justify-between overflow-hidden shadow-[0_8px_30px_rgba(10,37,51,0.05)] rounded-xs group">
-              
-              {/* Product Visual Container */}
-              <div className="relative w-full h-full min-h-[480px] sm:min-h-[580px] flex items-center justify-center p-6 sm:p-10">
-                {viewMode === 'photo' && fragrance.image ? (
-                  <div className="relative w-full h-full min-h-[440px] sm:min-h-[520px] flex items-center justify-center overflow-hidden">
+            <div
+              className="relative min-h-[500px] sm:min-h-[580px] lg:min-h-[640px] border border-white/10 rounded-sm overflow-hidden shadow-[0_24px_64px_rgba(0,0,0,0.5)] flex flex-col items-center justify-center bg-cover bg-center"
+              style={{ backgroundImage: "url('/bg/bg1.jpeg')" }}
+            >
+              {/* Luminous atmospheric overlay */}
+              <div className="absolute inset-0 bg-gradient-to-b from-black/20 via-transparent to-black/40 pointer-events-none" />
+
+              {/* Ambient radial lighting behind flacon */}
+              <div className="absolute w-80 h-80 rounded-full bg-[#48B8CE]/15 blur-3xl pointer-events-none" />
+
+              {/* Fragrance Presentation Flacon */}
+              <div className="relative z-10 py-10 flex flex-col items-center justify-center select-none transform hover:scale-105 transition-transform duration-700">
+                {fragrance.id === 'discovery-archive' ? (
+                  <div className="flex flex-col items-center">
                     <img
-                      src={fragrance.image}
-                      alt={fragrance.name}
-                      className="w-full h-full object-cover object-center transform group-hover:scale-105 transition-transform duration-700 select-none shadow-sm"
+                      src="/images/discovery-archive-bottle.png"
+                      alt="The Discovery Archive"
+                      className="w-auto h-[340px] sm:h-[400px] object-contain drop-shadow-[0_24px_48px_rgba(0,0,0,0.7)]"
                     />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-transparent pointer-events-none" />
+                    <div className="w-64 h-3 bg-gradient-to-r from-transparent via-black/80 to-transparent blur-sm mt-3" />
                   </div>
                 ) : (
-                  <div className="my-auto py-8 flex flex-col items-center justify-center transform group-hover:scale-105 transition-transform duration-700 select-none">
-                    <PerfumeBottle
-                      fragrance={fragrance}
-                      size="lg"
-                      showPedestal={true}
-                      pedestalHeight={130}
-                      interactive={true}
-                    />
-                  </div>
+                  <PerfumeBottle
+                    fragrance={fragrance}
+                    size="lg"
+                    showPedestal={true}
+                    pedestalHeight={140}
+                    interactive={true}
+                  />
                 )}
-
-                {/* View Switcher Pill */}
-                <div className="absolute bottom-4 right-4 z-10 flex items-center gap-2">
-                  {fragrance.image && (
-                    <button
-                      type="button"
-                      onClick={() => setViewMode(viewMode === 'photo' ? 'bottle' : 'photo')}
-                      className="px-3 py-1 bg-white/90 hover:bg-white text-[#0A2533] border border-[#0A2533]/15 text-[10px] font-mono tracking-widest uppercase backdrop-blur-md transition-colors cursor-pointer rounded-xs flex items-center gap-1.5 shadow-xs font-medium"
-                    >
-                      <RotateCcw className="w-3 h-3 text-[#087A91]" />
-                      <span>{viewMode === 'photo' ? '3D FLACON VIEW' : 'STUDIO PHOTO'}</span>
-                    </button>
-                  )}
-                  <span className="px-3 py-1 bg-white/70 text-[#5A7785] border border-[#0A2533]/10 text-[10px] font-mono tracking-widest uppercase backdrop-blur-md hidden sm:inline-flex items-center gap-1.5">
-                    <Maximize2 className="w-3 h-3" />
-                    <span>HOVER TO ZOOM</span>
-                  </span>
-                </div>
               </div>
-            </div>
 
-            {/* View Mode Thumbnails */}
-            <div className="mt-4 flex items-center gap-3">
-              {fragrance.image && (
-                <button
-                  type="button"
-                  onClick={() => setViewMode('photo')}
-                  className={`w-20 h-20 border overflow-hidden transition-all cursor-pointer rounded-xs ${
-                    viewMode === 'photo' 
-                      ? 'border-[#087A91] ring-2 ring-[#087A91]/30 shadow-xs' 
-                      : 'border-[#0A2533]/15 opacity-70 hover:opacity-100'
-                  }`}
-                >
-                  <img src={fragrance.image} alt="Studio view" className="w-full h-full object-cover" />
-                </button>
-              )}
-              <button
-                type="button"
-                onClick={() => setViewMode('bottle')}
-                className={`w-20 h-20 border p-2 bg-[#F8FAFB] flex items-center justify-center transition-all cursor-pointer rounded-xs ${
-                  viewMode === 'bottle' 
-                    ? 'border-[#087A91] ring-2 ring-[#087A91]/30 shadow-xs' 
-                    : 'border-[#0A2533]/15 opacity-70 hover:opacity-100'
-                }`}
-              >
-                <div className="w-full h-full flex items-center justify-center scale-50 pointer-events-none">
-                  <PerfumeBottle fragrance={fragrance} size="sm" showPedestal={false} />
+              {/* Specimen Badge at Bottom of Visual Stage */}
+              <div className="absolute bottom-4 inset-x-6 z-10 flex items-center justify-between text-[10px] font-mono tracking-[0.2em] uppercase text-white/50 border-t border-white/10 pt-3">
+                <div className="flex items-center gap-2">
+                  <span className="w-1.5 h-1.5 rounded-full bg-[#48B8CE] animate-pulse" />
+                  <span>25% EXTRAIT DE PARFUM</span>
                 </div>
-              </button>
+                <span>MADURAI, TN</span>
+              </div>
             </div>
           </div>
 
           {/* Right Product Dossier (lg:col-span-6) */}
           <div className="lg:col-span-6 flex flex-col justify-start">
             
-            {/* Top Ingredient / Category Title */}
-            <span className="text-xs font-mono tracking-[0.25em] uppercase text-[#087A91] font-semibold mb-1.5 block">
-              {fragrance.ingredientTitle || fragrance.family.toUpperCase()}
-            </span>
+            {/* Category Eyebrow */}
+            <div className="flex items-center gap-2 font-mono text-[11px] tracking-[0.28em] text-[#48B8CE] uppercase font-semibold mb-2">
+              <span className="w-1.5 h-1.5 rounded-full bg-[#48B8CE]" />
+              <span>{fragrance.ingredientTitle || fragrance.family.toUpperCase()}</span>
+            </div>
 
-            {/* Product Title (Large Serif) */}
-            <h1 className="font-display font-light text-4xl sm:text-5xl text-[#0A2533] tracking-tight leading-tight">
+            {/* Product Title */}
+            <h1 className="font-display font-light text-4xl sm:text-5xl text-white tracking-tight leading-tight">
               {fragrance.name}
             </h1>
 
-            {/* Italic Tagline */}
+            {/* Subtitle / Poetic Tagline */}
             {fragrance.tagline && (
-              <p className="mt-1.5 text-base sm:text-lg font-serif italic text-[#4A6775]">
+              <p className="mt-2 text-base sm:text-lg font-serif italic text-[#A9C2CE]/90">
                 {fragrance.tagline}
               </p>
             )}
 
-            {/* Price & Size Display */}
-            <div className="mt-6 flex items-baseline gap-3 pb-6 border-b border-[#0A2533]/10">
-              <span className="font-display text-3xl sm:text-4xl text-[#0A2533] font-semibold tabular-nums">
+            {/* Price & Taxes */}
+            <div className="mt-6 flex items-baseline gap-3 pb-6 border-b border-white/10">
+              <span className="font-display text-3xl sm:text-4xl text-white font-medium tabular-nums">
                 {formatPrice(currentPrice)}
               </span>
-              <span className="text-sm font-mono text-[#5A7785]">
-                {fragrance.sizeLabel || `${selectedSize} ml`}
+              <span className="text-xs font-mono text-[#A9C2CE] uppercase tracking-wider">
+                INCL. ALL TAXES · FREE SHIPPING
               </span>
             </div>
 
-            {/* Narrative Story Prose (Simple, evocative, clean) */}
-            <div className="mt-6 text-sm sm:text-base text-[#3A5563] leading-relaxed font-light">
+            {/* Narrative Prose */}
+            <div className="mt-6 text-sm sm:text-base text-[#DCE3E8]/85 leading-relaxed font-light">
               <p>{fragrance.description}</p>
             </div>
 
-            {/* Clean NOTE PYRAMID in Our Theme */}
-            <div className="mt-8 p-5 bg-white border border-[#0A2533]/10 rounded-xs shadow-xs">
-              <h3 className="font-mono text-xs tracking-[0.25em] text-[#087A91] uppercase font-semibold mb-3">
-                NOTE PYRAMID
-              </h3>
-
-              <div className="space-y-3 font-mono text-xs">
-                <div className="grid grid-cols-12 gap-2 py-2 border-b border-[#0A2533]/5">
-                  <span className="col-span-3 text-[#087A91] tracking-wider uppercase font-semibold">
-                    TOP
-                  </span>
-                  <span className="col-span-9 text-[#0A2533] font-medium">
-                    {fragrance.olfactoryPyramid.top.join(', ')}
-                  </span>
-                </div>
-
-                <div className="grid grid-cols-12 gap-2 py-2 border-b border-[#0A2533]/5">
-                  <span className="col-span-3 text-[#087A91] tracking-wider uppercase font-semibold">
-                    HEART
-                  </span>
-                  <span className="col-span-9 text-[#0A2533] font-medium">
-                    {fragrance.olfactoryPyramid.heart.join(', ')}
-                  </span>
-                </div>
-
-                <div className="grid grid-cols-12 gap-2 py-2">
-                  <span className="col-span-3 text-[#087A91] tracking-wider uppercase font-semibold">
-                    BASE
-                  </span>
-                  <span className="col-span-9 text-[#0A2533] font-medium">
-                    {fragrance.olfactoryPyramid.base.join(' & ')}
-                  </span>
-                </div>
-              </div>
-            </div>
-
-            {/* Size Switcher (if product has 50ml / 100ml options) */}
+            {/* Flacon Size Switcher (if product has 50ml / 100ml options) */}
             {fragrance.sizes.length > 1 && (
               <div className="mt-8">
-                <div className="flex items-center justify-between text-xs font-mono tracking-wider uppercase text-[#5A7785] mb-2.5">
-                  <span>FLACON SIZE</span>
-                  <span className="text-[#087A91] font-semibold">{selectedSize} ML</span>
+                <div className="flex items-center justify-between text-xs font-mono tracking-wider uppercase text-[#A9C2CE] mb-2.5">
+                  <span>SELECT VOLUME</span>
+                  <span className="text-[#48B8CE] font-semibold">{selectedSize} ML</span>
                 </div>
                 <div className="grid grid-cols-2 gap-3">
                   {fragrance.sizes.map(s => (
@@ -379,12 +320,12 @@ export const ProductDetailPage: React.FC = () => {
                       onClick={() => setSelectedSize(s.ml)}
                       className={`p-3.5 border text-left font-mono transition-all cursor-pointer rounded-xs flex items-center justify-between ${
                         selectedSize === s.ml
-                          ? 'border-[#0A2533] bg-[#0A2533] text-white shadow-xs'
-                          : 'border-[#0A2533]/15 bg-white text-[#0A2533] hover:border-[#087A91]'
+                          ? 'border-[#48B8CE] bg-[#48B8CE]/15 text-white shadow-xs'
+                          : 'border-white/15 bg-white/5 text-[#A9C2CE] hover:border-white/40'
                       }`}
                     >
                       <span className="text-xs font-semibold">{s.ml} ML</span>
-                      <span className={`text-xs font-medium ${selectedSize === s.ml ? 'text-white/90' : 'text-[#087A91]'}`}>
+                      <span className={`text-xs font-medium ${selectedSize === s.ml ? 'text-white' : 'text-[#48B8CE]'}`}>
                         {formatPrice(s.price)}
                       </span>
                     </button>
@@ -393,80 +334,193 @@ export const ProductDetailPage: React.FC = () => {
               </div>
             )}
 
-            {/* Actions: Quantity + Primary ADD TO CART Button + BUY NOW */}
-            <div className="mt-8 space-y-3">
-              <div className="flex items-center gap-3">
-                {/* Quantity Selector: [- 1 +] */}
-                <div className="flex items-center border border-[#0A2533]/20 bg-[#F4F8FA] h-13 px-2 rounded-xs shrink-0">
+            {/* Interactive Tabbed Specs (Notes / Evolution / Story) */}
+            <div className="mt-8 border border-white/10 rounded-sm bg-white/5 backdrop-blur-md overflow-hidden">
+              <div className="flex border-b border-white/10 font-mono text-xs uppercase tracking-wider">
+                <button
+                  type="button"
+                  onClick={() => setActiveTab('notes')}
+                  className={`flex-1 py-3 text-center transition-colors cursor-pointer ${
+                    activeTab === 'notes' ? 'text-white bg-white/10 font-semibold border-b-2 border-[#48B8CE]' : 'text-white/60 hover:text-white'
+                  }`}
+                >
+                  NOTE PYRAMID
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setActiveTab('evolution')}
+                  className={`flex-1 py-3 text-center transition-colors cursor-pointer ${
+                    activeTab === 'evolution' ? 'text-white bg-white/10 font-semibold border-b-2 border-[#48B8CE]' : 'text-white/60 hover:text-white'
+                  }`}
+                >
+                  SKIN TIMELINE
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setActiveTab('story')}
+                  className={`flex-1 py-3 text-center transition-colors cursor-pointer ${
+                    activeTab === 'story' ? 'text-white bg-white/10 font-semibold border-b-2 border-[#48B8CE]' : 'text-white/60 hover:text-white'
+                  }`}
+                >
+                  LAB SPEC
+                </button>
+              </div>
+
+              <div className="p-5">
+                {activeTab === 'notes' && (
+                  <div className="space-y-3 font-mono text-xs">
+                    <div className="grid grid-cols-12 gap-2 py-2 border-b border-white/10">
+                      <span className="col-span-3 text-[#48B8CE] tracking-wider uppercase font-semibold">
+                        TOP NOTES
+                      </span>
+                      <span className="col-span-9 text-white font-light">
+                        {fragrance.olfactoryPyramid.top.join(' · ')}
+                      </span>
+                    </div>
+
+                    <div className="grid grid-cols-12 gap-2 py-2 border-b border-white/10">
+                      <span className="col-span-3 text-[#48B8CE] tracking-wider uppercase font-semibold">
+                        HEART
+                      </span>
+                      <span className="col-span-9 text-white font-light">
+                        {fragrance.olfactoryPyramid.heart.join(' · ')}
+                      </span>
+                    </div>
+
+                    <div className="grid grid-cols-12 gap-2 py-2">
+                      <span className="col-span-3 text-[#48B8CE] tracking-wider uppercase font-semibold">
+                        BASE NOTES
+                      </span>
+                      <span className="col-span-9 text-white font-light">
+                        {fragrance.olfactoryPyramid.base.join(' · ')}
+                      </span>
+                    </div>
+                  </div>
+                )}
+
+                {activeTab === 'evolution' && (
+                  <div className="space-y-3 text-xs font-mono">
+                    <div className="flex items-start gap-3 py-1.5 border-b border-white/10">
+                      <Clock className="w-4 h-4 text-[#48B8CE] shrink-0 mt-0.5" />
+                      <div>
+                        <div className="text-white font-semibold uppercase">00:00 — THE OPENING</div>
+                        <div className="text-white/70 font-light mt-0.5">Crisp, electric burst of fresh green botanical energy.</div>
+                      </div>
+                    </div>
+                    <div className="flex items-start gap-3 py-1.5 border-b border-white/10">
+                      <Clock className="w-4 h-4 text-[#48B8CE] shrink-0 mt-0.5" />
+                      <div>
+                        <div className="text-white font-semibold uppercase">02:00 — THE BLOOM</div>
+                        <div className="text-white/70 font-light mt-0.5">Intoxicating floral core radiates with skin temperature.</div>
+                      </div>
+                    </div>
+                    <div className="flex items-start gap-3 py-1.5">
+                      <Clock className="w-4 h-4 text-[#48B8CE] shrink-0 mt-0.5" />
+                      <div>
+                        <div className="text-white font-semibold uppercase">08:00+ — THE SANCTUARY</div>
+                        <div className="text-white/70 font-light mt-0.5">Warm amber, sandalwood, and musk settle for all-day persistence.</div>
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+                {activeTab === 'story' && (
+                  <div className="space-y-2 text-xs font-mono text-white/80">
+                    <div className="flex justify-between py-1 border-b border-white/10">
+                      <span className="text-[#A9C2CE]">CONCENTRATION</span>
+                      <span className="text-white">{fragrance.labSpec.ratio}</span>
+                    </div>
+                    <div className="flex justify-between py-1 border-b border-white/10">
+                      <span className="text-[#A9C2CE]">MACERATION</span>
+                      <span className="text-white">{fragrance.labSpec.maceration}</span>
+                    </div>
+                    <div className="flex justify-between py-1 border-b border-white/10">
+                      <span className="text-[#A9C2CE]">VOLATILITY</span>
+                      <span className="text-white">{fragrance.labSpec.volatility}</span>
+                    </div>
+                    <div className="flex justify-between py-1">
+                      <span className="text-[#A9C2CE]">KEY ISOLATE</span>
+                      <span className="text-white">{fragrance.labSpec.keyIsolate}</span>
+                    </div>
+                  </div>
+                )}
+              </div>
+            </div>
+
+            {/* Action Zone: Quantity + Primary Liquid Chrome Button + Instant Buy Now */}
+            <div className="mt-8 space-y-4">
+              <div className="flex items-center gap-4">
+                {/* Quantity Selector */}
+                <div className="flex items-center border border-white/20 bg-white/5 h-13 px-2 rounded-xs shrink-0">
                   <button
                     type="button"
                     onClick={() => setQuantity(Math.max(1, quantity - 1))}
-                    className="p-2 text-[#5A7785] hover:text-[#0A2533] cursor-pointer"
+                    className="p-2 text-white/60 hover:text-white cursor-pointer"
                     aria-label="Decrease quantity"
                   >
                     <Minus className="w-3.5 h-3.5" />
                   </button>
-                  <span className="w-8 text-center font-mono font-semibold text-sm tabular-nums text-[#0A2533]">
+                  <span className="w-8 text-center font-mono font-semibold text-sm tabular-nums text-white">
                     {quantity}
                   </span>
                   <button
                     type="button"
                     onClick={() => setQuantity(quantity + 1)}
-                    className="p-2 text-[#5A7785] hover:text-[#0A2533] cursor-pointer"
+                    className="p-2 text-white/60 hover:text-white cursor-pointer"
                     aria-label="Increase quantity"
                   >
                     <Plus className="w-3.5 h-3.5" />
                   </button>
                 </div>
 
-                {/* Main Action Button: ADD TO CART */}
-                <button
-                  type="button"
-                  onClick={handleAddToCart}
-                  className="flex-1 h-13 bg-[#0A2533] hover:bg-[#087A91] text-white font-mono text-xs uppercase tracking-[0.16em] font-bold flex items-center justify-center gap-2 transition-all shadow-md cursor-pointer rounded-xs active:scale-[0.99]"
-                >
-                  <span>ADD TO CART — {formatPrice(currentPrice * quantity)}</span>
-                  <ArrowRight className="w-4 h-4 stroke-[2.5]" />
-                </button>
+                {/* Primary Liquid Chrome ADD TO BAG Button */}
+                <div className="flex-1 flex items-center">
+                  <LiquidChromeButton
+                    label={`ADD TO BAG · ${formatPrice(currentPrice * quantity)}`}
+                    size={0.25}
+                    onClick={handleAddToCart}
+                    aria-label={`Add ${fragrance.name} to cart`}
+                  />
+                </div>
               </div>
 
-              {/* Instant BUY NOW Button */}
+              {/* Instant Buy Now Button */}
               <button
                 type="button"
                 onClick={handleBuyNow}
-                className="w-full h-11 bg-white hover:bg-[#F0F6F9] text-[#0A2533] hover:text-[#087A91] border border-[#0A2533]/25 hover:border-[#087A91] font-mono text-xs uppercase tracking-[0.16em] font-semibold flex items-center justify-center gap-2 transition-all cursor-pointer rounded-xs shadow-xs"
+                className="w-full py-3.5 border border-white/20 hover:border-[#48B8CE] text-white hover:text-[#48B8CE] text-xs font-mono tracking-[0.2em] uppercase transition-all bg-white/5 hover:bg-white/10 cursor-pointer rounded-xs flex items-center justify-center gap-2"
               >
-                <Zap className="w-3.5 h-3.5 text-[#087A91]" />
-                <span>BUY NOW • INSTANT CHECKOUT</span>
+                <Zap className="w-3.5 h-3.5 text-[#48B8CE]" />
+                <span>BUY NOW · INSTANT CHECKOUT</span>
               </button>
             </div>
 
-            {/* Added Notification */}
+            {/* Added Notification Toast */}
             {addedNotice && (
-              <div className="mt-3.5 p-3.5 bg-emerald-50 border border-emerald-400/50 text-emerald-800 text-xs font-mono flex items-center justify-between rounded-xs animate-in fade-in">
+              <div className="mt-4 p-4 bg-emerald-950/80 border border-emerald-500/50 text-emerald-200 text-xs font-mono flex items-center justify-between rounded-xs animate-in fade-in">
                 <div className="flex items-center gap-2">
-                  <Check className="w-4 h-4 text-emerald-600" />
+                  <Check className="w-4 h-4 text-emerald-400" />
                   <span>{fragrance.name} added to your bag.</span>
                 </div>
                 <button 
                   type="button"
                   onClick={() => openCart()}
-                  className="underline font-semibold text-emerald-900 hover:text-emerald-700 cursor-pointer"
+                  className="underline font-semibold text-white hover:text-emerald-300 cursor-pointer"
                 >
                   View Bag
                 </button>
               </div>
             )}
 
-            {/* Trust Bullet Points */}
-            <div className="mt-8 pt-6 border-t border-[#0A2533]/10 space-y-2 text-xs font-mono text-[#5A7785]">
+            {/* Trust Assurances */}
+            <div className="mt-8 pt-6 border-t border-white/10 space-y-2 text-xs font-mono text-[#A9C2CE]">
               <div className="flex items-center gap-2">
-                <span className="text-[#087A91] font-bold">•</span>
-                <span>Complimentary shipping on orders over ₹1,500</span>
+                <ShieldCheck className="w-4 h-4 text-[#48B8CE]" />
+                <span>Authentic molecular extrait • Hand-poured in Tamil Nadu</span>
               </div>
               <div className="flex items-center gap-2">
-                <span className="text-[#087A91] font-bold">•</span>
-                <span>7-day returns on unopened bottles or damaged goods</span>
+                <Truck className="w-4 h-4 text-[#48B8CE]" />
+                <span>Complimentary express delivery across India</span>
               </div>
             </div>
 
@@ -475,60 +529,62 @@ export const ProductDetailPage: React.FC = () => {
         </div>
       </section>
 
-      {/* 3. Customer Reviews Section in Our Theme */}
-      <section id="reviews" className="max-w-7xl mx-auto px-6 sm:px-12 py-16 border-t border-[#0A2533]/10 bg-white">
-        <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 pb-8 border-b border-[#0A2533]/10">
+      {/* 3. Customer Reviews Section in Signature Dark Luxury Theme */}
+      <section id="reviews" className="max-w-7xl mx-auto px-6 sm:px-12 py-16 border-t border-white/10">
+        <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 pb-8 border-b border-white/10">
           <div>
-            <div className="flex items-center gap-2 font-mono text-xs tracking-[0.25em] text-[#087A91] uppercase mb-1 font-semibold">
-              <span className="w-3 h-[1px] bg-[#087A91]" />
+            <div className="flex items-center gap-2 font-mono text-xs tracking-[0.25em] text-[#48B8CE] uppercase mb-1 font-semibold">
+              <span className="w-3 h-[1px] bg-[#48B8CE]" />
               <span>COMMUNITY IMPRESSIONS</span>
             </div>
-            <h2 className="font-display text-3xl sm:text-4xl font-light text-[#0A2533] tracking-tight">
+            <h2 className="font-display text-3xl sm:text-4xl font-light text-white tracking-tight">
               Customer Reviews
             </h2>
           </div>
 
-          <div className="flex flex-wrap items-center gap-4">
-            <div className="flex items-center gap-3 pr-4 border-r border-[#0A2533]/10">
-              <span className="font-display text-4xl text-[#0A2533] font-semibold">{averageRating}</span>
+          <div className="flex flex-wrap items-center gap-5">
+            <div className="flex items-center gap-3 pr-5 border-r border-white/10">
+              <span className="font-display text-4xl text-white font-medium">{averageRating}</span>
               <div>
-                <div className="flex items-center text-amber-500">
+                <div className="flex items-center text-amber-400">
                   {[...Array(5)].map((_, i) => (
                     <Star key={i} className="w-3.5 h-3.5 fill-amber-400 stroke-amber-400" />
                   ))}
                 </div>
-                <span className="text-[11px] font-mono text-[#5A7785]">Based on {reviews.length} reviews</span>
+                <span className="text-[11px] font-mono text-[#A9C2CE]">Based on {reviews.length} reviews</span>
               </div>
             </div>
 
             <button
               type="button"
               onClick={() => setShowReviewForm(!showReviewForm)}
-              className="px-4 py-2 bg-[#0A2533] hover:bg-[#087A91] text-white font-mono text-xs uppercase tracking-wider font-semibold transition-colors cursor-pointer rounded-xs shadow-xs"
+              className="px-5 py-2.5 bg-white/10 hover:bg-white/20 text-white border border-white/20 font-mono text-xs uppercase tracking-wider font-semibold transition-colors cursor-pointer rounded-xs"
             >
               {showReviewForm ? 'CANCEL' : 'WRITE A REVIEW'}
             </button>
           </div>
         </div>
 
+        {/* Review Submitted Notice */}
         {reviewSubmitted && (
-          <div className="mt-6 p-4 bg-emerald-50 border border-emerald-400/50 text-emerald-800 text-xs font-mono flex items-center gap-2.5 rounded-xs">
-            <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
+          <div className="mt-6 p-4 bg-emerald-950/70 border border-emerald-500/50 text-emerald-200 text-xs font-mono flex items-center gap-2.5 rounded-xs">
+            <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0" />
             <span>Thank you! Your verified review has been posted.</span>
           </div>
         )}
 
+        {/* Review Form */}
         {showReviewForm && (
           <form 
             onSubmit={handleSubmitReview}
-            className="mt-8 p-6 sm:p-8 bg-[#F8FAFB] border border-[#0A2533]/15 rounded-xs shadow-md animate-in fade-in"
+            className="mt-8 p-6 sm:p-8 bg-white/5 border border-white/15 rounded-sm backdrop-blur-md animate-in fade-in"
           >
-            <h3 className="font-display text-xl text-[#0A2533] mb-4">
+            <h3 className="font-display text-xl text-white mb-4">
               Write a Review for {fragrance.name}
             </h3>
 
             <div className="mb-5">
-              <label className="block text-xs font-mono uppercase tracking-wider text-[#5A7785] mb-2 font-medium">
+              <label className="block text-xs font-mono uppercase tracking-wider text-[#A9C2CE] mb-2 font-medium">
                 Rating *
               </label>
               <div className="flex items-center gap-1.5">
@@ -544,7 +600,7 @@ export const ProductDetailPage: React.FC = () => {
                       className={`w-6 h-6 ${
                         star <= reviewRating 
                           ? 'fill-amber-400 stroke-amber-400' 
-                          : 'stroke-[#8DA4B0] fill-transparent'
+                          : 'stroke-white/30 fill-transparent'
                       }`} 
                     />
                   </button>
@@ -554,7 +610,7 @@ export const ProductDetailPage: React.FC = () => {
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
               <div>
-                <label className="block text-xs font-mono uppercase tracking-wider text-[#5A7785] mb-1.5 font-medium">
+                <label className="block text-xs font-mono uppercase tracking-wider text-[#A9C2CE] mb-1.5 font-medium">
                   Your Name *
                 </label>
                 <input
@@ -563,12 +619,12 @@ export const ProductDetailPage: React.FC = () => {
                   value={reviewerName}
                   onChange={e => setReviewerName(e.target.value)}
                   placeholder="e.g. Priya S."
-                  className="w-full px-3.5 py-2.5 bg-white border border-[#0A2533]/20 text-xs font-mono text-[#0A2533] focus:border-[#087A91] outline-hidden rounded-xs"
+                  className="w-full px-3.5 py-2.5 bg-white/5 border border-white/20 text-xs font-mono text-white focus:border-[#48B8CE] outline-hidden rounded-xs placeholder-white/30"
                 />
               </div>
 
               <div>
-                <label className="block text-xs font-mono uppercase tracking-wider text-[#5A7785] mb-1.5 font-medium">
+                <label className="block text-xs font-mono uppercase tracking-wider text-[#A9C2CE] mb-1.5 font-medium">
                   City / State (Optional)
                 </label>
                 <input
@@ -576,13 +632,13 @@ export const ProductDetailPage: React.FC = () => {
                   value={reviewerLocation}
                   onChange={e => setReviewerLocation(e.target.value)}
                   placeholder="e.g. Chennai, Tamil Nadu"
-                  className="w-full px-3.5 py-2.5 bg-white border border-[#0A2533]/20 text-xs font-mono text-[#0A2533] focus:border-[#087A91] outline-hidden rounded-xs"
+                  className="w-full px-3.5 py-2.5 bg-white/5 border border-white/20 text-xs font-mono text-white focus:border-[#48B8CE] outline-hidden rounded-xs placeholder-white/30"
                 />
               </div>
             </div>
 
             <div className="mb-4">
-              <label className="block text-xs font-mono uppercase tracking-wider text-[#5A7785] mb-1.5 font-medium">
+              <label className="block text-xs font-mono uppercase tracking-wider text-[#A9C2CE] mb-1.5 font-medium">
                 Headline *
               </label>
               <input
@@ -591,12 +647,12 @@ export const ProductDetailPage: React.FC = () => {
                 value={reviewTitle}
                 onChange={e => setReviewTitle(e.target.value)}
                 placeholder="e.g. Scent evolution is intoxicating"
-                className="w-full px-3.5 py-2.5 bg-white border border-[#0A2533]/20 text-xs font-mono text-[#0A2533] focus:border-[#087A91] outline-hidden rounded-xs"
+                className="w-full px-3.5 py-2.5 bg-white/5 border border-white/20 text-xs font-mono text-white focus:border-[#48B8CE] outline-hidden rounded-xs placeholder-white/30"
               />
             </div>
 
             <div className="mb-6">
-              <label className="block text-xs font-mono uppercase tracking-wider text-[#5A7785] mb-1.5 font-medium">
+              <label className="block text-xs font-mono uppercase tracking-wider text-[#A9C2CE] mb-1.5 font-medium">
                 Your Review *
               </label>
               <textarea
@@ -605,7 +661,7 @@ export const ProductDetailPage: React.FC = () => {
                 value={reviewComment}
                 onChange={e => setReviewComment(e.target.value)}
                 placeholder="Share your experience on skin longevity, scent notes, and projection..."
-                className="w-full p-3.5 bg-white border border-[#0A2533]/20 text-xs font-mono text-[#0A2533] focus:border-[#087A91] outline-hidden rounded-xs resize-y"
+                className="w-full p-3.5 bg-white/5 border border-white/20 text-xs font-mono text-white focus:border-[#48B8CE] outline-hidden rounded-xs resize-y placeholder-white/30"
               />
             </div>
 
@@ -613,13 +669,13 @@ export const ProductDetailPage: React.FC = () => {
               <button
                 type="button"
                 onClick={() => setShowReviewForm(false)}
-                className="px-4 py-2 border border-[#0A2533]/20 text-xs font-mono uppercase tracking-wider text-[#5A7785] hover:text-[#0A2533] cursor-pointer"
+                className="px-4 py-2 border border-white/20 text-xs font-mono uppercase tracking-wider text-[#A9C2CE] hover:text-white cursor-pointer"
               >
                 Cancel
               </button>
               <button
                 type="submit"
-                className="px-6 py-2.5 bg-[#0A2533] hover:bg-[#087A91] text-white text-xs font-mono uppercase tracking-wider font-bold cursor-pointer rounded-xs shadow-xs"
+                className="px-6 py-2.5 bg-[#087A91] hover:bg-[#48B8CE] text-white text-xs font-mono uppercase tracking-wider font-bold cursor-pointer rounded-xs transition-colors"
               >
                 Submit Review
               </button>
@@ -627,42 +683,43 @@ export const ProductDetailPage: React.FC = () => {
           </form>
         )}
 
+        {/* Reviews List */}
         <div className="mt-8 space-y-4">
           {reviews.map(review => (
             <div 
               key={review.id}
-              className="p-6 bg-white border border-[#0A2533]/10 rounded-xs hover:border-[#087A91]/40 transition-colors shadow-xs"
+              className="p-6 bg-white/5 border border-white/10 rounded-sm hover:border-white/25 transition-colors shadow-xs"
             >
               <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-2">
                 <div className="flex items-center gap-3">
-                  <div className="flex items-center text-amber-500">
+                  <div className="flex items-center text-amber-400">
                     {[...Array(review.rating)].map((_, i) => (
                       <Star key={i} className="w-3.5 h-3.5 fill-amber-400 stroke-amber-400" />
                     ))}
                   </div>
-                  <h4 className="font-display font-medium text-base text-[#0A2533]">
+                  <h4 className="font-display font-medium text-base text-white">
                     {review.title}
                   </h4>
                 </div>
 
-                <span className="text-[11px] font-mono text-[#5A7785]">
+                <span className="text-[11px] font-mono text-[#A9C2CE]">
                   {review.date}
                 </span>
               </div>
 
-              <p className="text-xs sm:text-sm font-light text-[#3A5563] leading-relaxed mb-3">
+              <p className="text-xs sm:text-sm font-light text-[#DCE3E8]/85 leading-relaxed mb-3">
                 "{review.comment}"
               </p>
 
-              <div className="flex items-center gap-2 text-xs font-mono text-[#5A7785]">
-                <span className="font-semibold text-[#0A2533]">{review.author}</span>
+              <div className="flex items-center gap-2 text-xs font-mono text-[#A9C2CE]">
+                <span className="font-semibold text-white">{review.author}</span>
                 <span>•</span>
                 <span>{review.location}</span>
                 {review.verified && (
                   <>
                     <span>•</span>
-                    <span className="inline-flex items-center gap-1 text-[#087A91] font-medium">
-                      <CheckCircle2 className="w-3 h-3 text-[#087A91]" />
+                    <span className="inline-flex items-center gap-1 text-[#48B8CE] font-medium">
+                      <CheckCircle2 className="w-3 h-3 text-[#48B8CE]" />
                       <span>Verified Buyer</span>
                     </span>
                   </>
@@ -673,96 +730,41 @@ export const ProductDetailPage: React.FC = () => {
         </div>
       </section>
 
-      {/* 4. "THE MOLECULE SERIES" Grid in Our Theme */}
-      <section className="max-w-7xl mx-auto px-6 sm:px-12 py-16 border-t border-[#0A2533]/10">
-        <div className="flex items-center justify-between pb-6 mb-8 border-b border-[#0A2533]/10">
+      {/* 4. "THE MOLECULE SERIES" Section — Uses the Redesigned Minimal ProductCard */}
+      <section className="max-w-7xl mx-auto px-6 sm:px-12 py-16 border-t border-white/10">
+        <div className="flex items-center justify-between pb-6 mb-8 border-b border-white/10">
           <div>
-            <div className="flex items-center gap-2 font-mono text-xs tracking-[0.25em] text-[#087A91] uppercase mb-1 font-semibold">
-              <span className="w-3 h-[1px] bg-[#087A91]" />
+            <div className="flex items-center gap-2 font-mono text-xs tracking-[0.25em] text-[#48B8CE] uppercase mb-1 font-semibold">
+              <span className="w-3 h-[1px] bg-[#48B8CE]" />
               <span>THE COLLECTION</span>
             </div>
-            <h2 className="font-display text-2xl sm:text-3xl font-light text-[#0A2533] tracking-tight">
-              The Molecule Series
+            <h2 className="font-display text-2xl sm:text-3xl font-light text-white tracking-tight">
+              Other Formulations
             </h2>
           </div>
 
           <Link
-            to="/#collection"
-            className="inline-flex items-center gap-1.5 text-xs font-mono text-[#0A2533] hover:text-[#087A91] transition-colors uppercase tracking-wider font-semibold border border-[#0A2533]/20 hover:border-[#087A91] px-3.5 py-1.5 bg-white shadow-xs"
+            to="/products"
+            className="inline-flex items-center gap-1.5 text-xs font-mono text-white hover:text-[#48B8CE] transition-colors uppercase tracking-wider font-semibold border border-white/20 hover:border-[#48B8CE] px-3.5 py-1.5 bg-white/5"
           >
             <span>VIEW ALL</span>
             <ArrowRight className="w-3.5 h-3.5" />
           </Link>
         </div>
 
-        {/* 4-Card Grid matching Authentic Series */}
+        {/* Grid of Redesigned ProductCards with Continuous bg1.jpeg */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-          {FRAGRANCES.map(prod => (
-            <div
+          {otherFragrances.slice(0, 4).map((prod, idx) => (
+            <ProductCard
               key={prod.id}
-              className="group border border-[#0A2533]/10 bg-white rounded-xs overflow-hidden flex flex-col justify-between transition-all duration-300 hover:border-[#087A91]/40 shadow-[0_4px_20px_rgba(10,37,51,0.04)] hover:shadow-[0_12px_28px_rgba(10,37,51,0.08)]"
-            >
-              {/* Product Visual Container */}
-              <Link 
-                to={`/product/${prod.id}`}
-                onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
-                className="relative h-[270px] bg-gradient-to-b from-[#F8FAFB] via-[#EFF5F8] to-[#E6EFF3] flex items-center justify-center overflow-hidden border-b border-[#0A2533]/10 cursor-pointer"
-              >
-                {/* Bestseller Badge */}
-                {prod.isBestseller && (
-                  <span className="absolute top-2.5 left-2.5 z-10 px-2 py-0.5 bg-[#8B0000] text-white text-[9px] font-mono tracking-widest uppercase font-semibold">
-                    BESTSELLER
-                  </span>
-                )}
-
-                {prod.image ? (
-                  <img
-                    src={prod.image}
-                    alt={prod.name}
-                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
-                  />
-                ) : (
-                  <div className="py-4 transform group-hover:scale-105 transition-transform duration-500">
-                    <PerfumeBottle fragrance={prod} size="md" showPedestal={false} />
-                  </div>
-                )}
-              </Link>
-
-              {/* Product Information */}
-              <div className="p-4 sm:p-5 flex flex-col items-center text-center">
-                <Link
-                  to={`/product/${prod.id}`}
-                  onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
-                  className="font-mono text-xs uppercase tracking-[0.2em] text-[#0A2533] font-semibold group-hover:text-[#087A91] transition-colors"
-                >
-                  {prod.name.toUpperCase()}
-                </Link>
-
-                <span className="mt-1 text-[10px] font-mono tracking-widest uppercase text-[#087A91] font-medium">
-                  {prod.ingredientTitle || prod.family.toUpperCase()}
-                </span>
-
-                <span className="mt-2 text-xs font-serif italic tracking-wider text-[#5A7785]">
-                  {prod.subtitle}
-                </span>
-
-                <span className="mt-1.5 text-xs font-mono text-[#0A2533] font-semibold tabular-nums">
-                  50 ml &nbsp;|&nbsp; {formatPrice(prod.price)}
-                </span>
-              </div>
-
-              {/* Authentic Crimson ADD TO BAG Button */}
-              <button
-                type="button"
-                onClick={() => {
-                  addToCart(prod, 50, 1);
-                  openCart();
-                }}
-                className="w-full py-3 bg-[#610718] hover:bg-[#7D0E23] text-white text-xs font-mono uppercase tracking-[0.2em] font-bold transition-colors cursor-pointer"
-              >
-                ADD TO BAG
-              </button>
-            </div>
+              fragrance={prod}
+              index={idx}
+              onSelect={(p) => navigate(`/product/${p.id}`)}
+              onAddToCart={(p, size) => {
+                addToCart(p, size, 1);
+                openCart();
+              }}
+            />
           ))}
         </div>
       </section>

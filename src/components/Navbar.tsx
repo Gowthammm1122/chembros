@@ -68,7 +68,7 @@ export const Navbar: React.FC<NavbarProps> = ({
           }`}
         >
           <NavLink
-            to="/product/molecule-j"
+            to="/products"
             className={({ isActive }) =>
               `py-1.5 transition-colors relative after:absolute after:bottom-0 after:left-0 after:h-[1px] after:transition-all ${
                 isActive
@@ -147,7 +147,7 @@ export const Navbar: React.FC<NavbarProps> = ({
           }`}
         >
           <Link
-            to="/product/molecule-j"
+            to="/products"
             onClick={() => setMobileMenuOpen(false)}
             className="hover:opacity-60 transition-opacity py-1.5"
           >

@@ -3,6 +3,7 @@ import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { CartProvider } from './context/CartContext';
 import { RootLayout } from './layouts/RootLayout';
 import { HomePage } from './pages/HomePage';
+import { ProductsPage } from './pages/ProductsPage';
 import { ProductDetailPage } from './pages/ProductDetailPage';
 import { PhilosophyPage } from './pages/PhilosophyPage';
 import { ConciergePage } from './pages/ConciergePage';
@@ -20,11 +21,12 @@ export default function App() {
         <Routes>
           <Route path="/" element={<RootLayout />}>
             <Route index element={<HomePage />} />
-            {/* Redirect old collection/shop routes directly to the product dossier */}
-            <Route path="collection" element={<Navigate to="/product/molecule-j" replace />} />
-            <Route path="fragrances" element={<Navigate to="/product/molecule-j" replace />} />
-            <Route path="shop" element={<Navigate to="/product/molecule-j" replace />} />
-            <Route path="product" element={<ProductDetailPage />} />
+            {/* Products catalog listing routes */}
+            <Route path="products" element={<ProductsPage />} />
+            <Route path="fragrances" element={<ProductsPage />} />
+            <Route path="collection" element={<ProductsPage />} />
+            <Route path="shop" element={<ProductsPage />} />
+            <Route path="product" element={<Navigate to="/products" replace />} />
             <Route path="product/:id" element={<ProductDetailPage />} />
             <Route path="cart" element={<CartPage />} />
             <Route path="checkout" element={<CheckoutPage />} />

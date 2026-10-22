@@ -324,9 +324,8 @@ export const Hero: React.FC<HeroProps> = ({ onSelectFragrance, onIntroCompleteCh
                 <div
                   onMouseEnter={() => setActiveFragranceIndex(idx)}
                   onClick={() => onSelectFragrance(fragrance)}
-                  className={`relative flex flex-col items-center justify-end transition-all duration-500 cursor-pointer ${
-                    isActive ? 'scale-[1.02] z-20' : 'opacity-90 hover:opacity-100 z-10'
-                  }`}
+                  className={`relative flex flex-col items-center justify-end transition-all duration-500 cursor-pointer ${isActive ? 'scale-[1.02] z-20' : 'opacity-90 hover:opacity-100 z-10'
+                    }`}
                 >
                   {/* Active Indicator Light Beam */}
                   {isActive && isIntroComplete && (

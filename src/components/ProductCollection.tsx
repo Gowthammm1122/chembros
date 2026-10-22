@@ -2,7 +2,8 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { FRAGRANCES, DISCOVERY_ARCHIVE, Fragrance, formatPrice } from '../data/fragrances';
 import { ProductCard } from './ProductCard';
-import { ArrowRight, ShoppingBag, Sparkles } from 'lucide-react';
+import { Sparkles, ArrowUpRight } from 'lucide-react';
+import { LiquidChromeButton } from './LiquidChromeButton';
 
 interface ProductCollectionProps {
   onSelectFragrance: (fragrance: Fragrance) => void;
@@ -22,7 +23,7 @@ export const ProductCollection: React.FC<ProductCollectionProps> = ({
       <div className="absolute top-0 inset-x-0 h-10 bg-gradient-to-b from-[#03151D]/5 to-transparent pointer-events-none" />
 
       <div className="max-w-7xl mx-auto w-full flex flex-col justify-center relative z-10">
-        
+
         {/* Section Header with "VIEW ALL" button redirecting to product page */}
         <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 pb-5 sm:pb-6 mb-8 sm:mb-10 border-b border-[#0A2533]/10 shrink-0">
           <div>
@@ -38,13 +39,16 @@ export const ProductCollection: React.FC<ProductCollectionProps> = ({
             </p>
           </div>
 
-          {/* Clean VIEW ALL button redirecting directly to the product dossier */}
+          {/* Clean VIEW ALL button redirecting directly to the products catalog */}
           <Link
-            to="/product/molecule-j"
-            className="inline-flex items-center gap-2 px-4 py-2 border border-[#0A2533]/20 hover:border-[#087A91] bg-white hover:bg-[#F0F6F9] text-[#0A2533] hover:text-[#087A91] text-xs font-mono tracking-widest uppercase transition-all duration-300 self-start sm:self-auto shrink-0 shadow-xs group cursor-pointer"
+            to="/products"
+            className="self-start sm:self-auto shrink-0"
           >
-            <span>VIEW ALL</span>
-            <ArrowRight className="w-3.5 h-3.5 transform group-hover:translate-x-1 transition-transform" />
+            <LiquidChromeButton
+              label="VIEW ALL"
+              size={0.19}
+              aria-label="View all products"
+            />
           </Link>
         </div>
 
@@ -61,73 +65,103 @@ export const ProductCollection: React.FC<ProductCollectionProps> = ({
           ))}
         </div>
 
-        {/* 2. Standalone Dedicated Feature Card: THE DISCOVERY ARCHIVE (Matching Authentic Reference) */}
+        {/* 2. Standalone Dedicated Feature Card: THE DISCOVERY ARCHIVE (Full Background with Floating Dummy Product) */}
         <div className="mt-12 sm:mt-16 w-full">
-          <div className="relative overflow-hidden border border-[#0A2533]/15 shadow-[0_12px_40px_rgba(10,37,51,0.06)] grid grid-cols-1 md:grid-cols-12 bg-white">
-            
-            {/* Left Visual: Authentic Coffret Imagery with Floral Setting */}
-            <div className="md:col-span-6 relative min-h-[320px] sm:min-h-[400px] md:min-h-[460px] bg-[#0A0D10] overflow-hidden group">
-              <img
-                src="/images/discovery-archive-coffret.png"
-                alt="The Discovery Archive Miniature Coffret"
-                className="w-full h-full object-cover object-center transform group-hover:scale-105 transition-transform duration-700 select-none"
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent pointer-events-none md:hidden" />
+          <div
+            className="relative overflow-hidden rounded-sm border border-white/15 shadow-[0_24px_64px_rgba(3,21,29,0.45)] grid grid-cols-1 md:grid-cols-12 bg-cover bg-center"
+            style={{ backgroundImage: "url('/bg/bg1.jpeg')" }}
+          >
+            {/* Subtle luminous glass tint overlay to ensure high readability while keeping full bg visible */}
+            <div className="absolute inset-0 bg-gradient-to-r from-black/20 via-black/10 to-black/35 pointer-events-none" />
+
+            {/* Left Visual: Floating Dummy Product Stage (User can replace this image) */}
+            <div className="md:col-span-5 lg:col-span-6 relative min-h-[340px] sm:min-h-[420px] md:min-h-[480px] flex flex-col items-center justify-center p-6 sm:p-10 z-10">
+              {/* Subtle ambient halo behind product */}
+              <div className="absolute w-64 h-64 rounded-full bg-[#48B8CE]/10 blur-3xl pointer-events-none" />
+
+              {/* Floating Dummy Product Image */}
+              <div className="relative group cursor-pointer flex flex-col items-center">
+                <img
+                  src="/images/discovery-archive-bottle.png"
+                  alt="Discovery Archive Flacon Specimen (Dummy Image - Replace with your product image)"
+                  className="w-auto h-[240px] sm:h-[300px] md:h-[360px] max-w-full object-contain drop-shadow-[0_24px_40px_rgba(0,0,0,0.65)] transform group-hover:scale-105 group-hover:-translate-y-2 transition-all duration-700 select-none"
+                />
+                {/* Floating soft platform shadow */}
+                <div className="w-48 sm:w-56 h-3 bg-gradient-to-r from-transparent via-black/60 to-transparent blur-sm mt-3" />
+              </div>
             </div>
 
-            {/* Right Dossier: Warm Cream Canvas matching user specification (#F0E6DA) */}
-            <div className="md:col-span-6 bg-[#F0E6DA] p-7 sm:p-10 md:p-12 lg:p-14 flex flex-col justify-center text-left">
-              
+            {/* Right Dossier: ChemBros Atmospheric Typography & Actions */}
+            <div className="md:col-span-7 lg:col-span-6 p-7 sm:p-10 md:p-12 lg:p-14 flex flex-col justify-center text-left relative z-10">
+
               {/* Category Eyebrow */}
-              <div className="font-mono text-[10px] tracking-[0.28em] text-[#610718] uppercase font-bold mb-2">
-                MINIATURE COFFRET
+              <div className="flex items-center gap-2 font-mono text-[10px] sm:text-[11px] tracking-[0.28em] text-[#48B8CE] uppercase font-semibold mb-2.5">
+                <span className="w-1.5 h-1.5 rounded-full bg-[#48B8CE] animate-pulse" />
+                <span>MINIATURE COFFRET</span>
               </div>
 
               {/* Title: The Discovery Archive */}
-              <h3 className="font-serif text-2xl sm:text-3xl lg:text-4xl tracking-[0.06em] text-[#1A1A1A] uppercase font-normal leading-tight">
+              <h3 className="font-display text-2xl sm:text-3xl lg:text-4xl tracking-[0.04em] text-white uppercase font-light leading-tight">
                 THE DISCOVERY ARCHIVE
               </h3>
 
-              {/* Thin Divider Rule */}
-              <div className="w-12 h-[1px] bg-[#1A1A1A]/25 my-4 sm:my-5" />
+              {/* Thin Divider Rule with Cyan Accent */}
+              <div className="w-14 h-[1px] bg-gradient-to-r from-[#48B8CE] via-[#48B8CE]/40 to-transparent my-4 sm:my-5" />
 
               {/* Subtitle */}
-              <p className="text-sm sm:text-base text-[#3A3A3A] font-serif leading-relaxed font-normal">
+              <p className="text-sm sm:text-base text-[#DCE3E8]/85 font-light leading-relaxed">
                 The complete Molecule Series, in miniature.
               </p>
 
               {/* Thin Divider Rule */}
-              <div className="w-12 h-[1px] bg-[#1A1A1A]/25 my-4 sm:my-5" />
+              <div className="w-14 h-[1px] bg-gradient-to-r from-white/15 to-transparent my-4 sm:my-5" />
 
-              {/* Specifications List */}
-              <div className="space-y-1.5 text-[10.5px] sm:text-[11px] font-mono tracking-[0.2em] uppercase text-[#4A4A4A] mb-6 sm:mb-8 font-medium">
-                <div>4 × 3ML EXTRAIT</div>
-                <div>EXTRAIT DE PARFUM</div>
-                <div>25% NATURAL OIL CONCENTRATION</div>
-                <div>UNISEX · 8+ HOURS</div>
+              {/* Specifications Grid */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-y-2 gap-x-4 text-[10px] sm:text-[11px] font-mono tracking-[0.18em] uppercase text-[#A9C2CE] mb-7 font-medium">
+                <div className="flex items-center gap-2">
+                  <span className="w-1 h-1 rounded-full bg-[#48B8CE]" />
+                  <span>4 × 3ML EXTRAIT</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <span className="w-1 h-1 rounded-full bg-[#48B8CE]" />
+                  <span>EXTRAIT DE PARFUM</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <span className="w-1 h-1 rounded-full bg-[#48B8CE]" />
+                  <span>25% CONCENTRATION</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <span className="w-1 h-1 rounded-full bg-[#48B8CE]" />
+                  <span>UNISEX · 8+ HOURS</span>
+                </div>
               </div>
 
               {/* Price: ₹1,299 */}
-              <div className="text-2xl sm:text-3xl font-serif text-[#1A1A1A] font-medium mb-6 tracking-tight">
-                {formatPrice(DISCOVERY_ARCHIVE.price)}
+              <div className="flex items-baseline gap-2.5 mb-6">
+                <span className="text-2xl sm:text-3xl font-display text-white font-medium tracking-tight">
+                  {formatPrice(DISCOVERY_ARCHIVE.price)}
+                </span>
+                <span className="font-mono text-[9px] text-[#A9C2CE]/70 uppercase tracking-widest font-normal">
+                  INCL. ALL TAXES
+                </span>
               </div>
 
-              {/* Action Buttons: ADD TO BAG in authentic Crimson (#610718) + View Details */}
-              <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
-                <button
-                  type="button"
+              {/* Action Buttons: Liquid Chrome ADD TO BAG + View Details */}
+              <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-4">
+                <LiquidChromeButton
+                  label="ADD TO BAG"
+                  size="sm"
+                  accentColor="72,184,206"
                   onClick={() => onAddToCart(DISCOVERY_ARCHIVE, 12)}
-                  className="px-8 py-3.5 bg-[#610718] hover:bg-[#7D0E23] text-white text-xs font-mono tracking-[0.22em] uppercase transition-colors cursor-pointer shadow-sm text-center font-bold flex items-center justify-center gap-2 active:scale-98"
-                >
-                  <ShoppingBag className="w-3.5 h-3.5" />
-                  <span>ADD TO BAG</span>
-                </button>
+                  aria-label="Add Discovery Archive to Bag"
+                />
 
                 <Link
                   to="/product/discovery-archive"
-                  className="px-5 py-3.5 border border-[#1A1A1A]/25 hover:border-[#610718] text-[#1A1A1A] hover:text-[#610718] text-xs font-mono tracking-[0.18em] uppercase transition-colors text-center font-medium bg-white/40 hover:bg-white"
+                  className="px-5 py-3 border border-white/20 hover:border-[#48B8CE] text-white hover:text-[#48B8CE] text-xs font-mono tracking-[0.18em] uppercase transition-all bg-white/5 hover:bg-white/10 backdrop-blur-xs inline-flex items-center justify-center self-center"
                 >
-                  DETAILS & NOTES
+                  <span>DETAILS & NOTES</span>
+                  <ArrowUpRight className="w-3.5 h-3.5 ml-1.5 opacity-70" />
                 </Link>
               </div>
 
