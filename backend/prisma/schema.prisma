@@ -1,0 +1,240 @@
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model User {
+  id           String        @id @default(uuid())
+  email        String        @unique
+  passwordHash String
+  name         String
+  phone        String?
+  role         String        @default("CUSTOMER") // CUSTOMER, ADMIN, STAFF
+  sessions     Session[]
+  orders       Order[]
+  carts        Cart[]
+  addresses    Address[]
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+
+  @@index([email])
+}
+
+model Session {
+  id        String   @id @default(uuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  tokenHash String   @unique
+  expiresAt DateTime
+  ipAddress String?
+  userAgent String?
+  createdAt DateTime @default(now())
+
+  @@index([tokenHash])
+  @@index([userId])
+}
+
+model Product {
+  id          String           @id @default(uuid())
+  slug        String           @unique
+  name        String
+  formulaNo   String
+  subtitle    String?
+  family      String
+  description String
+  character   String?
+  liquidColor String?
+  isActive    Boolean          @default(true)
+  sortOrder   Int              @default(0)
+  variants    ProductVariant[]
+  pyramids    ProductPyramid[]
+  specs       ProductSpec?
+  createdAt   DateTime         @default(now())
+  updatedAt   DateTime         @updatedAt
+
+  @@index([slug])
+  @@index([isActive])
+}
+
+model ProductVariant {
+  id            String      @id @default(uuid())
+  productId     String
+  product       Product     @relation(fields: [productId], references: [id], onDelete: Cascade)
+  sizeMl        Int         // 50, 100
+  price         Int         // Whole Indian Rupees (₹)
+  stockQuantity Int         @default(100)
+  sku           String      @unique
+  cartItems     CartItem[]
+  orderItems    OrderItem[]
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime    @updatedAt
+
+  @@unique([productId, sizeMl])
+}
+
+model ProductPyramid {
+  id        String   @id @default(uuid())
+  productId String
+  product   Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  tier      String   // TOP, HEART, BASE
+  notes     String   // Serialized JSON array of strings: e.g. '["Jasmine", "Tea"]'
+
+  @@unique([productId, tier])
+}
+
+model ProductSpec {
+  id         String   @id @default(uuid())
+  productId  String   @unique
+  product    Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  ratio      String?
+  maceration String?
+  volatility String?
+  ph         String?
+  keyIsolate String?
+}
+
+model Cart {
+  id           String     @id @default(uuid())
+  userId       String?
+  user         User?      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  sessionToken String?    @unique
+  items        CartItem[]
+  createdAt    DateTime   @default(now())
+  updatedAt    DateTime   @updatedAt
+
+  @@index([sessionToken])
+}
+
+model CartItem {
+  id        String         @id @default(uuid())
+  cartId    String
+  cart      Cart           @relation(fields: [cartId], references: [id], onDelete: Cascade)
+  variantId String
+  variant   ProductVariant @relation(fields: [variantId], references: [id], onDelete: Cascade)
+  quantity  Int            @default(1)
+  createdAt DateTime       @default(now())
+  updatedAt DateTime       @updatedAt
+
+  @@unique([cartId, variantId])
+}
+
+model Order {
+  id              String           @id @default(uuid())
+  orderRef        String           @unique // e.g. CB-A1B2C3D4
+  invoiceNo       String?          @unique // e.g. CB 01
+  invoiceSeq      Int?
+  userId          String?
+  user            User?            @relation(fields: [userId], references: [id], onDelete: SetNull)
+  email           String
+  name            String
+  phone           String
+  subtotal        Int              // In whole rupees
+  shipping        Int              @default(0)
+  tax             Int              @default(0)
+  cgst            Int              @default(0)
+  sgst            Int              @default(0)
+  igst            Int              @default(0)
+  taxRate         Int              @default(1800) // Basis points (1800 = 18.00%)
+  taxInclusive    Boolean          @default(true)
+  gstin           String?
+  total           Int              // Total amount charged
+  status          String           @default("PROCESSING") // PENDING, PROCESSING, SHIPPED, DELIVERED, CANCELLED
+  paymentStatus   String           @default("PENDING")    // PENDING, PAID, FAILED, REFUNDED, COD
+  notes           String?
+  items           OrderItem[]
+  addresses       Address[]
+  paymentAttempts PaymentAttempt[]
+  createdAt       DateTime         @default(now())
+  updatedAt       DateTime         @updatedAt
+
+  @@index([orderRef])
+  @@index([email])
+  @@index([status])
+}
+
+model OrderItem {
+  id         String          @id @default(uuid())
+  orderId    String
+  order      Order           @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  variantId  String?
+  variant    ProductVariant? @relation(fields: [variantId], references: [id], onDelete: SetNull)
+  slug       String
+  name       String
+  sizeMl     Int
+  unitPrice  Int
+  quantity   Int
+  lineTotal  Int
+
+  @@index([orderId])
+}
+
+model Address {
+  id        String   @id @default(uuid())
+  orderId   String?
+  order     Order?   @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  userId    String?
+  user      User?    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  line1     String
+  city      String
+  state     String
+  postcode  String
+  country   String   @default("India")
+  type      String   @default("SHIPPING") // SHIPPING, BILLING
+
+  @@index([orderId])
+  @@index([userId])
+}
+
+model PaymentAttempt {
+  id            String   @id @default(uuid())
+  orderId       String
+  order         Order    @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  orderRef      String
+  cfOrderId     String?
+  cfPaymentId   String?
+  amount        Int
+  currency      String   @default("INR")
+  status        String   // ACTIVE, PAID, FAILED, USER_DROPPED
+  paymentMethod String?
+  gatewayError  String?
+  rawResponse   String?
+  createdAt     DateTime @default(now())
+
+  @@index([orderRef])
+  @@index([cfOrderId])
+}
+
+model AuditLog {
+  id        String   @id @default(uuid())
+  actorId   String?
+  actorType String   // CUSTOMER, ADMIN, SYSTEM, GATEWAY
+  action    String   // ORDER_CREATED, PAYMENT_VERIFIED, STATUS_CHANGED, SETTINGS_UPDATED
+  entity    String
+  entityId  String?
+  details   String?
+  ipAddress String?
+  createdAt DateTime @default(now())
+
+  @@index([action])
+  @@index([entityId])
+}
+
+model ContactMessage {
+  id        String   @id @default(uuid())
+  name      String
+  email     String
+  subject   String?
+  message   String
+  isRead    Boolean  @default(false)
+  createdAt DateTime @default(now())
+}
+
+model AppSetting {
+  key       String   @id
+  value     String
+  updatedAt DateTime @updatedAt
+}

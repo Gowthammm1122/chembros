@@ -1,0 +1,227 @@
+/* Font Import */
+@import url('https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Space+Grotesk:wght@300;400;500;600;700&family=Fraunces:opsz,wght@9..144,400;9..144,700&family=Inter:wght@400;700&display=swap');
+@import "tailwindcss";
+
+/* CSS Variables */
+:root {
+  --heading-font: 'Fraunces', 'fraunces', serif, sans-serif;
+  --body-font: 'Inter', 'inter', sans-serif;
+  --font-instrument: 'Instrument Serif', Georgia, serif;
+  --font-space: 'Space Grotesk', -apple-system, sans-serif;
+}
+
+/* Font Classes */
+.heading {
+  font-family: var(--heading-font);
+}
+.body-text {
+  font-family: var(--body-font);
+}
+.font-instrument {
+  font-family: 'Instrument Serif', Georgia, serif;
+}
+.font-space {
+  font-family: 'Space Grotesk', -apple-system, sans-serif;
+}
+
+/* Kallisto Font Family (Weights: 100, 300, 400, 700, 900) */
+@font-face {
+  font-family: 'Kallisto';
+  font-style: normal;
+  font-weight: 100;
+  font-display: swap;
+  src: local('Kallisto Thin'), local('Kallisto-Thin'), url('https://fonts.cdnfonts.com/s/130021/Kallisto Thin.woff') format('woff');
+}
+
+@font-face {
+  font-family: 'Kallisto';
+  font-style: normal;
+  font-weight: 300;
+  font-display: swap;
+  src: local('Kallisto Light'), local('Kallisto-Light'), url('https://fonts.cdnfonts.com/s/130021/Kallisto Light.woff') format('woff');
+}
+
+@font-face {
+  font-family: 'Kallisto';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: local('Kallisto Regular'), local('Kallisto'), url('https://fonts.cdnfonts.com/s/130021/Kallisto Regular.woff') format('woff');
+}
+
+@font-face {
+  font-family: 'Kallisto';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: local('Kallisto Bold'), local('Kallisto-Bold'), url('https://fonts.cdnfonts.com/s/130021/Kallisto Bold.woff') format('woff');
+}
+
+@font-face {
+  font-family: 'Kallisto';
+  font-style: normal;
+  font-weight: 900;
+  font-display: swap;
+  src: local('Kallisto Black'), local('Kallisto-Black'), url('https://fonts.cdnfonts.com/s/130021/Kallisto Black.woff') format('woff');
+}
+
+@theme {
+  --font-instrument: 'Instrument Serif', Georgia, serif;
+  --font-space: 'Space Grotesk', -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-heading: var(--heading-font);
+  --font-body-text: var(--body-font);
+  --font-fraunces: 'Fraunces', 'fraunces', serif, sans-serif;
+  --font-cinzel: 'Instrument Serif', Georgia, serif;
+  --font-cormorant: 'Cormorant Garamond', Georgia, serif;
+  --font-hero: 'Instrument Serif', Georgia, serif;
+  --font-manrope: 'Manrope', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --font-display: var(--heading-font);
+  --font-headline: var(--heading-font);
+  --font-kallisto: var(--heading-font);
+  --font-sans: var(--body-font);
+  --font-body: var(--body-font);
+  --font-inter: var(--body-font);
+  --font-inter-tight: 'Inter Tight', 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+}
+
+@layer base {
+  :root {
+    --heading-font: 'Fraunces', 'fraunces', serif, sans-serif;
+    --body-font: 'Inter', 'inter', sans-serif;
+
+    --color-midnight: #03151D;
+    --color-petrol: #073849;
+    --color-teal: #087A91;
+    --color-cyan: #48B8CE;
+    --color-mist: #A9C2CE;
+    --color-frost: #DCE3E8;
+    --color-lab-white: #F5F7F8;
+    --color-glass: #FFFFFF;
+
+    font-family: var(--body-font);
+  }
+
+  body {
+    font-family: var(--body-font);
+  }
+
+  h1, h2, h3, h4, h5, h6, .heading, .font-display, .font-headline, .font-manrope, .font-hero {
+    font-family: var(--heading-font);
+    letter-spacing: -0.01em;
+  }
+
+  .body-text, .font-body, .font-sans, .font-inter {
+    font-family: var(--body-font);
+  }
+
+  .font-mono {
+    font-family: 'JetBrains Mono', monospace;
+  }
+
+  .font-hero, .font-cinzel, .font-fraunces {
+    font-family: var(--heading-font);
+  }
+
+  .font-cormorant {
+    font-family: 'Cormorant Garamond', Georgia, serif;
+  }
+}
+
+/* Custom Atmospheric Gradients & Reflections */
+.bg-hero-gradient {
+  background: #8e9eab;  /* fallback for old browsers */
+  background: -webkit-linear-gradient(180deg, #8e9eab, #eef2f3);  /* Chrome 10-25, Safari 5.1-6 */
+  background: linear-gradient(180deg, #8e9eab 0%, #eef2f3 100%); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+}
+
+.bg-lab-shelf {
+  background: linear-gradient(180deg, #0A3C4D 0%, #20596B 30%, #90A8B4 70%, #DCE3E8 100%);
+}
+
+.bg-manifesto-gradient {
+  background: 
+    radial-gradient(circle at 80% 30%, rgba(72, 184, 206, 0.08), transparent 60%),
+    linear-gradient(180deg, #FFFFFF 0%, #F3F8FA 40%, #EBF4F7 70%, #FFFFFF 100%);
+}
+
+.bg-spotlight-gradient {
+  background: 
+    radial-gradient(ellipse at 50% 50%, rgba(72, 184, 206, 0.07), transparent 65%),
+    linear-gradient(180deg, #FFFFFF 0%, #F5F9FB 50%, #FFFFFF 100%);
+}
+
+.bg-conversion-gradient {
+  background: 
+    radial-gradient(circle at 50% 50%, rgba(72, 184, 206, 0.08), transparent 60%),
+    linear-gradient(180deg, #FFFFFF 0%, #EEF6F9 50%, #FFFFFF 100%);
+}
+
+.bg-philosophy-gradient {
+  background: 
+    radial-gradient(ellipse at 50% 40%, rgba(72, 184, 206, 0.06), transparent 60%),
+    linear-gradient(180deg, #FFFFFF 0%, #F4F8FA 60%, #EBF3F6 100%);
+}
+
+/* Brushed Aluminum Plinth Sheen */
+.metal-plinth {
+  background: linear-gradient(90deg, #7A8E99 0%, #AEC1CC 18%, #D4E0E8 35%, #8B9EA8 55%, #CFDCE2 75%, #6B7F8A 100%);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.8), 0 20px 40px -15px rgba(3, 21, 29, 0.45);
+}
+
+.metal-plinth-top {
+  background: linear-gradient(135deg, #E2EDF2 0%, #C4D6E0 50%, #9EB4C0 100%);
+  box-shadow: inset 0 0 10px rgba(255, 255, 255, 0.5);
+}
+
+/* Glass Reflection highlights */
+.glass-specular {
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.7) 0%, rgba(255, 255, 255, 0.05) 40%, transparent 100%);
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+}
+::-webkit-scrollbar-track {
+  background: #03151D;
+}
+::-webkit-scrollbar-thumb {
+  background: #087A91;
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #48B8CE;
+}
+
+/* Lenis Smooth Momentum Scroll Integration */
+html.lenis, html.lenis body {
+  height: auto;
+}
+
+.lenis.lenis-smooth {
+  scroll-behavior: auto !important;
+}
+
+.lenis.lenis-smooth [data-lenis-prevent] {
+  overscroll-behavior: contain;
+}
+
+.lenis.lenis-stopped {
+  overflow: hidden;
+}
+
+.lenis.lenis-scrolling iframe {
+  pointer-events: none;
+}
+
+/* prmpt Section 3 Card Animation Classes */
+.bp-card {
+  will-change: transform;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .bp-card {
+    will-change: auto;
+  }
+}
