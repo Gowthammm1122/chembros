@@ -1,4 +1,4 @@
-import React, { useState, useId } from 'react';
+import React, { useState } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import { FRAGRANCES, Fragrance, formatPrice } from '../data/fragrances';
 import { PerfumeBottle } from '../components/PerfumeBottle';
@@ -8,20 +8,16 @@ import {
   ArrowRight, 
   ShieldCheck, 
   Truck, 
-  Sparkles, 
-  Droplet, 
-  Clock, 
-  Check, 
+  Star, 
   Plus, 
-  Minus,
-  Star,
-  ShoppingBag,
-  Zap,
-  ChevronDown,
-  ChevronUp,
-  MessageSquareQuote,
-  Flame,
-  CheckCircle2
+  Minus, 
+  Check, 
+  ShoppingBag, 
+  Zap, 
+  CheckCircle2, 
+  Maximize2,
+  Sparkles,
+  RotateCcw
 } from 'lucide-react';
 
 interface Review {
@@ -35,8 +31,7 @@ interface Review {
   verified: boolean;
 }
 
-// Initial curated reviews tailored to each fragrance formula
-const INITIAL_REVIEWS: Record<string, Review[]> = {
+const REVIEWS_DATA: Record<string, Review[]> = {
   'molecule-j': [
     {
       id: 'rev-j-1',
@@ -45,27 +40,17 @@ const INITIAL_REVIEWS: Record<string, Review[]> = {
       rating: 5,
       date: 'October 12, 2026',
       title: 'Authentic Madurai Jasmine — unmatched quality',
-      comment: 'The Jasmine Sambac in this bottle is completely authentic. It smells like fresh Madurai malli plucked at sunrise with a crisp green tea opening. It easily lasted 14 hours on my skin without becoming synthetic.',
+      comment: 'The Jasmine Sambac in this bottle is completely authentic. It smells like fresh Madurai malli plucked at sunrise with a crisp green bite. It easily lasts 14 hours on my skin without becoming synthetic.',
       verified: true,
     },
     {
       id: 'rev-j-2',
-      author: 'Vikramaditya Sengupta',
+      author: 'Vikramaditya S.',
       location: 'Mumbai, Maharashtra',
       rating: 5,
       date: 'September 28, 2026',
       title: 'Remarkable skin scent and longevity',
-      comment: 'The ambroxan and bergamot drydown is subtle yet magnetic. People ask me what I am wearing everywhere I go. The packaging and bottle feel like high jewelry.',
-      verified: true,
-    },
-    {
-      id: 'rev-j-3',
-      author: 'Dr. Priya Krishnan',
-      location: 'Bengaluru, Karnataka',
-      rating: 5,
-      date: 'September 14, 2026',
-      title: 'Intimate, warm, and sophisticated',
-      comment: 'Worth every rupee. Not overpowering like designer scents, but has incredible density and intimate projection. I am ordering the 100ml flacon today.',
+      comment: 'The sandalwood and saffron drydown is subtle yet magnetic. People ask me what I am wearing everywhere I go. The flacon feels like high jewelry.',
       verified: true,
     },
   ],
@@ -77,7 +62,7 @@ const INITIAL_REVIEWS: Record<string, Review[]> = {
       rating: 5,
       date: 'October 15, 2026',
       title: 'The best night tuberose I have ever experienced',
-      comment: 'Creamy, carnal, and hypnotic. The coconut pulp and sandalwood balance the night-blooming tuberose so elegantly. True luxury extrait concentration.',
+      comment: 'Creamy, carnal, and hypnotic. The whiskey and neroli balance the night-blooming tuberose so elegantly. True luxury extrait concentration.',
       verified: true,
     },
     {
@@ -87,7 +72,7 @@ const INITIAL_REVIEWS: Record<string, Review[]> = {
       rating: 5,
       date: 'October 02, 2026',
       title: 'Pure indulgence for evening wear',
-      comment: 'Stays on clothing for days. Warm, seductive, and deeply comforting drydown. The bottle design is modern minimalism at its best.',
+      comment: 'Stays on clothing for days. Warm, seductive, and deeply comforting drydown. Beautiful minimalist bottle.',
       verified: true,
     },
   ],
@@ -98,18 +83,8 @@ const INITIAL_REVIEWS: Record<string, Review[]> = {
       location: 'Hyderabad, Telangana',
       rating: 5,
       date: 'October 18, 2026',
-      title: 'Smoky, velvety dark rose masterpiece',
-      comment: 'The black pepper and smoked patchouli elevate the Damask rose into something otherworldly. Mysterious and unisex. Lasts over 16 hours.',
-      verified: true,
-    },
-    {
-      id: 'rev-r-2',
-      author: 'Meera Chawla',
-      location: 'Pune, Maharashtra',
-      rating: 5,
-      date: 'September 20, 2026',
-      title: 'Complex and deeply addictive',
-      comment: 'Rich amber and frankincense with velvety crimson petals. My favorite evening fragrance of the year.',
+      title: 'Smoky, velvety dark rose and champaca masterpiece',
+      comment: 'The cherry blossom and red champaca ignite into dark vanilla and oud. Mysterious and unisex. Lasts over 16 hours.',
       verified: true,
     },
   ],
@@ -121,17 +96,19 @@ const INITIAL_REVIEWS: Record<string, Review[]> = {
       rating: 5,
       date: 'October 10, 2026',
       title: 'Unbelievable herbaceous depth with aged rum',
-      comment: 'Smells like an exclusive members club library with crushed sage, aged dark rum, and earthy vetiver. Incredibly unique and bold.',
+      comment: 'Smells like an exclusive library with wild davana, dark aged rum, and earthy vetiver. Incredibly unique and bold.',
       verified: true,
     },
+  ],
+  'discovery-archive': [
     {
-      id: 'rev-x-2',
-      author: 'Nikhil Varma',
-      location: 'Coimbatore, Tamil Nadu',
+      id: 'rev-da-1',
+      author: 'Tanvi Mehra',
+      location: 'Bengaluru, Karnataka',
       rating: 5,
-      date: 'September 30, 2026',
-      title: 'Distinctive, commanding signature scent',
-      comment: 'Extremely long lasting with sophisticated tobacco and cedarwood undertones. A true triumph of modern Indian perfumery.',
+      date: 'October 19, 2026',
+      title: 'The perfect way to discover the collection',
+      comment: 'Every miniature is generous at 3ml and comes in a luxurious presentation coffret. Molecule J and Molecule T are my absolute favorites.',
       verified: true,
     },
   ],
@@ -142,16 +119,16 @@ export const ProductDetailPage: React.FC = () => {
   const navigate = useNavigate();
   const { addToCart, openCart } = useCart();
 
-  // Find target fragrance or fallback to Formula 01
+  // Find target fragrance or default to Molecule J
   const fragrance: Fragrance = FRAGRANCES.find(f => f.id === id) || FRAGRANCES[0];
   const [selectedSize, setSelectedSize] = useState<number>(fragrance.sizes[0]?.ml || 50);
   const [quantity, setQuantity] = useState<number>(1);
   const [addedNotice, setAddedNotice] = useState<boolean>(false);
-  const [activeTab, setActiveTab] = useState<'notes' | 'specifications' | 'usage'>('notes');
+  const [viewMode, setViewMode] = useState<'photo' | 'bottle'>('photo');
 
   // Customer Reviews State
-  const initialFragranceReviews = INITIAL_REVIEWS[fragrance.id] || INITIAL_REVIEWS['molecule-j'];
-  const [reviews, setReviews] = useState<Review[]>(initialFragranceReviews);
+  const initialReviews = REVIEWS_DATA[fragrance.id] || REVIEWS_DATA['molecule-j'];
+  const [reviews, setReviews] = useState<Review[]>(initialReviews);
   const [showReviewForm, setShowReviewForm] = useState<boolean>(false);
   const [reviewRating, setReviewRating] = useState<number>(5);
   const [reviewerName, setReviewerName] = useState<string>('');
@@ -160,13 +137,13 @@ export const ProductDetailPage: React.FC = () => {
   const [reviewComment, setReviewComment] = useState<string>('');
   const [reviewSubmitted, setReviewSubmitted] = useState<boolean>(false);
 
-  // Other products for "You May Also Like"
+  // Other products for "The Molecule Series" section
   const otherFragrances = FRAGRANCES.filter(f => f.id !== fragrance.id);
 
-  // Calculated current price
+  // Price for the selected size
   const currentPrice = fragrance.sizes.find(s => s.ml === selectedSize)?.price || fragrance.price;
 
-  // Add to Bag handler
+  // Add to Bag
   const handleAddToCart = () => {
     addToCart(fragrance, selectedSize, quantity);
     setAddedNotice(true);
@@ -174,13 +151,13 @@ export const ProductDetailPage: React.FC = () => {
     setTimeout(() => setAddedNotice(false), 3500);
   };
 
-  // Instant Buy Now handler (adds to cart & goes to checkout)
+  // Buy Now (Instant Checkout)
   const handleBuyNow = () => {
     addToCart(fragrance, selectedSize, quantity);
     navigate('/checkout');
   };
 
-  // Submit Review handler
+  // Submit Review
   const handleSubmitReview = (e: React.FormEvent) => {
     e.preventDefault();
     if (!reviewerName.trim() || !reviewComment.trim()) return;
@@ -211,386 +188,280 @@ export const ProductDetailPage: React.FC = () => {
   ).toFixed(1);
 
   return (
-    <div className="pt-20 sm:pt-24 pb-24 bg-white min-h-screen text-[#0A2533] selection:bg-[#087A91]/20">
+    <div className="pt-20 sm:pt-24 pb-24 bg-[#0A0D10] min-h-screen text-[#E6ECF0] selection:bg-[#C5A059]/30">
       
-      {/* 1. Clean Breadcrumbs & Quick Sequence Navigation */}
-      <nav aria-label="Breadcrumb" className="border-b border-[#0A2533]/[0.08] bg-[#FAFBFD]">
-        <div className="max-w-7xl mx-auto px-6 sm:px-12 py-3.5 flex items-center justify-between text-xs font-mono text-[#5A7785]">
-          <div className="flex items-center gap-2">
-            <Link to="/" className="hover:text-[#0A2533] transition-colors">HOME</Link>
+      {/* 1. Subtle Breadcrumbs */}
+      <nav aria-label="Breadcrumb" className="border-b border-white/[0.08] bg-[#07090C]">
+        <div className="max-w-7xl mx-auto px-6 sm:px-12 py-3.5 flex items-center justify-between text-xs font-mono text-[#829CA9]">
+          <div className="flex items-center gap-2 tracking-wider uppercase">
+            <Link to="/" className="hover:text-white transition-colors">HOME</Link>
             <span>/</span>
-            <Link to="/collection" className="hover:text-[#0A2533] transition-colors">FRAGRANCES</Link>
+            <Link to="/collection" className="hover:text-white transition-colors">COLLECTIONS</Link>
             <span>/</span>
-            <span className="text-[#087A91] font-semibold">FORMULA {fragrance.formulaNo}</span>
+            <span className="text-[#C5A059] font-medium">{fragrance.name.toUpperCase()}</span>
           </div>
 
-          <div className="flex items-center gap-4">
-            <Link
-              to="/collection"
-              className="hidden sm:inline-flex items-center gap-1.5 text-[#5A7785] hover:text-[#0A2533] transition-colors"
-            >
-              <ArrowLeft className="w-3.5 h-3.5" />
-              <span>ALL FRAGRANCES</span>
-            </Link>
-          </div>
+          <Link
+            to="/collection"
+            className="hidden sm:inline-flex items-center gap-1.5 text-xs text-[#829CA9] hover:text-[#C5A059] transition-colors"
+          >
+            <ArrowLeft className="w-3.5 h-3.5" />
+            <span>ALL FRAGRANCES</span>
+          </Link>
         </div>
       </nav>
 
-      {/* 2. Main Product Hero Section (2-Column Desktop Grid) */}
+      {/* 2. Main Product Showcase Grid (Matching Screenshot 1-4) */}
       <section className="max-w-7xl mx-auto px-6 sm:px-12 py-10 lg:py-16">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-16 items-start">
           
-          {/* Left Column: Visual Flacon Stage (lg:col-span-6) */}
+          {/* Left Visual Stage (lg:col-span-6) */}
           <div className="lg:col-span-6 lg:sticky lg:top-28">
-            <div className="relative min-h-[480px] sm:min-h-[560px] p-8 sm:p-12 border border-[#0A2533]/10 bg-gradient-to-b from-[#F7FAFC] via-[#F1F6F8] to-[#E9F1F5] flex flex-col justify-between overflow-hidden shadow-[0_12px_36px_rgba(10,37,51,0.04)] rounded-sm">
+            <div className="relative min-h-[480px] sm:min-h-[580px] border border-white/10 bg-[#0E1318] flex flex-col justify-between overflow-hidden shadow-2xl rounded-xs group">
               
-              {/* Formula No & Extrait Badge */}
-              <div className="flex items-center justify-between font-mono text-[11px] tracking-widest uppercase text-[#5A7785]">
-                <div className="flex items-center gap-2">
-                  <span className="w-2 h-2 rounded-full bg-[#087A91]" />
-                  <span className="text-[#087A91] font-semibold">FORMULA {fragrance.formulaNo}</span>
+              {/* Product Visual Container */}
+              <div className="relative w-full h-full min-h-[480px] sm:min-h-[580px] flex items-center justify-center p-6 sm:p-10">
+                {viewMode === 'photo' && fragrance.image ? (
+                  <div className="relative w-full h-full min-h-[440px] sm:min-h-[520px] flex items-center justify-center overflow-hidden">
+                    <img
+                      src={fragrance.image}
+                      alt={fragrance.name}
+                      className="w-full h-full object-cover object-center transform group-hover:scale-105 transition-transform duration-700 select-none"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-[#0A0D10]/60 via-transparent to-transparent pointer-events-none" />
+                  </div>
+                ) : (
+                  <div className="my-auto py-8 flex flex-col items-center justify-center transform group-hover:scale-105 transition-transform duration-700 select-none">
+                    <PerfumeBottle
+                      fragrance={fragrance}
+                      size="lg"
+                      showPedestal={true}
+                      pedestalHeight={130}
+                      interactive={true}
+                    />
+                  </div>
+                )}
+
+                {/* Hover to Zoom / Mode Pill */}
+                <div className="absolute bottom-4 right-4 z-10 flex items-center gap-2">
+                  {fragrance.image && (
+                    <button
+                      type="button"
+                      onClick={() => setViewMode(viewMode === 'photo' ? 'bottle' : 'photo')}
+                      className="px-3 py-1 bg-black/75 hover:bg-black text-[#D4AF37] border border-[#D4AF37]/30 text-[10px] font-mono tracking-widest uppercase backdrop-blur-md transition-colors cursor-pointer rounded-xs flex items-center gap-1.5"
+                    >
+                      <RotateCcw className="w-3 h-3" />
+                      <span>{viewMode === 'photo' ? '3D FLACON VIEW' : 'STUDIO PHOTO'}</span>
+                    </button>
+                  )}
+                  <span className="px-3 py-1 bg-black/60 text-white/70 border border-white/10 text-[10px] font-mono tracking-widest uppercase backdrop-blur-md hidden sm:inline-flex items-center gap-1.5">
+                    <Maximize2 className="w-3 h-3" />
+                    <span>HOVER TO ZOOM</span>
+                  </span>
                 </div>
-                <span>EXTRAIT DE PARFUM</span>
-              </div>
-
-              {/* Central Flacon Display */}
-              <div className="my-auto py-8 flex flex-col items-center justify-center transform hover:scale-[1.03] transition-transform duration-700 select-none">
-                <PerfumeBottle
-                  fragrance={fragrance}
-                  size="lg"
-                  showPedestal={true}
-                  pedestalHeight={130}
-                  interactive={true}
-                />
-              </div>
-
-              {/* Quick Notes Strip under Bottle */}
-              <div className="pt-4 border-t border-[#0A2533]/10 flex flex-wrap items-center justify-between gap-2 text-[11px] font-mono text-[#5A7785]">
-                <span>KEY ACCORDS:</span>
-                <span className="text-[#0A2533] font-medium text-right">
-                  {fragrance.olfactoryPyramid.heart.slice(0, 2).join(' • ')} • {fragrance.olfactoryPyramid.base[0]}
-                </span>
               </div>
             </div>
 
-            {/* Reassurance Guarantees */}
-            <div className="mt-4 grid grid-cols-3 gap-3 text-center text-xs font-mono text-[#5A7785]">
-              <div className="p-3 bg-[#FAFBFD] border border-[#0A2533]/[0.08]">
-                <span className="block font-semibold text-[#0A2533]">100% PURE</span>
-                <span className="text-[10px] opacity-75">Extrait Oil Base</span>
-              </div>
-              <div className="p-3 bg-[#FAFBFD] border border-[#0A2533]/[0.08]">
-                <span className="block font-semibold text-[#0A2533]">12–14 HRS</span>
-                <span className="text-[10px] opacity-75">Skin Persistence</span>
-              </div>
-              <div className="p-3 bg-[#FAFBFD] border border-[#0A2533]/[0.08]">
-                <span className="block font-semibold text-[#0A2533]">DISPATCH</span>
-                <span className="text-[10px] opacity-75">48-Hr Express</span>
-              </div>
+            {/* View Mode Thumbnails */}
+            <div className="mt-4 flex items-center gap-3">
+              {fragrance.image && (
+                <button
+                  type="button"
+                  onClick={() => setViewMode('photo')}
+                  className={`w-20 h-20 border overflow-hidden transition-all cursor-pointer rounded-xs ${
+                    viewMode === 'photo' ? 'border-[#C5A059] ring-1 ring-[#C5A059]' : 'border-white/15 opacity-60 hover:opacity-100'
+                  }`}
+                >
+                  <img src={fragrance.image} alt="Studio view" className="w-full h-full object-cover" />
+                </button>
+              )}
+              <button
+                type="button"
+                onClick={() => setViewMode('bottle')}
+                className={`w-20 h-20 border p-2 bg-[#0E1318] flex items-center justify-center transition-all cursor-pointer rounded-xs ${
+                  viewMode === 'bottle' ? 'border-[#C5A059] ring-1 ring-[#C5A059]' : 'border-white/15 opacity-60 hover:opacity-100'
+                }`}
+              >
+                <div className="w-full h-full flex items-center justify-center scale-50 pointer-events-none">
+                  <PerfumeBottle fragrance={fragrance} size="sm" showPedestal={false} />
+                </div>
+              </button>
             </div>
           </div>
 
-          {/* Right Column: Title, Pricing, Actions & Details (lg:col-span-6) */}
+          {/* Right Product Dossier (lg:col-span-6) */}
           <div className="lg:col-span-6 flex flex-col justify-start">
             
-            {/* Category / Formula Pill */}
-            <div className="flex items-center gap-2 text-xs font-mono tracking-[0.2em] uppercase text-[#087A91] font-semibold mb-2">
-              <span>{fragrance.family}</span>
-              <span>•</span>
-              <span>NO. {fragrance.formulaNo}</span>
-            </div>
+            {/* Top Ingredient / Category Title */}
+            <span className="text-xs font-mono tracking-[0.25em] uppercase text-[#C5A059] font-medium mb-1.5 block">
+              {fragrance.ingredientTitle || fragrance.family.toUpperCase()}
+            </span>
 
-            {/* Product Title */}
-            <h1 className="font-display font-light text-4xl sm:text-5xl text-[#0A2533] tracking-tight leading-tight">
+            {/* Product Title (Large Serif) */}
+            <h1 className="font-display font-normal text-4xl sm:text-5xl text-white tracking-tight leading-tight">
               {fragrance.name}
             </h1>
 
-            {/* Subtitle */}
-            <p className="mt-1 text-base font-mono text-[#5A7785] tracking-wider uppercase">
-              {fragrance.subtitle}
-            </p>
-
-            {/* Rating Stars Summary (Click to scroll to reviews) */}
-            <div className="mt-4 flex items-center gap-3">
-              <div className="flex items-center text-amber-500">
-                {[...Array(5)].map((_, i) => (
-                  <Star key={i} className="w-4 h-4 fill-amber-400 stroke-amber-400" />
-                ))}
-              </div>
-              <a 
-                href="#reviews"
-                className="text-xs font-mono text-[#5A7785] hover:text-[#087A91] transition-colors underline underline-offset-4"
-              >
-                {averageRating} / 5.0 ({reviews.length} Verified Customer Reviews)
-              </a>
-            </div>
-
-            {/* Pricing Card */}
-            <div className="mt-6 p-4 sm:p-5 bg-[#FAFBFD] border border-[#0A2533]/[0.08] rounded-sm">
-              <div className="flex items-baseline gap-4">
-                <span className="font-display text-3xl sm:text-4xl text-[#0A2533] font-semibold tabular-nums">
-                  {formatPrice(currentPrice)}
-                </span>
-                <span className="text-xs font-mono text-emerald-700 font-medium bg-emerald-50 px-2 py-0.5 border border-emerald-200">
-                  IN STOCK • READY TO SHIP
-                </span>
-              </div>
-              <p className="mt-1.5 text-xs font-mono text-[#5A7785]">
-                MRP inclusive of all taxes (18% GST). Complimentary insured shipping throughout India.
+            {/* Italic Tagline */}
+            {fragrance.tagline && (
+              <p className="mt-1.5 text-base sm:text-lg font-serif italic text-[#C5B39A]">
+                {fragrance.tagline}
               </p>
+            )}
+
+            {/* Price & Size Display */}
+            <div className="mt-6 flex items-baseline gap-3 pb-6 border-b border-white/10">
+              <span className="font-display text-3xl sm:text-4xl text-[#D4AF37] font-semibold tabular-nums">
+                {formatPrice(currentPrice)}
+              </span>
+              <span className="text-sm font-mono text-[#829CA9]">
+                {fragrance.sizeLabel || `${selectedSize} ml`}
+              </span>
             </div>
 
-            {/* Narrative Description (Clear, evocative, no AI slop) */}
-            <p className="mt-6 text-base text-[#3A5563] leading-relaxed font-light">
-              {fragrance.description}
-            </p>
-
-            <div className="mt-4 p-4 border-l-2 border-[#087A91] bg-[#F4F9FB] text-xs font-mono text-[#244250] leading-relaxed">
-              <span className="font-semibold block text-[#087A91] uppercase tracking-wider mb-0.5">Scent Character</span>
-              "{fragrance.character}"
+            {/* Narrative Story Prose (Simple, evocative, no AI slop) */}
+            <div className="mt-6 text-sm sm:text-base text-[#B0C3CD] leading-relaxed font-light">
+              <p>{fragrance.description}</p>
             </div>
 
-            {/* Flacon Size Selection (50ml / 100ml) */}
-            <div className="mt-8">
-              <div className="flex items-center justify-between text-xs font-mono tracking-wider uppercase text-[#5A7785] mb-3">
-                <span className="font-semibold text-[#0A2533]">SELECT FLACON SIZE:</span>
-                <span className="text-[#087A91] font-semibold">{selectedSize} ML ALLOCATION</span>
+            {/* Clean NOTE PYRAMID (Exact layout from screenshots) */}
+            <div className="mt-8 pt-6 border-t border-white/10">
+              <h3 className="font-mono text-xs tracking-[0.25em] text-[#C5A059] uppercase font-semibold mb-4">
+                NOTE PYRAMID
+              </h3>
+
+              <div className="space-y-3 font-mono text-xs">
+                <div className="grid grid-cols-12 gap-2 py-1.5 border-b border-white/5">
+                  <span className="col-span-3 text-[#C5A059] tracking-wider uppercase font-semibold">
+                    TOP
+                  </span>
+                  <span className="col-span-9 text-white">
+                    {fragrance.olfactoryPyramid.top.join(', ')}
+                  </span>
+                </div>
+
+                <div className="grid grid-cols-12 gap-2 py-1.5 border-b border-white/5">
+                  <span className="col-span-3 text-[#C5A059] tracking-wider uppercase font-semibold">
+                    HEART
+                  </span>
+                  <span className="col-span-9 text-white">
+                    {fragrance.olfactoryPyramid.heart.join(', ')}
+                  </span>
+                </div>
+
+                <div className="grid grid-cols-12 gap-2 py-1.5">
+                  <span className="col-span-3 text-[#C5A059] tracking-wider uppercase font-semibold">
+                    BASE
+                  </span>
+                  <span className="col-span-9 text-white">
+                    {fragrance.olfactoryPyramid.base.join(' & ')}
+                  </span>
+                </div>
               </div>
+            </div>
 
-              <div className="grid grid-cols-2 gap-3.5">
-                {fragrance.sizes.map(sizeOption => {
-                  const isSelected = selectedSize === sizeOption.ml;
-                  return (
+            {/* Size Switcher (if product has 50ml / 100ml options) */}
+            {fragrance.sizes.length > 1 && (
+              <div className="mt-8">
+                <div className="flex items-center justify-between text-xs font-mono tracking-wider uppercase text-[#829CA9] mb-2.5">
+                  <span>FLACON SIZE</span>
+                  <span className="text-[#C5A059]">{selectedSize} ML</span>
+                </div>
+                <div className="grid grid-cols-2 gap-3">
+                  {fragrance.sizes.map(s => (
                     <button
-                      key={sizeOption.ml}
+                      key={s.ml}
                       type="button"
-                      onClick={() => setSelectedSize(sizeOption.ml)}
-                      className={`p-4 border text-left transition-all cursor-pointer rounded-sm flex flex-col justify-between gap-2 ${
-                        isSelected
-                          ? 'border-[#0A2533] bg-[#0A2533] text-white shadow-md'
-                          : 'border-[#0A2533]/15 bg-white text-[#0A2533] hover:border-[#0A2533]/50'
+                      onClick={() => setSelectedSize(s.ml)}
+                      className={`p-3.5 border text-left font-mono transition-all cursor-pointer rounded-xs flex items-center justify-between ${
+                        selectedSize === s.ml
+                          ? 'border-[#C5A059] bg-[#C5A059]/10 text-white'
+                          : 'border-white/15 bg-white/[0.02] text-[#829CA9] hover:border-white/30'
                       }`}
                     >
-                      <div className="flex items-center justify-between w-full">
-                        <span className="font-mono text-sm font-bold tracking-wider">{sizeOption.ml} ML</span>
-                        <span className={`text-[10px] font-mono uppercase ${isSelected ? 'text-[#48B8CE]' : 'text-[#5A7785]'}`}>
-                          {sizeOption.ml === 50 ? 'Standard Flacon' : 'Extended Flacon'}
-                        </span>
-                      </div>
-                      <span className="font-display text-lg font-medium tabular-nums">
-                        {formatPrice(sizeOption.price)}
-                      </span>
+                      <span className="text-xs font-semibold">{s.ml} ML</span>
+                      <span className="text-xs font-medium text-[#D4AF37]">{formatPrice(s.price)}</span>
                     </button>
-                  );
-                })}
+                  ))}
+                </div>
               </div>
-            </div>
+            )}
 
-            {/* Quantity Selector + CTAs (Add to Cart & Buy Now) */}
-            <div className="mt-8 space-y-3.5">
-              
-              <div className="flex flex-col sm:flex-row items-stretch gap-3.5">
-                {/* Quantity Box */}
-                <div className="flex items-center border border-[#0A2533]/20 bg-white h-13 px-3 shrink-0 rounded-sm">
+            {/* Actions: Quantity + Gold ADD TO CART Button + BUY NOW */}
+            <div className="mt-8 space-y-3">
+              <div className="flex items-center gap-3">
+                {/* Quantity Selector: [- 1 +] */}
+                <div className="flex items-center border border-white/20 bg-[#0E1318] h-13 px-2 rounded-xs shrink-0">
                   <button
                     type="button"
                     onClick={() => setQuantity(Math.max(1, quantity - 1))}
-                    className="p-2 text-[#5A7785] hover:text-[#0A2533] cursor-pointer"
+                    className="p-2 text-[#829CA9] hover:text-white cursor-pointer"
                     aria-label="Decrease quantity"
                   >
-                    <Minus className="w-4 h-4" />
+                    <Minus className="w-3.5 h-3.5" />
                   </button>
-                  <span className="w-10 text-center font-mono font-semibold text-sm tabular-nums text-[#0A2533]">
+                  <span className="w-8 text-center font-mono font-semibold text-sm tabular-nums text-white">
                     {quantity}
                   </span>
                   <button
                     type="button"
                     onClick={() => setQuantity(quantity + 1)}
-                    className="p-2 text-[#5A7785] hover:text-[#0A2533] cursor-pointer"
+                    className="p-2 text-[#829CA9] hover:text-white cursor-pointer"
                     aria-label="Increase quantity"
                   >
-                    <Plus className="w-4 h-4" />
+                    <Plus className="w-3.5 h-3.5" />
                   </button>
                 </div>
 
-                {/* Primary ADD TO CART Button */}
+                {/* Main Gold Button: ADD TO CART — ₹2,699 → */}
                 <button
                   type="button"
                   onClick={handleAddToCart}
-                  className="flex-1 h-13 bg-[#0A2533] hover:bg-[#073849] text-white font-mono text-xs uppercase tracking-[0.2em] font-semibold flex items-center justify-center gap-2.5 transition-all shadow-md cursor-pointer rounded-sm active:scale-[0.99]"
+                  className="flex-1 h-13 bg-[#C5A059] hover:bg-[#D4AF37] text-[#0A0D10] font-mono text-xs uppercase tracking-[0.16em] font-bold flex items-center justify-center gap-2 transition-all shadow-lg cursor-pointer rounded-xs active:scale-[0.99]"
                 >
-                  <ShoppingBag className="w-4 h-4" />
-                  <span>ADD TO CART</span>
-                  <span className="tabular-nums font-bold">({formatPrice(currentPrice * quantity)})</span>
+                  <span>ADD TO CART — {formatPrice(currentPrice * quantity)}</span>
+                  <ArrowRight className="w-4 h-4 stroke-[2.5]" />
                 </button>
               </div>
 
-              {/* Secondary BUY NOW Button (Instant Checkout) */}
+              {/* Instant BUY NOW Button */}
               <button
                 type="button"
                 onClick={handleBuyNow}
-                className="w-full h-13 bg-[#087A91] hover:bg-[#066579] text-white font-mono text-xs uppercase tracking-[0.2em] font-semibold flex items-center justify-center gap-2.5 transition-all shadow-md cursor-pointer rounded-sm active:scale-[0.99]"
+                className="w-full h-11 bg-white/[0.06] hover:bg-white/[0.1] text-white border border-white/20 font-mono text-xs uppercase tracking-[0.16em] font-semibold flex items-center justify-center gap-2 transition-all cursor-pointer rounded-xs"
               >
-                <Zap className="w-4 h-4 text-amber-300" />
+                <Zap className="w-3.5 h-3.5 text-[#D4AF37]" />
                 <span>BUY NOW • INSTANT CHECKOUT</span>
               </button>
             </div>
 
-            {/* Added Confirmation Banner */}
+            {/* Added Notification */}
             {addedNotice && (
-              <div className="mt-3.5 p-3.5 bg-emerald-50 border border-emerald-200 text-emerald-800 text-xs font-mono flex items-center justify-between rounded-sm animate-in fade-in">
+              <div className="mt-3.5 p-3.5 bg-emerald-950/60 border border-emerald-500/40 text-emerald-200 text-xs font-mono flex items-center justify-between rounded-xs animate-in fade-in">
                 <div className="flex items-center gap-2">
-                  <Check className="w-4 h-4 text-emerald-600" />
-                  <span>Formula {fragrance.formulaNo} ({selectedSize}ml × {quantity}) added to bag.</span>
+                  <Check className="w-4 h-4 text-emerald-400" />
+                  <span>{fragrance.name} added to your bag.</span>
                 </div>
                 <button 
                   type="button"
                   onClick={() => openCart()}
-                  className="underline font-semibold hover:text-emerald-950 cursor-pointer"
+                  className="underline font-semibold text-white hover:text-emerald-300 cursor-pointer"
                 >
                   View Bag
                 </button>
               </div>
             )}
 
-            {/* Trust Assurances */}
-            <div className="mt-8 pt-6 border-t border-[#0A2533]/10 grid grid-cols-1 sm:grid-cols-2 gap-3.5 text-xs font-mono text-[#5A7785]">
-              <div className="flex items-center gap-2.5">
-                <Truck className="w-4 h-4 text-[#087A91]" />
-                <span>Free delivery on orders over ₹5,000</span>
+            {/* Trust Bullet Points (Matching Screenshots) */}
+            <div className="mt-8 pt-6 border-t border-white/10 space-y-2 text-xs font-mono text-[#829CA9]">
+              <div className="flex items-center gap-2">
+                <span className="text-[#C5A059]">•</span>
+                <span>Complimentary shipping on orders over ₹1,500</span>
               </div>
-              <div className="flex items-center gap-2.5">
-                <ShieldCheck className="w-4 h-4 text-[#087A91]" />
-                <span>Authentic 100% Extrait de Parfum</span>
+              <div className="flex items-center gap-2">
+                <span className="text-[#C5A059]">•</span>
+                <span>7-day returns on unopened bottles or damaged goods</span>
               </div>
-            </div>
-
-            {/* Tabbed Product Details: Notes / Specs / How to Use */}
-            <div className="mt-12 pt-8 border-t border-[#0A2533]/10">
-              <div className="flex items-center gap-2 border-b border-[#0A2533]/10 text-xs font-mono uppercase tracking-wider mb-6">
-                <button
-                  type="button"
-                  onClick={() => setActiveTab('notes')}
-                  className={`pb-3 border-b-2 font-medium transition-colors cursor-pointer ${
-                    activeTab === 'notes'
-                      ? 'border-[#087A91] text-[#087A91] font-semibold'
-                      : 'border-transparent text-[#5A7785] hover:text-[#0A2533]'
-                  }`}
-                >
-                  Olfactory Notes
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setActiveTab('specifications')}
-                  className={`pb-3 border-b-2 font-medium transition-colors cursor-pointer ${
-                    activeTab === 'specifications'
-                      ? 'border-[#087A91] text-[#087A91] font-semibold'
-                      : 'border-transparent text-[#5A7785] hover:text-[#0A2533]'
-                  }`}
-                >
-                  Specifications
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setActiveTab('usage')}
-                  className={`pb-3 border-b-2 font-medium transition-colors cursor-pointer ${
-                    activeTab === 'usage'
-                      ? 'border-[#087A91] text-[#087A91] font-semibold'
-                      : 'border-transparent text-[#5A7785] hover:text-[#0A2533]'
-                  }`}
-                >
-                  How to Wear
-                </button>
-              </div>
-
-              {/* Tab 1: Scent Architecture */}
-              {activeTab === 'notes' && (
-                <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs font-mono">
-                  <div className="p-4 bg-[#FAFBFD] border border-[#0A2533]/[0.08] rounded-sm">
-                    <span className="text-[#087A91] block text-[10px] tracking-wider uppercase font-semibold mb-2">
-                      01 // TOP NOTES (0–30 MIN)
-                    </span>
-                    <ul className="space-y-1.5 text-[#0A2533]">
-                      {fragrance.olfactoryPyramid.top.map(note => (
-                        <li key={note} className="flex items-center gap-2">
-                          <span className="w-1.5 h-1.5 rounded-full bg-[#087A91]" />
-                          <span>{note}</span>
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-
-                  <div className="p-4 bg-[#FAFBFD] border border-[#0A2533]/[0.08] rounded-sm">
-                    <span className="text-[#087A91] block text-[10px] tracking-wider uppercase font-semibold mb-2">
-                      02 // HEART (30 MIN–4 HRS)
-                    </span>
-                    <ul className="space-y-1.5 text-[#0A2533] font-medium">
-                      {fragrance.olfactoryPyramid.heart.map(note => (
-                        <li key={note} className="flex items-center gap-2">
-                          <span className="w-1.5 h-1.5 rounded-full bg-[#087A91]" />
-                          <span>{note}</span>
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-
-                  <div className="p-4 bg-[#FAFBFD] border border-[#0A2533]/[0.08] rounded-sm">
-                    <span className="text-[#087A91] block text-[10px] tracking-wider uppercase font-semibold mb-2">
-                      03 // DRYDOWN (4–14+ HRS)
-                    </span>
-                    <ul className="space-y-1.5 text-[#0A2533]">
-                      {fragrance.olfactoryPyramid.base.map(note => (
-                        <li key={note} className="flex items-center gap-2">
-                          <span className="w-1.5 h-1.5 rounded-full bg-[#087A91]" />
-                          <span>{note}</span>
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-                </div>
-              )}
-
-              {/* Tab 2: Technical Specifications */}
-              {activeTab === 'specifications' && (
-                <div className="border border-[#0A2533]/10 bg-white font-mono text-xs divide-y divide-[#0A2533]/10 rounded-sm">
-                  <div className="p-3.5 flex justify-between items-center bg-[#FAFBFD]">
-                    <span className="text-[#5A7785]">Concentration</span>
-                    <span className="text-[#0A2533] font-semibold">{fragrance.labSpec.ratio}</span>
-                  </div>
-                  <div className="p-3.5 flex justify-between items-center">
-                    <span className="text-[#5A7785]">Maceration Protocol</span>
-                    <span className="text-[#0A2533]">{fragrance.labSpec.maceration}</span>
-                  </div>
-                  <div className="p-3.5 flex justify-between items-center bg-[#FAFBFD]">
-                    <span className="text-[#5A7785]">Skin Longevity</span>
-                    <span className="text-[#087A91] font-semibold">{fragrance.labSpec.volatility}</span>
-                  </div>
-                  <div className="p-3.5 flex justify-between items-center">
-                    <span className="text-[#5A7785]">Formulation pH</span>
-                    <span className="text-[#0A2533]">{fragrance.labSpec.ph}</span>
-                  </div>
-                  <div className="p-3.5 flex justify-between items-center bg-[#FAFBFD]">
-                    <span className="text-[#5A7785]">Origin</span>
-                    <span className="text-[#0A2533] font-medium">Extracted & Hand-Compounded in Tamil Nadu</span>
-                  </div>
-                </div>
-              )}
-
-              {/* Tab 3: How to Wear */}
-              {activeTab === 'usage' && (
-                <div className="p-5 bg-[#FAFBFD] border border-[#0A2533]/[0.08] text-xs font-mono text-[#3A5563] space-y-3 leading-relaxed rounded-sm">
-                  <p>
-                    <strong className="text-[#0A2533]">1. Application Pulse Points:</strong> Spray directly onto the base of the throat, wrists, and collarbones. Because Chem Bros uses high extrait concentrations, 2 to 3 sprays are sufficient for day-long presence.
-                  </p>
-                  <p>
-                    <strong className="text-[#0A2533]">2. The Golden Rule:</strong> Never rub the wrists together after spraying; friction crushes the delicate molecular top notes (bergamot, green tea, and floral petals) before they can unfold organically.
-                  </p>
-                  <p>
-                    <strong className="text-[#0A2533]">3. Storage:</strong> Store in a cool, shaded environment away from direct sunlight and humidity to preserve natural absolute clarity.
-                  </p>
-                </div>
-              )}
-
             </div>
 
           </div>
@@ -598,68 +469,61 @@ export const ProductDetailPage: React.FC = () => {
         </div>
       </section>
 
-      {/* 3. Customer Reviews Section (Crucial Requirement) */}
-      <section id="reviews" className="max-w-7xl mx-auto px-6 sm:px-12 py-16 border-t border-[#0A2533]/10">
-        
-        {/* Reviews Section Header */}
-        <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 pb-8 border-b border-[#0A2533]/10">
+      {/* 3. Customer Reviews Section */}
+      <section id="reviews" className="max-w-7xl mx-auto px-6 sm:px-12 py-16 border-t border-white/10">
+        <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 pb-8 border-b border-white/10">
           <div>
-            <div className="flex items-center gap-2 font-mono text-xs tracking-[0.25em] text-[#087A91] uppercase mb-1 font-semibold">
-              <span className="w-3 h-[1px] bg-[#087A91]" />
-              <span>VERIFIED BUYERS</span>
+            <div className="flex items-center gap-2 font-mono text-xs tracking-[0.25em] text-[#C5A059] uppercase mb-1 font-semibold">
+              <span className="w-3 h-[1px] bg-[#C5A059]" />
+              <span>COMMUNITY IMPRESSIONS</span>
             </div>
-            <h2 className="font-display text-3xl sm:text-4xl font-light text-[#0A2533] tracking-tight">
+            <h2 className="font-display text-3xl sm:text-4xl font-light text-white tracking-tight">
               Customer Reviews
             </h2>
           </div>
 
-          {/* Overall Rating Score & Add Review Trigger */}
           <div className="flex flex-wrap items-center gap-4">
-            <div className="flex items-center gap-3 pr-4 border-r border-[#0A2533]/10">
-              <span className="font-display text-4xl text-[#0A2533] font-semibold">{averageRating}</span>
+            <div className="flex items-center gap-3 pr-4 border-r border-white/10">
+              <span className="font-display text-4xl text-[#D4AF37] font-semibold">{averageRating}</span>
               <div>
-                <div className="flex items-center text-amber-500">
+                <div className="flex items-center text-amber-400">
                   {[...Array(5)].map((_, i) => (
                     <Star key={i} className="w-3.5 h-3.5 fill-amber-400 stroke-amber-400" />
                   ))}
                 </div>
-                <span className="text-[11px] font-mono text-[#5A7785]">Based on {reviews.length} reviews</span>
+                <span className="text-[11px] font-mono text-[#829CA9]">Based on {reviews.length} reviews</span>
               </div>
             </div>
 
             <button
               type="button"
               onClick={() => setShowReviewForm(!showReviewForm)}
-              className="px-4 py-2.5 bg-[#0A2533] hover:bg-[#087A91] text-white font-mono text-xs uppercase tracking-wider transition-colors cursor-pointer rounded-sm flex items-center gap-2"
+              className="px-4 py-2 bg-[#C5A059] hover:bg-[#D4AF37] text-[#0A0D10] font-mono text-xs uppercase tracking-wider font-bold transition-colors cursor-pointer rounded-xs"
             >
-              <MessageSquareQuote className="w-3.5 h-3.5" />
-              <span>{showReviewForm ? 'CANCEL' : 'WRITE A REVIEW'}</span>
+              {showReviewForm ? 'CANCEL' : 'WRITE A REVIEW'}
             </button>
           </div>
         </div>
 
-        {/* Success Banner after submitting review */}
         {reviewSubmitted && (
-          <div className="mt-6 p-4 bg-emerald-50 border border-emerald-200 text-emerald-800 text-xs font-mono flex items-center gap-2.5 rounded-sm">
-            <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
-            <span>Thank you! Your verified review has been submitted and posted to the community.</span>
+          <div className="mt-6 p-4 bg-emerald-950/60 border border-emerald-500/40 text-emerald-200 text-xs font-mono flex items-center gap-2.5 rounded-xs">
+            <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0" />
+            <span>Thank you! Your verified review has been posted.</span>
           </div>
         )}
 
-        {/* Interactive Review Form */}
         {showReviewForm && (
           <form 
             onSubmit={handleSubmitReview}
-            className="mt-8 p-6 sm:p-8 bg-[#FAFBFD] border border-[#087A91]/30 rounded-sm shadow-sm animate-in fade-in"
+            className="mt-8 p-6 sm:p-8 bg-[#0E1318] border border-[#C5A059]/40 rounded-xs shadow-xl animate-in fade-in"
           >
-            <h3 className="font-display text-xl font-medium text-[#0A2533] mb-4">
+            <h3 className="font-display text-xl text-white mb-4">
               Write a Review for {fragrance.name}
             </h3>
 
-            {/* Rating Stars Picker */}
             <div className="mb-5">
-              <label className="block text-xs font-mono uppercase tracking-wider text-[#5A7785] mb-2">
-                Your Overall Rating *
+              <label className="block text-xs font-mono uppercase tracking-wider text-[#829CA9] mb-2">
+                Rating *
               </label>
               <div className="flex items-center gap-1.5">
                 {[1, 2, 3, 4, 5].map(star => (
@@ -674,20 +538,17 @@ export const ProductDetailPage: React.FC = () => {
                       className={`w-6 h-6 ${
                         star <= reviewRating 
                           ? 'fill-amber-400 stroke-amber-400' 
-                          : 'stroke-[#CBD5E1] fill-transparent'
+                          : 'stroke-[#4A5D68] fill-transparent'
                       }`} 
                     />
                   </button>
                 ))}
-                <span className="ml-2 text-xs font-mono text-[#5A7785] font-semibold">
-                  {reviewRating} out of 5 Stars
-                </span>
               </div>
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
               <div>
-                <label className="block text-xs font-mono uppercase tracking-wider text-[#5A7785] mb-1.5">
+                <label className="block text-xs font-mono uppercase tracking-wider text-[#829CA9] mb-1.5">
                   Your Name *
                 </label>
                 <input
@@ -695,50 +556,50 @@ export const ProductDetailPage: React.FC = () => {
                   required
                   value={reviewerName}
                   onChange={e => setReviewerName(e.target.value)}
-                  placeholder="e.g. Priya Sharma"
-                  className="w-full px-3.5 py-2.5 bg-white border border-[#0A2533]/20 text-xs font-mono text-[#0A2533] focus:border-[#087A91] outline-hidden rounded-sm"
+                  placeholder="e.g. Priya S."
+                  className="w-full px-3.5 py-2.5 bg-[#07090C] border border-white/20 text-xs font-mono text-white focus:border-[#C5A059] outline-hidden rounded-xs"
                 />
               </div>
 
               <div>
-                <label className="block text-xs font-mono uppercase tracking-wider text-[#5A7785] mb-1.5">
+                <label className="block text-xs font-mono uppercase tracking-wider text-[#829CA9] mb-1.5">
                   City / State (Optional)
                 </label>
                 <input
                   type="text"
                   value={reviewerLocation}
                   onChange={e => setReviewerLocation(e.target.value)}
-                  placeholder="e.g. Mumbai, Maharashtra"
-                  className="w-full px-3.5 py-2.5 bg-white border border-[#0A2533]/20 text-xs font-mono text-[#0A2533] focus:border-[#087A91] outline-hidden rounded-sm"
+                  placeholder="e.g. Chennai, Tamil Nadu"
+                  className="w-full px-3.5 py-2.5 bg-[#07090C] border border-white/20 text-xs font-mono text-white focus:border-[#C5A059] outline-hidden rounded-xs"
                 />
               </div>
             </div>
 
             <div className="mb-4">
-              <label className="block text-xs font-mono uppercase tracking-wider text-[#5A7785] mb-1.5">
-                Review Headline *
+              <label className="block text-xs font-mono uppercase tracking-wider text-[#829CA9] mb-1.5">
+                Headline *
               </label>
               <input
                 type="text"
                 required
                 value={reviewTitle}
                 onChange={e => setReviewTitle(e.target.value)}
-                placeholder="e.g. Magnificent floral depth and persistence"
-                className="w-full px-3.5 py-2.5 bg-white border border-[#0A2533]/20 text-xs font-mono text-[#0A2533] focus:border-[#087A91] outline-hidden rounded-sm"
+                placeholder="e.g. Scent evolution is intoxicating"
+                className="w-full px-3.5 py-2.5 bg-[#07090C] border border-white/20 text-xs font-mono text-white focus:border-[#C5A059] outline-hidden rounded-xs"
               />
             </div>
 
             <div className="mb-6">
-              <label className="block text-xs font-mono uppercase tracking-wider text-[#5A7785] mb-1.5">
-                Detailed Experience *
+              <label className="block text-xs font-mono uppercase tracking-wider text-[#829CA9] mb-1.5">
+                Your Review *
               </label>
               <textarea
                 required
                 rows={4}
                 value={reviewComment}
                 onChange={e => setReviewComment(e.target.value)}
-                placeholder="Share your thoughts on the scent evolution, skin longevity, projection, and occasion..."
-                className="w-full p-3.5 bg-white border border-[#0A2533]/20 text-xs font-mono text-[#0A2533] focus:border-[#087A91] outline-hidden rounded-sm resize-y"
+                placeholder="Share your experience on skin longevity, scent notes, and projection..."
+                className="w-full p-3.5 bg-[#07090C] border border-white/20 text-xs font-mono text-white focus:border-[#C5A059] outline-hidden rounded-xs resize-y"
               />
             </div>
 
@@ -746,13 +607,13 @@ export const ProductDetailPage: React.FC = () => {
               <button
                 type="button"
                 onClick={() => setShowReviewForm(false)}
-                className="px-4 py-2 border border-[#0A2533]/20 text-xs font-mono uppercase tracking-wider text-[#5A7785] hover:text-[#0A2533] cursor-pointer"
+                className="px-4 py-2 border border-white/20 text-xs font-mono uppercase tracking-wider text-[#829CA9] hover:text-white cursor-pointer"
               >
                 Cancel
               </button>
               <button
                 type="submit"
-                className="px-6 py-2.5 bg-[#087A91] hover:bg-[#073849] text-white text-xs font-mono uppercase tracking-wider font-semibold cursor-pointer rounded-sm"
+                className="px-6 py-2.5 bg-[#C5A059] hover:bg-[#D4AF37] text-[#0A0D10] text-xs font-mono uppercase tracking-wider font-bold cursor-pointer rounded-xs"
               >
                 Submit Review
               </button>
@@ -760,42 +621,41 @@ export const ProductDetailPage: React.FC = () => {
           </form>
         )}
 
-        {/* Reviews List */}
-        <div className="mt-8 space-y-6">
+        <div className="mt-8 space-y-4">
           {reviews.map(review => (
             <div 
               key={review.id}
-              className="p-6 bg-[#FAFBFD] border border-[#0A2533]/[0.08] rounded-sm hover:border-[#087A91]/30 transition-colors"
+              className="p-6 bg-[#0E1318] border border-white/[0.08] rounded-xs hover:border-[#C5A059]/30 transition-colors"
             >
-              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-3">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-2">
                 <div className="flex items-center gap-3">
-                  <div className="flex items-center text-amber-500">
+                  <div className="flex items-center text-amber-400">
                     {[...Array(review.rating)].map((_, i) => (
                       <Star key={i} className="w-3.5 h-3.5 fill-amber-400 stroke-amber-400" />
                     ))}
                   </div>
-                  <h4 className="font-display font-semibold text-base text-[#0A2533]">
+                  <h4 className="font-display font-medium text-base text-white">
                     {review.title}
                   </h4>
                 </div>
 
-                <span className="text-[11px] font-mono text-[#5A7785]">
+                <span className="text-[11px] font-mono text-[#829CA9]">
                   {review.date}
                 </span>
               </div>
 
-              <p className="text-xs sm:text-sm font-light text-[#3A5563] leading-relaxed mb-4">
+              <p className="text-xs sm:text-sm font-light text-[#B0C3CD] leading-relaxed mb-3">
                 "{review.comment}"
               </p>
 
-              <div className="flex items-center gap-2 text-xs font-mono text-[#5A7785]">
-                <span className="font-semibold text-[#0A2533]">{review.author}</span>
+              <div className="flex items-center gap-2 text-xs font-mono text-[#829CA9]">
+                <span className="font-semibold text-white">{review.author}</span>
                 <span>•</span>
                 <span>{review.location}</span>
                 {review.verified && (
                   <>
                     <span>•</span>
-                    <span className="inline-flex items-center gap-1 text-[#087A91] font-medium">
+                    <span className="inline-flex items-center gap-1 text-[#C5A059] font-medium">
                       <CheckCircle2 className="w-3 h-3" />
                       <span>Verified Buyer</span>
                     </span>
@@ -805,95 +665,91 @@ export const ProductDetailPage: React.FC = () => {
             </div>
           ))}
         </div>
-
       </section>
 
-      {/* 4. "Explore Other Fragrances" / You May Also Like (Crucial Requirement) */}
-      <section className="max-w-7xl mx-auto px-6 sm:px-12 py-16 border-t border-[#0A2533]/10">
-        <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 pb-6 mb-8 border-b border-[#0A2533]/10">
-          <div>
-            <div className="flex items-center gap-2 font-mono text-xs tracking-[0.25em] text-[#087A91] uppercase mb-1 font-semibold">
-              <span className="w-3 h-[1px] bg-[#087A91]" />
-              <span>THE ATELIER COLLECTION</span>
-            </div>
-            <h2 className="font-display text-2xl sm:text-3xl font-light text-[#0A2533] tracking-tight">
-              Explore Other Fragrances
-            </h2>
-          </div>
+      {/* 4. "THE MOLECULE SERIES" Grid (Exact Design from Screenshot 5) */}
+      <section className="max-w-7xl mx-auto px-6 sm:px-12 py-16 border-t border-white/10">
+        <div className="flex items-center justify-between pb-6 mb-8 border-b border-white/10">
+          <h2 className="font-mono text-sm sm:text-base tracking-[0.25em] text-white uppercase font-semibold">
+            THE MOLECULE SERIES
+          </h2>
 
           <Link
             to="/collection"
-            className="inline-flex items-center gap-1 text-xs font-mono text-[#087A91] hover:text-[#0A2533] transition-colors uppercase tracking-wider font-semibold"
+            className="inline-flex items-center gap-1 text-xs font-mono text-[#C5A059] hover:text-white transition-colors uppercase tracking-wider font-semibold"
           >
-            <span>View All Formulas</span>
+            <span>VIEW ALL</span>
             <ArrowRight className="w-3.5 h-3.5" />
           </Link>
         </div>
 
-        {/* 3-Card Grid for the other formulas */}
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 sm:gap-8">
-          {otherFragrances.map(other => (
+        {/* 4-Card Grid matching Screenshot 5 */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+          {FRAGRANCES.filter(f => f.id !== 'discovery-archive').map(prod => (
             <div
-              key={other.id}
-              className="group border border-[#0A2533]/10 hover:border-[#087A91]/40 bg-white rounded-sm overflow-hidden flex flex-col justify-between transition-all duration-300 shadow-sm hover:shadow-md"
+              key={prod.id}
+              className="group border border-white/10 bg-[#0E1318] rounded-xs overflow-hidden flex flex-col justify-between transition-all duration-300 hover:border-[#C5A059]/40"
             >
-              {/* Card Visual Stage */}
+              {/* Product Visual Container */}
               <Link 
-                to={`/product/${other.id}`}
+                to={`/product/${prod.id}`}
                 onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
-                className="relative p-6 sm:p-8 bg-gradient-to-b from-[#FAFBFD] via-[#F4F8FA] to-[#EBF2F6] flex flex-col items-center justify-center cursor-pointer border-b border-[#0A2533]/10"
+                className="relative h-[280px] bg-[#07090C] flex items-center justify-center overflow-hidden border-b border-white/10 cursor-pointer"
               >
-                <div className="absolute top-3 left-3 text-[10px] font-mono tracking-widest text-[#087A91] font-semibold uppercase">
-                  FORMULA {other.formulaNo}
-                </div>
+                {/* Bestseller Badge */}
+                {prod.isBestseller && (
+                  <span className="absolute top-2 left-2 z-10 px-2 py-0.5 bg-[#8B0000] text-white text-[9px] font-mono tracking-widest uppercase font-semibold">
+                    BESTSELLER
+                  </span>
+                )}
 
-                <div className="py-4 transform group-hover:scale-105 transition-transform duration-500">
-                  <PerfumeBottle
-                    fragrance={other}
-                    size="md"
-                    showPedestal={true}
-                    pedestalHeight={70}
-                    interactive={false}
+                {prod.image ? (
+                  <img
+                    src={prod.image}
+                    alt={prod.name}
+                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
                   />
-                </div>
-
-                <div className="mt-2 text-[10px] font-mono tracking-wider uppercase text-[#5A7785]">
-                  {other.family}
-                </div>
+                ) : (
+                  <div className="py-4 transform group-hover:scale-105 transition-transform duration-500">
+                    <PerfumeBottle fragrance={prod} size="md" showPedestal={false} />
+                  </div>
+                )}
               </Link>
 
-              {/* Card Meta & Actions */}
-              <div className="p-4 sm:p-5 flex flex-col justify-between flex-1">
-                <div>
-                  <Link
-                    to={`/product/${other.id}`}
-                    onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
-                    className="font-display font-semibold text-lg text-[#0A2533] group-hover:text-[#087A91] transition-colors block"
-                  >
-                    {other.name}
-                  </Link>
-                  <p className="mt-1 text-xs text-[#5A7785] font-light line-clamp-2">
-                    {other.description}
-                  </p>
-                </div>
+              {/* Product Information */}
+              <div className="p-4 sm:p-5 flex flex-col items-center text-center">
+                <Link
+                  to={`/product/${prod.id}`}
+                  onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+                  className="font-mono text-xs uppercase tracking-[0.2em] text-white font-semibold group-hover:text-[#C5A059] transition-colors"
+                >
+                  {prod.name.toUpperCase()}
+                </Link>
 
-                <div className="mt-5 pt-3 border-t border-[#0A2533]/10 flex items-center justify-between">
-                  <div>
-                    <span className="block text-[9px] font-mono uppercase tracking-wider text-[#5A7785]">FROM (50ML)</span>
-                    <span className="font-display text-base font-semibold text-[#0A2533] tabular-nums">
-                      {formatPrice(other.price)}
-                    </span>
-                  </div>
+                <span className="mt-1 text-[10px] font-mono tracking-widest uppercase text-[#C5A059]">
+                  {prod.ingredientTitle || prod.family.toUpperCase()}
+                </span>
 
-                  <Link
-                    to={`/product/${other.id}`}
-                    onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
-                    className="px-3.5 py-1.5 bg-[#0A2533] hover:bg-[#087A91] text-white font-mono text-xs uppercase tracking-wider transition-colors cursor-pointer rounded-xs font-medium"
-                  >
-                    VIEW
-                  </Link>
-                </div>
+                <span className="mt-3 text-xs font-serif italic tracking-wider uppercase text-[#829CA9]">
+                  {prod.subtitle.toUpperCase()}
+                </span>
+
+                <span className="mt-1 text-xs font-mono text-[#D4AF37] font-semibold tabular-nums">
+                  50 ml &nbsp;|&nbsp; {formatPrice(prod.price)}
+                </span>
               </div>
+
+              {/* Deep Crimson ADD TO BAG Button (Matching Screenshot 5) */}
+              <button
+                type="button"
+                onClick={() => {
+                  addToCart(prod, 50, 1);
+                  openCart();
+                }}
+                className="w-full py-3 bg-[#540B13] hover:bg-[#6E0F19] text-white text-xs font-mono uppercase tracking-[0.2em] font-bold transition-colors cursor-pointer"
+              >
+                ADD TO BAG
+              </button>
             </div>
           ))}
         </div>
