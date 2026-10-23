@@ -10,6 +10,9 @@ import { StoryModal, ContactModal, PolicyModal } from '../components/InfoModals'
 import { ScrollToTop } from '../components/common/ScrollToTop';
 import { useCart } from '../context/CartContext';
 
+// Global Lenis instance — shared with ScrollTrigger and subcomponents
+export let globalLenis: Lenis | null = null;
+
 export const RootLayout: React.FC = () => {
   const lenisRef = useRef<Lenis | null>(null);
   const location = useLocation();
@@ -28,31 +31,33 @@ export const RootLayout: React.FC = () => {
     closePolicy,
   } = useCart();
 
-  // Smooth Momentum Scroll with Lenis & GSAP ScrollTrigger
+  // ─── Lenis Smooth Scroll + GSAP ScrollTrigger Bridge ──────────────────────
   useEffect(() => {
+    gsap.registerPlugin(ScrollTrigger);
+
     const lenis = new Lenis({
-      duration: 1.2,
-      easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
-      orientation: 'vertical',
-      gestureOrientation: 'vertical',
+      lerp: 0.08,
       smoothWheel: true,
-      wheelMultiplier: 1.05,
-      touchMultiplier: 1.3,
+      wheelMultiplier: 0.9,
+      touchMultiplier: 1.6,
+      infinite: false,
+      autoRaf: false,
     });
+
+    globalLenis = lenis;
     lenisRef.current = lenis;
 
     lenis.on('scroll', ScrollTrigger.update);
 
-    const updateTicker = (time: number) => {
-      lenis.raf(time * 1000);
-    };
-
-    gsap.ticker.add(updateTicker);
+    // Store ticker fn reference so we can remove it exactly
+    const rafTick = (time: number) => lenis.raf(time * 1000);
+    gsap.ticker.add(rafTick);
     gsap.ticker.lagSmoothing(0);
 
     return () => {
-      gsap.ticker.remove(updateTicker);
+      gsap.ticker.remove(rafTick);
       lenis.destroy();
+      globalLenis = null;
       lenisRef.current = null;
     };
   }, []);

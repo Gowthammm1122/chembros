@@ -1,0 +1,144 @@
+/* ============================================================
+   ChemButton — Minimal Luxury CSS-Only Button System
+   Zero JS animation overhead, smooth GPU-accelerated only
+   ============================================================ */
+
+@import url('https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&display=swap');
+
+/* ---------- Base ---------- */
+.chem-btn {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0;
+  overflow: hidden;
+  padding: 0.65rem 1.6rem;
+  border: none;
+  cursor: pointer;
+  font-family: 'Space Mono', 'JetBrains Mono', ui-monospace, monospace;
+  font-size: 0.65rem;
+  font-weight: 700;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  transition:
+    color 0.28s ease,
+    background 0.28s ease,
+    border-color 0.28s ease,
+    box-shadow 0.28s ease,
+    transform 0.18s ease;
+  -webkit-font-smoothing: antialiased;
+  user-select: none;
+}
+
+.chem-btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+.chem-btn--full {
+  width: 100%;
+}
+
+/* Animated bottom line accent */
+.chem-btn__line {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  height: 1.5px;
+  width: 0;
+  background: currentColor;
+  transition: width 0.32s cubic-bezier(0.4, 0, 0.2, 1);
+  opacity: 0.5;
+}
+
+.chem-btn:not(:disabled):hover .chem-btn__line {
+  width: 100%;
+}
+
+.chem-btn__text {
+  position: relative;
+  z-index: 1;
+}
+
+/* ---------- Primary (Dark / Ink) ---------- */
+.chem-btn--primary {
+  background: #0A2533;
+  color: #DCE3E8;
+  box-shadow: inset 0 0 0 1px rgba(255,255,255,0.06);
+}
+
+.chem-btn--primary:not(:disabled):hover {
+  background: #0f2f42;
+  color: #ffffff;
+  box-shadow:
+    inset 0 0 0 1px rgba(72,184,206,0.25),
+    0 6px 24px rgba(10,37,51,0.45);
+  transform: translateY(-1px);
+}
+
+.chem-btn--primary:not(:disabled):active {
+  transform: translateY(0);
+  box-shadow: inset 0 0 0 1px rgba(72,184,206,0.2);
+}
+
+/* ---------- Teal (Accent) ---------- */
+.chem-btn--teal {
+  background: #48B8CE;
+  color: #03151d;
+  box-shadow: inset 0 0 0 1px rgba(255,255,255,0.12);
+}
+
+.chem-btn--teal:not(:disabled):hover {
+  background: #5dcade;
+  color: #03151d;
+  box-shadow:
+    inset 0 0 0 1px rgba(255,255,255,0.2),
+    0 6px 24px rgba(72,184,206,0.35);
+  transform: translateY(-1px);
+}
+
+.chem-btn--teal:not(:disabled):active {
+  transform: translateY(0);
+}
+
+/* ---------- Secondary (White, outlined feel) ---------- */
+.chem-btn--secondary {
+  background: transparent;
+  color: #0A2533;
+  box-shadow: inset 0 0 0 1px rgba(10,37,51,0.35);
+}
+
+.chem-btn--secondary:not(:disabled):hover {
+  background: #0A2533;
+  color: #fff;
+  box-shadow: inset 0 0 0 1px #0A2533;
+  transform: translateY(-1px);
+}
+
+.chem-btn--secondary:not(:disabled):active {
+  transform: translateY(0);
+}
+
+/* ---------- Ghost (for dark backgrounds) ---------- */
+.chem-btn--ghost {
+  background: rgba(255,255,255,0.06);
+  color: #DCE3E8;
+  box-shadow: inset 0 0 0 1px rgba(255,255,255,0.15);
+  backdrop-filter: blur(8px);
+}
+
+.chem-btn--ghost:not(:disabled):hover {
+  background: rgba(255,255,255,0.12);
+  color: #ffffff;
+  box-shadow:
+    inset 0 0 0 1px rgba(72,184,206,0.4),
+    0 4px 20px rgba(72,184,206,0.12);
+  transform: translateY(-1px);
+}
+
+.chem-btn--ghost:not(:disabled):active {
+  transform: translateY(0);
+}

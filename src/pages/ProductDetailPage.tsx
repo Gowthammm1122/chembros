@@ -20,7 +20,7 @@ import {
   Clock,
   Droplets
 } from 'lucide-react';
-import { LiquidChromeButton } from '../components/LiquidChromeButton';
+import { ChemButton } from '../components/ChemButton';
 
 interface Review {
   id: string;
@@ -447,11 +447,11 @@ export const ProductDetailPage: React.FC = () => {
               </div>
             </div>
 
-            {/* Action Zone: Quantity + Primary Liquid Chrome Button + Instant Buy Now */}
-            <div className="mt-8 space-y-4">
-              <div className="flex items-center gap-4">
+            {/* Action Zone: Quantity + ADD TO BAG + BUY NOW */}
+            <div className="mt-8 space-y-3">
+              <div className="flex flex-wrap items-center gap-3 sm:gap-4">
                 {/* Quantity Selector */}
-                <div className="flex items-center border border-white/20 bg-white/5 h-13 px-2 rounded-xs shrink-0">
+                <div className="flex items-center border border-white/20 bg-white/5 h-[51px] px-2 rounded-xs shrink-0">
                   <button
                     type="button"
                     onClick={() => setQuantity(Math.max(1, quantity - 1))}
@@ -460,7 +460,7 @@ export const ProductDetailPage: React.FC = () => {
                   >
                     <Minus className="w-3.5 h-3.5" />
                   </button>
-                  <span className="w-8 text-center font-mono font-semibold text-sm tabular-nums text-white">
+                  <span className="w-7 text-center font-mono font-semibold text-sm tabular-nums text-white">
                     {quantity}
                   </span>
                   <button
@@ -473,26 +473,22 @@ export const ProductDetailPage: React.FC = () => {
                   </button>
                 </div>
 
-                {/* Primary Liquid Chrome ADD TO BAG Button */}
-                <div className="flex-1 flex items-center">
-                  <LiquidChromeButton
-                    label={`ADD TO BAG · ${formatPrice(currentPrice * quantity)}`}
-                    size={0.25}
-                    onClick={handleAddToCart}
-                    aria-label={`Add ${fragrance.name} to cart`}
-                  />
-                </div>
-              </div>
+                {/* ADD TO BAG */}
+                <ChemButton
+                  label="ADD TO BAG"
+                  variant="primary"
+                  onClick={handleAddToCart}
+                  aria-label={`Add ${fragrance.name} to cart`}
+                />
 
-              {/* Instant Buy Now Button */}
-              <button
-                type="button"
-                onClick={handleBuyNow}
-                className="w-full py-3.5 border border-white/20 hover:border-[#48B8CE] text-white hover:text-[#48B8CE] text-xs font-mono tracking-[0.2em] uppercase transition-all bg-white/5 hover:bg-white/10 cursor-pointer rounded-xs flex items-center justify-center gap-2"
-              >
-                <Zap className="w-3.5 h-3.5 text-[#48B8CE]" />
-                <span>BUY NOW · INSTANT CHECKOUT</span>
-              </button>
+                {/* BUY NOW */}
+                <ChemButton
+                  label="BUY NOW"
+                  variant="teal"
+                  onClick={handleBuyNow}
+                  aria-label={`Buy ${fragrance.name} now`}
+                />
+              </div>
             </div>
 
             {/* Added Notification Toast */}

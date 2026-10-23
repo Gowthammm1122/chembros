@@ -194,11 +194,24 @@
   background: #48B8CE;
 }
 
-/* Lenis Smooth Momentum Scroll Integration */
-html.lenis, html.lenis body {
-  height: auto;
+/* ============================================================
+   Lenis Smooth Scroll — Required CSS
+   These rules are CRITICAL. Without them Lenis fights the
+   browser's native scroll and produces jank.
+   ============================================================ */
+
+/* 1. Let Lenis control height/overflow */
+html {
+  scroll-behavior: auto !important;  /* Prevent CSS smooth-scroll fighting Lenis */
 }
 
+html.lenis,
+html.lenis body {
+  height: auto;
+  overflow: auto;
+}
+
+/* 2. Lenis state classes */
 .lenis.lenis-smooth {
   scroll-behavior: auto !important;
 }
@@ -213,6 +226,13 @@ html.lenis, html.lenis body {
 
 .lenis.lenis-scrolling iframe {
   pointer-events: none;
+}
+
+/* 3. GPU-promote animated layers — only transform/opacity, never top/left */
+.will-gpu {
+  will-change: transform;
+  transform: translateZ(0);
+  backface-visibility: hidden;
 }
 
 /* prmpt Section 3 Card Animation Classes */

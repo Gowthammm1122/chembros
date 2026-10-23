@@ -10,8 +10,8 @@
 .liquid-chrome-btn {
   --u: 0.26px;
   --bg: #222225;
-  --ink: #4c4c52;
-  --ink-hover: #0f0f12;
+  --ink: #18181b;
+  --ink-hover: #000000;
   --chev: #2c2c33;
   --chev-hover: #fff3e4;
   --accent: 255, 138, 40;
@@ -113,16 +113,16 @@
 /* Typography Label */
 .liquid-chrome-btn .label {
   position: absolute;
-  left: calc(134 * var(--u));
+  left: calc(120 * var(--u));
   top: 50%;
   transform: translateY(-50%);
-  font-weight: 300;
-  font-size: calc(50 * var(--u));
+  font-weight: 600;
+  font-size: calc(62 * var(--u));
   line-height: 1;
-  letter-spacing: calc(4.1 * var(--u));
+  letter-spacing: calc(3 * var(--u));
   white-space: pre;
   color: var(--ink);
-  -webkit-text-stroke: calc(0.45 * var(--u)) currentColor;
+  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.45);
   pointer-events: none;
   user-select: none;
   transition: color .3s var(--ease-io) .23s;
@@ -130,13 +130,15 @@
 
 /* Label length adjustments to prevent overlapping the knob */
 .liquid-chrome-btn[data-length="long"] .label {
-  font-size: calc(42 * var(--u));
-  letter-spacing: calc(2.4 * var(--u));
+  left: calc(108 * var(--u));
+  font-size: calc(52 * var(--u));
+  letter-spacing: calc(2 * var(--u));
 }
 
 .liquid-chrome-btn[data-length="xlong"] .label {
-  font-size: calc(36 * var(--u));
-  letter-spacing: calc(1.4 * var(--u));
+  left: calc(84 * var(--u));
+  font-size: calc(44 * var(--u));
+  letter-spacing: calc(1.1 * var(--u));
 }
 
 /* Knob overlay & SVG Writing Pen */

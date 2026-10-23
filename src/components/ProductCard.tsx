@@ -2,7 +2,7 @@ import React from 'react';
 import { Fragrance, formatPrice } from '../data/fragrances';
 import { PerfumeBottle } from './PerfumeBottle';
 import { Link } from 'react-router-dom';
-import { LiquidChromeButton } from './LiquidChromeButton';
+import { ChemButton } from './ChemButton';
 
 interface ProductCardProps {
   fragrance: Fragrance;
@@ -71,15 +71,13 @@ export const ProductCard: React.FC<ProductCardProps> = ({
             {formatPrice(fragrance.price)}
           </div>
 
-          {/* Reusable Liquid Chrome Button */}
-          <div className="flex items-center">
-            <LiquidChromeButton
-              label="ADD"
-              size={0.17}
-              onClick={() => onAddToCart(fragrance, 50)}
-              aria-label={`Add ${fragrance.name} to cart`}
-            />
-          </div>
+          {/* Add to cart */}
+          <ChemButton
+            variant="ghost"
+            label="ADD TO BAG"
+            onClick={() => onAddToCart(fragrance, 50)}
+            aria-label={`Add ${fragrance.name} to cart`}
+          />
         </div>
 
       </div>

@@ -337,8 +337,11 @@ export default function WaterRippleImage({
       ro.observe(containerRef.current);
     }
 
-    // render loop
+    // render loop — paused automatically when off-screen to preserve 60-120fps scroll performance
+    let isVisible = true;
+
     const render = () => {
+      if (!isVisible) return;
       const u = uniformsRef.current;
       if (u['u_time']) {
         gl.uniform1f(u['u_time'], performance.now());
@@ -346,11 +349,30 @@ export default function WaterRippleImage({
       gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
       animRef.current = requestAnimationFrame(render);
     };
+
+    let io: IntersectionObserver | null = null;
+    if (typeof IntersectionObserver !== 'undefined' && containerRef.current) {
+      io = new IntersectionObserver(
+        ([entry]) => {
+          const wasVisible = isVisible;
+          isVisible = entry.isIntersecting;
+          if (isVisible && !wasVisible) {
+            // Restart loop when scrolled back into view
+            if (animRef.current) cancelAnimationFrame(animRef.current);
+            animRef.current = requestAnimationFrame(render);
+          }
+        },
+        { threshold: 0.01 }
+      );
+      io.observe(containerRef.current);
+    }
+
     animRef.current = requestAnimationFrame(render);
 
     return () => {
       window.removeEventListener('resize', onResize);
       if (ro) ro.disconnect();
+      if (io) io.disconnect();
       if (animRef.current) cancelAnimationFrame(animRef.current);
       if (texRef.current) gl.deleteTexture(texRef.current);
       gl.useProgram(null);

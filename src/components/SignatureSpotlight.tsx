@@ -152,8 +152,6 @@ export const SignatureSpotlight: React.FC<SignatureSpotlightProps> = ({
                 className="flex-1 py-4 px-6 bg-[#0A2533] hover:bg-[#087A91] text-white font-mono text-xs uppercase tracking-[0.2em] font-semibold flex items-center justify-center gap-3 transition-colors duration-200 shadow-[0_10px_25px_rgba(10,37,51,0.15)] cursor-pointer"
               >
                 <span>ADD TO BAG</span>
-                <span className="tabular-nums font-bold">({formatPrice(currentPrice)})</span>
-                <ArrowRight className="w-4 h-4 text-[#48B8CE]" />
               </button>
 
               <Link

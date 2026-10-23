@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import { FRAGRANCES, DISCOVERY_ARCHIVE, Fragrance, formatPrice } from '../data/fragrances';
 import { ProductCard } from './ProductCard';
 import { Sparkles, ArrowUpRight } from 'lucide-react';
-import { LiquidChromeButton } from './LiquidChromeButton';
+import { ChemButton } from './ChemButton';
 
 interface ProductCollectionProps {
   onSelectFragrance: (fragrance: Fragrance) => void;
@@ -44,9 +44,9 @@ export const ProductCollection: React.FC<ProductCollectionProps> = ({
             to="/products"
             className="self-start sm:self-auto shrink-0"
           >
-            <LiquidChromeButton
+            <ChemButton
               label="VIEW ALL"
-              size={0.19}
+              variant="secondary"
               aria-label="View all products"
             />
           </Link>
@@ -148,10 +148,9 @@ export const ProductCollection: React.FC<ProductCollectionProps> = ({
 
               {/* Action Buttons: Liquid Chrome ADD TO BAG + View Details */}
               <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-4">
-                <LiquidChromeButton
+                <ChemButton
                   label="ADD TO BAG"
-                  size="sm"
-                  accentColor="72,184,206"
+                  variant="ghost"
                   onClick={() => onAddToCart(DISCOVERY_ARCHIVE, 12)}
                   aria-label="Add Discovery Archive to Bag"
                 />

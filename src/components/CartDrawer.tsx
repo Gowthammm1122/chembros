@@ -3,7 +3,7 @@ import { X, Plus, Minus, Trash2, ArrowRight, ShieldCheck, CheckCircle2 } from 'l
 import { formatPrice } from '../data/fragrances';
 import { useCart, CartItem } from '../context/CartContext';
 import { Link, useNavigate } from 'react-router-dom';
-import { LiquidChromeButton } from './LiquidChromeButton';
+import { ChemButton } from './ChemButton';
 
 export type { CartItem };
 
@@ -194,14 +194,13 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
               </div>
 
               <div className="space-y-3 pt-1">
-                <div className="flex justify-center w-full">
-                  <LiquidChromeButton
-                    label="PROCEED TO CHECKOUT"
-                    size={0.24}
-                    onClick={handleCheckout}
-                    aria-label="Proceed to checkout"
-                  />
-                </div>
+                <ChemButton
+                  label="PROCEED TO CHECKOUT"
+                  variant="primary"
+                  fullWidth
+                  onClick={handleCheckout}
+                  aria-label="Proceed to checkout"
+                />
 
                 <button
                   type="button"

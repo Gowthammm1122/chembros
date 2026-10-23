@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { FRAGRANCES, DISCOVERY_ARCHIVE, ALL_PRODUCTS, Fragrance, formatPrice } from '../data/fragrances';
 import { ProductCard } from '../components/ProductCard';
-import { LiquidChromeButton } from '../components/LiquidChromeButton';
+import { ChemButton } from '../components/ChemButton';
 import { useCart } from '../context/CartContext';
 import { 
   ArrowRight, 
@@ -234,10 +234,9 @@ export const ProductsPage: React.FC = () => {
                 </div>
 
                 <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-4">
-                  <LiquidChromeButton
+                  <ChemButton
                     label="ADD TO BAG"
-                    size="sm"
-                    accentColor="72,184,206"
+                    variant="ghost"
                     onClick={() => {
                       addToCart(DISCOVERY_ARCHIVE, 12, 1);
                       openCart();

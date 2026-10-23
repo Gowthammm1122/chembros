@@ -9,8 +9,8 @@ interface ConversionSectionProps {
 
 export const ConversionSection: React.FC<ConversionSectionProps> = () => {
   return (
-    <section 
-      id="ripple-experience" 
+    <section
+      id="ripple-experience"
       className="relative w-full min-h-[85vh] lg:min-h-screen bg-conversion-gradient flex items-center justify-center overflow-hidden border-b border-[#0A2533]/10"
     >
       {/* Centered Single Image with Water Ripple WebGL Shader Effect */}

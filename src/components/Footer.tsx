@@ -1,37 +1,27 @@
 import React, { useState } from 'react';
-import { ArrowRight, Check, Sparkles } from 'lucide-react';
+import { ArrowUpRight, ArrowRight, Check } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { ChemBrosLogo } from './ChemBrosLogo';
-import { FRAGRANCES, Fragrance } from '../data/fragrances';
-import { PerfumeBottle } from './PerfumeBottle';
 import { useCart } from '../context/CartContext';
 
 interface FooterProps {
   onOpenStory?: () => void;
   onOpenContact?: () => void;
   onOpenPolicy?: (type: 'shipping' | 'privacy' | 'terms') => void;
-  onSelectFragrance?: (fragrance: Fragrance) => void;
-  onAddToCart?: (fragrance: Fragrance, size: number) => void;
 }
 
 export const Footer: React.FC<FooterProps> = ({
   onOpenStory: propOpenStory,
   onOpenContact: propOpenContact,
   onOpenPolicy: propOpenPolicy,
-  onSelectFragrance: propSelectFragrance,
-  onAddToCart: propAddToCart,
 }) => {
-  const { openStory, openContact, openPolicy, openSpecimenModal, addToCart } = useCart();
+  const { openStory, openContact, openPolicy } = useCart();
   const effectiveOpenStory = propOpenStory ?? openStory;
   const effectiveOpenContact = propOpenContact ?? openContact;
   const effectiveOpenPolicy = propOpenPolicy ?? openPolicy;
-  const effectiveSelectFragrance = propSelectFragrance ?? openSpecimenModal;
-  const effectiveAddToCart = propAddToCart ?? addToCart;
 
   const [email, setEmail] = useState('');
   const [subscribed, setSubscribed] = useState(false);
-
-  const signatureFragrance = FRAGRANCES[0];
 
   const handleSubscribe = (e: React.FormEvent) => {
     e.preventDefault();
@@ -39,179 +29,216 @@ export const Footer: React.FC<FooterProps> = ({
       setSubscribed(true);
       setTimeout(() => {
         setEmail('');
+        setSubscribed(false);
       }, 4000);
     }
   };
 
+  const scrollToTop = () => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
   return (
-    <footer className="relative bg-[#020608] text-[#DCE3E8] overflow-hidden font-sans border-t border-white/10">
-      {/* Ambient Atmospheric Glow */}
-      <div className="absolute inset-0 pointer-events-none">
-        <div className="absolute top-0 right-1/4 w-[500px] h-[350px] bg-[#087A91]/10 blur-[130px] rounded-full" />
-        <div className="absolute bottom-10 left-10 w-[350px] h-[350px] bg-[#48B8CE]/5 blur-[120px] rounded-full" />
-      </div>
-
-      {/* TOP CALL-TO-ACTION SECTION: Minimal Luxury Showcase */}
-      <section className="relative z-10 border-b border-white/10 pt-16 pb-16 lg:pt-24 lg:pb-20">
-        <div className="max-w-7xl mx-auto px-6 lg:px-12">
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-16 items-center">
-            
-            {/* Left Column: Bold Typography & Clean CTA */}
-            <div className="lg:col-span-7 flex flex-col justify-center">
-              <div className="inline-flex items-center gap-2.5 text-xs font-mono tracking-[0.28em] uppercase text-[#48B8CE] mb-4">
-                <span className="w-1.5 h-1.5 rounded-full bg-[#48B8CE]" />
-                <span>LIMITED BATCH FORMULATIONS</span>
-              </div>
-
-              <h2 className="font-display font-light text-3xl sm:text-4xl lg:text-5xl text-white tracking-tight leading-[1.15] max-w-xl">
-                Experience the precision of olfactory chemistry.
-              </h2>
-
-              <p className="mt-4 text-sm sm:text-base text-[#9BB3C1] font-light leading-relaxed max-w-lg">
-                Four artisanal extracts formulated without compromise. Cryogenically stabilized, nitrogen aged, and poured in Madurai.
-              </p>
-
-              <div className="mt-8 flex flex-wrap items-center gap-4">
-                <Link
-                  to="/product/molecule-j"
-                  className="inline-flex items-center gap-3 px-7 py-3.5 bg-white hover:bg-[#48B8CE] text-[#020608] hover:text-[#020608] font-mono text-xs uppercase tracking-[0.2em] font-semibold transition-all duration-300 shadow-[0_10px_30px_rgba(255,255,255,0.1)]"
-                >
-                  <span>EXPLORE ALL FORMULAS</span>
-                  <ArrowRight className="w-4 h-4" />
-                </Link>
-
-                <Link
-                  to="/concierge"
-                  className="inline-flex items-center gap-2 px-6 py-3.5 border border-white/20 hover:border-white text-white font-mono text-xs uppercase tracking-wider transition-colors"
-                >
-                  <Sparkles className="w-3.5 h-3.5 text-[#48B8CE]" />
-                  <span>OLFACTORY CONSULT</span>
-                </Link>
-              </div>
-            </div>
-
-            {/* Right Column: Specimen Showcase Plinth */}
-            <div className="lg:col-span-5 flex flex-col items-center justify-center">
-              <Link 
-                to={`/product/${signatureFragrance.id}`}
-                className="w-full max-w-xs p-6 bg-white/[0.03] border border-white/10 rounded-sm backdrop-blur-sm group hover:border-[#48B8CE]/40 transition-all duration-500 block cursor-pointer"
-              >
-                <div className="flex items-center justify-between text-[10px] font-mono tracking-widest text-[#7E9DAA] uppercase mb-4">
-                  <span>SIGNATURE HIGHLIGHT</span>
-                  <span className="text-[#48B8CE]">FORMULA 01</span>
-                </div>
-
-                <div className="flex justify-center py-4 transform group-hover:scale-105 transition-transform duration-500">
-                  <PerfumeBottle
-                    fragrance={signatureFragrance}
-                    size="md"
-                    showPedestal={true}
-                    pedestalHeight={70}
-                    interactive={false}
-                  />
-                </div>
-
-                <div className="mt-4 pt-3 border-t border-white/10 flex items-center justify-between text-xs font-mono">
-                  <span className="text-white font-medium">{signatureFragrance.name}</span>
-                  <span className="text-[#48B8CE] font-semibold">₹4,500</span>
-                </div>
-              </Link>
-            </div>
-
-
-          </div>
-        </div>
-      </section>
-
-      {/* MIDDLE TIER: Structured Navigation & Newsletter */}
-      <div className="max-w-7xl mx-auto px-6 lg:px-12 pt-12 pb-12">
-        <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-8 pb-10 border-b border-white/10">
+    <footer className="relative bg-[#060A0D] text-[#8EA3B0] font-mono border-t border-white/10 selection:bg-[#48B8CE] selection:text-black">
+      
+      {/* Subtle Lab Technical Grid Lines */}
+      <div className="max-w-7xl mx-auto px-6 lg:px-12">
+        
+        {/* TOP TIER: Newsletter & Brand Value Proposition */}
+        <div className="pt-16 pb-14 border-b border-white/[0.08] grid grid-cols-1 lg:grid-cols-12 gap-10 items-end">
           
-          {/* Brand Wordmark & City Base */}
-          <div className="flex flex-col sm:flex-row sm:items-center gap-4 sm:gap-8">
-            <Link to="/" className="inline-block" aria-label="CHEM BROS home">
-              <ChemBrosLogo
-                variant="white"
-                size="sm"
-                showTagline={false}
-              />
-            </Link>
-            <span className="hidden sm:inline text-white/20">|</span>
-            <span className="text-xs font-mono text-[#7E9DAA] tracking-wider uppercase">
-              MADURAI · PARIS · NEW YORK
-            </span>
+          {/* Left: Brand Identity & Lab Quality Guarantee */}
+          <div className="lg:col-span-7 space-y-4">
+            <div className="flex items-center gap-2.5 text-[10px] tracking-[0.25em] text-[#48B8CE] uppercase">
+              <span className="w-1.5 h-1.5 rounded-full bg-[#48B8CE]" />
+              <span>HAND-CRAFTED PERFUMERY</span>
+            </div>
+
+            <h3 className="text-2xl sm:text-3xl font-light text-white font-sans tracking-tight max-w-lg">
+              Fine fragrances developed with lab precision.
+            </h3>
+
+            <p className="text-xs text-[#708896] leading-relaxed max-w-md">
+              Small-batch extractions compounded and bottled in our Madurai studio. Long-lasting, cruelty-free, and skin-safe.
+            </p>
           </div>
 
-          {/* Essential Minimal Links */}
-          <nav className="flex flex-wrap items-center gap-6 sm:gap-8 text-xs font-mono tracking-wider text-[#A1B8C4]">
-            <Link to="/product/molecule-j" className="hover:text-white transition-colors uppercase">
-              Fragrances
-            </Link>
-            <Link to="/philosophy" className="hover:text-white transition-colors uppercase">
-              Philosophy
-            </Link>
-            <button onClick={effectiveOpenStory} className="hover:text-white transition-colors cursor-pointer uppercase">
-              The Chronicle
-            </button>
-            <Link to="/concierge" className="hover:text-white transition-colors uppercase">
-              Concierge
-            </Link>
-            <Link to="/policies/shipping" className="hover:text-white transition-colors uppercase">
-              Client Care
-            </Link>
-          </nav>
-
-          {/* Compact Private Allocation Input */}
-          <div className="w-full md:w-auto min-w-[260px] max-w-xs">
-            <form onSubmit={handleSubscribe} className="relative flex items-center">
-              <input
-                type="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                placeholder="Join batch allocation list"
-                required
-                className="w-full bg-white/[0.04] border border-white/15 px-3 py-2 text-xs text-white placeholder-[#5A7785] focus:outline-none focus:border-[#48B8CE] transition-all font-mono"
-              />
-              <button
-                type="submit"
-                aria-label="Submit email"
-                className="absolute right-1 px-2.5 py-1 bg-white text-[#020608] hover:bg-[#48B8CE] hover:text-white text-xs font-mono transition-colors cursor-pointer font-semibold"
-              >
-                {subscribed ? <Check className="w-3.5 h-3.5" /> : <ArrowRight className="w-3.5 h-3.5" />}
-              </button>
-            </form>
-            {subscribed && (
-              <p className="mt-1.5 text-[11px] font-mono text-[#48B8CE]">
-                ✓ Registered for next allocation.
+          {/* Right: Clean E-Commerce Newsletter */}
+          <div className="lg:col-span-5">
+            <div className="space-y-3">
+              <span className="text-[10px] tracking-widest uppercase text-white/80 block">
+                Join the Private List
+              </span>
+              <p className="text-xs text-[#708896]">
+                Get 10% off your first bottle and early access to limited edition drops.
               </p>
-            )}
+
+              <form onSubmit={handleSubscribe} className="relative mt-2">
+                <input
+                  type="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  placeholder="Enter your email"
+                  required
+                  className="w-full bg-white/[0.03] border border-white/15 px-4 py-3 text-xs text-white placeholder-[#516C7B] focus:outline-none focus:border-[#48B8CE] transition-colors"
+                />
+                <button
+                  type="submit"
+                  aria-label="Subscribe"
+                  className="absolute right-1.5 top-1.5 bottom-1.5 px-4 bg-white hover:bg-[#48B8CE] text-black font-semibold text-[10px] uppercase tracking-wider transition-colors flex items-center gap-1.5"
+                >
+                  {subscribed ? (
+                    <>
+                      <Check className="w-3.5 h-3.5" />
+                      <span>Joined</span>
+                    </>
+                  ) : (
+                    <>
+                      <span>Sign Up</span>
+                      <ArrowRight className="w-3.5 h-3.5" />
+                    </>
+                  )}
+                </button>
+              </form>
+            </div>
           </div>
         </div>
 
-        {/* BOTTOMMOST TIER: Copyright & Discreet Compliance */}
-        <div className="pt-6 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs font-mono text-[#6A8896]">
+        {/* MIDDLE TIER: Standard E-Commerce 4-Column Navigation */}
+        <div className="py-14 border-b border-white/[0.08] grid grid-cols-2 md:grid-cols-4 gap-8 text-xs">
+          
+          {/* Column 1: Shop */}
           <div>
-            © 2026 CHEM BROS FRAGRANCE LABORATORY. ALL RIGHTS RESERVED.
+            <span className="text-[10px] tracking-widest text-[#48B8CE] uppercase block mb-4">
+              [01] SHOP
+            </span>
+            <ul className="space-y-2.5">
+              <li>
+                <Link to="/fragrances" className="hover:text-white transition-colors block">
+                  All Perfumes
+                </Link>
+              </li>
+              <li>
+                <Link to="/discovery-set" className="hover:text-white transition-colors block">
+                  Sample Set
+                </Link>
+              </li>
+              <li>
+                <Link to="/best-sellers" className="hover:text-white transition-colors block">
+                  Best Sellers
+                </Link>
+              </li>
+              <li>
+                <Link to="/quiz" className="hover:text-[#48B8CE] transition-colors block">
+                  Fragrance Finder Quiz →
+                </Link>
+              </li>
+            </ul>
           </div>
-          <div className="flex items-center gap-4 text-[11px]">
-            <Link to="/policies/privacy" className="hover:text-white transition-colors">
-              Privacy
-            </Link>
-            <span>·</span>
-            <Link to="/policies/terms" className="hover:text-white transition-colors">
-              Terms
-            </Link>
-            <span>·</span>
-            <Link to="/policies/shipping" className="hover:text-white transition-colors">
-              Shipping & Returns
-            </Link>
-            <span>·</span>
-            <Link to="/admin" className="hover:text-[#48B8CE] transition-colors">
-              Atelier Portal
-            </Link>
-            <span>·</span>
-            <span className="text-[#48B8CE]">IFRA 51ST COMPLIANT</span>
+
+          {/* Column 2: About Us */}
+          <div>
+            <span className="text-[10px] tracking-widest text-[#48B8CE] uppercase block mb-4">
+              [02] ABOUT
+            </span>
+            <ul className="space-y-2.5">
+              <li>
+                <button onClick={effectiveOpenStory} className="hover:text-white transition-colors cursor-pointer text-left block">
+                  Our Story
+                </button>
+              </li>
+              <li>
+                <Link to="/ingredients" className="hover:text-white transition-colors block">
+                  Clean Ingredients
+                </Link>
+              </li>
+              <li>
+                <Link to="/process" className="hover:text-white transition-colors block">
+                  How We Formulate
+                </Link>
+              </li>
+              <li>
+                <Link to="/reviews" className="hover:text-white transition-colors block">
+                  Customer Reviews
+                </Link>
+              </li>
+            </ul>
           </div>
+
+          {/* Column 3: Customer Care */}
+          <div>
+            <span className="text-[10px] tracking-widest text-[#48B8CE] uppercase block mb-4">
+              [03] HELP & CARE
+            </span>
+            <ul className="space-y-2.5">
+              <li>
+                <Link to="/faq" className="hover:text-white transition-colors block">
+                  FAQs
+                </Link>
+              </li>
+              <li>
+                <button onClick={() => effectiveOpenPolicy?.('shipping')} className="hover:text-white transition-colors cursor-pointer text-left block">
+                  Shipping & Returns
+                </button>
+              </li>
+              <li>
+                <Link to="/track-order" className="hover:text-white transition-colors block">
+                  Track Order
+                </Link>
+              </li>
+              <li>
+                <button onClick={effectiveOpenContact} className="hover:text-white transition-colors cursor-pointer text-left block">
+                  Contact Support
+                </button>
+              </li>
+            </ul>
+          </div>
+
+          {/* Column 4: Laboratory Studio Details */}
+          <div>
+            <span className="text-[10px] tracking-widest text-[#48B8CE] uppercase block mb-4">
+              [04] STUDIO
+            </span>
+            <div className="space-y-2 text-[11px] text-[#708896]">
+              <p className="text-white">Chem Bros Fragrances</p>
+              <p>Madurai, Tamil Nadu, India</p>
+              <p className="pt-2">Mon – Sat: 10:00 – 18:00</p>
+              <p>care@chembros.com</p>
+            </div>
+
+            <button
+              onClick={scrollToTop}
+              className="mt-6 text-[10px] tracking-wider text-white/50 hover:text-white transition-colors flex items-center gap-1 cursor-pointer uppercase"
+            >
+              <span>Back to Top</span>
+              <ArrowUpRight className="w-3 h-3" />
+            </button>
+          </div>
+
+        </div>
+
+        {/* BOTTOM TIER: Legal, Badges & Copyright */}
+        <div className="py-8 flex flex-col md:flex-row items-center justify-between gap-4 text-[10px] tracking-wider text-[#5A7482]">
+          
+          <div className="flex flex-wrap items-center gap-3">
+            <span>© {new Date().getFullYear()} CHEM BROS.</span>
+            <span>·</span>
+            <span>IFRA CERTIFIED</span>
+            <span>·</span>
+            <span>CRUELTY-FREE</span>
+            <span>·</span>
+            <span className="text-[#48B8CE]">PARABEN & PHTHALATE FREE</span>
+          </div>
+
+          <div className="flex items-center gap-6">
+            <button onClick={() => effectiveOpenPolicy?.('privacy')} className="hover:text-white transition-colors cursor-pointer">
+              Privacy Policy
+            </button>
+            <button onClick={() => effectiveOpenPolicy?.('terms')} className="hover:text-white transition-colors cursor-pointer">
+              Terms of Service
+            </button>
+          </div>
+
         </div>
 
       </div>

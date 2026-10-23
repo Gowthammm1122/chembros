@@ -201,12 +201,10 @@ export const ScrollBottleTransition: React.FC<ScrollBottleTransitionProps> = ({
     };
 
     window.addEventListener('resize', handleRefresh);
-    ScrollTrigger.addEventListener('refresh', handleRefresh);
 
     return () => {
       clearTimeout(timer);
       window.removeEventListener('resize', handleRefresh);
-      ScrollTrigger.removeEventListener('refresh', handleRefresh);
       if (ctx) ctx.revert();
       if (timelineRef.current) {
         timelineRef.current.kill();
