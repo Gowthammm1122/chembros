@@ -1,13 +1,13 @@
 /* Font Import */
-@import url('https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Space+Grotesk:wght@300;400;500;600;700&family=Fraunces:opsz,wght@9..144,400;9..144,700&family=Inter:wght@400;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
 @import "tailwindcss";
 
 /* CSS Variables */
 :root {
-  --heading-font: 'Fraunces', 'fraunces', serif, sans-serif;
-  --body-font: 'Inter', 'inter', sans-serif;
-  --font-instrument: 'Instrument Serif', Georgia, serif;
-  --font-space: 'Space Grotesk', -apple-system, sans-serif;
+  --heading-font: 'Conquera', sans-serif;
+  --body-font: 'Poppins', sans-serif;
+  --font-conquera: 'Conquera', sans-serif;
+  --font-poppins: 'Poppins', sans-serif;
 }
 
 /* Font Classes */
@@ -17,14 +17,68 @@
 .body-text {
   font-family: var(--body-font);
 }
+.font-conquera {
+  font-family: var(--font-conquera);
+}
+.font-poppins {
+  font-family: var(--font-poppins);
+}
 .font-instrument {
-  font-family: 'Instrument Serif', Georgia, serif;
+  font-family: var(--font-conquera);
 }
 .font-space {
-  font-family: 'Space Grotesk', -apple-system, sans-serif;
+  font-family: var(--font-poppins);
 }
 
-/* Kallisto Font Family (Weights: 100, 300, 400, 700, 900) */
+@font-face {
+  font-family: 'Conquera';
+  font-style: normal;
+  font-weight: 300;
+  font-display: swap;
+  src: url('./font/Conquera-Light.ttf') format('truetype');
+}
+
+@font-face {
+  font-family: 'Conquera';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url('./font/Conquera-Fine.ttf') format('truetype');
+}
+
+@font-face {
+  font-family: 'Conquera';
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url('./font/Conquera-Medium.ttf') format('truetype');
+}
+
+@font-face {
+  font-family: 'Conquera';
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: url('./font/Conquera-Bold.ttf') format('truetype');
+}
+
+@font-face {
+  font-family: 'Conquera';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url('./font/Conquera-Bold.ttf') format('truetype');
+}
+
+@font-face {
+  font-family: 'Conquera';
+  font-style: normal;
+  font-weight: 900;
+  font-display: swap;
+  src: url('./font/Conquera-Heavy.ttf') format('truetype');
+}
+
+/* Legacy aliases retained for existing component utility classes. */
 @font-face {
   font-family: 'Kallisto';
   font-style: normal;
@@ -66,29 +120,31 @@
 }
 
 @theme {
-  --font-instrument: 'Instrument Serif', Georgia, serif;
-  --font-space: 'Space Grotesk', -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-conquera: 'Conquera', sans-serif;
+  --font-poppins: 'Poppins', sans-serif;
+  --font-instrument: 'Conquera', sans-serif;
+  --font-space: 'Poppins', sans-serif;
   --font-heading: var(--heading-font);
   --font-body-text: var(--body-font);
-  --font-fraunces: 'Fraunces', 'fraunces', serif, sans-serif;
-  --font-cinzel: 'Instrument Serif', Georgia, serif;
-  --font-cormorant: 'Cormorant Garamond', Georgia, serif;
-  --font-hero: 'Instrument Serif', Georgia, serif;
-  --font-manrope: 'Manrope', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --font-fraunces: 'Conquera', sans-serif;
+  --font-cinzel: 'Conquera', sans-serif;
+  --font-cormorant: 'Conquera', sans-serif;
+  --font-hero: 'Conquera', sans-serif;
+  --font-manrope: 'Poppins', sans-serif;
   --font-display: var(--heading-font);
   --font-headline: var(--heading-font);
-  --font-kallisto: var(--heading-font);
-  --font-sans: var(--body-font);
+  --font-kallisto: 'Conquera', sans-serif;
+  --font-sans: 'Poppins', sans-serif;
   --font-body: var(--body-font);
   --font-inter: var(--body-font);
-  --font-inter-tight: 'Inter Tight', 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-inter-tight: 'Poppins', sans-serif;
   --font-mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
 }
 
 @layer base {
   :root {
-    --heading-font: 'Fraunces', 'fraunces', serif, sans-serif;
-    --body-font: 'Inter', 'inter', sans-serif;
+    --heading-font: 'Conquera', sans-serif;
+    --body-font: 'Poppins', sans-serif;
 
     --color-midnight: #03151D;
     --color-petrol: #073849;
@@ -124,7 +180,7 @@
   }
 
   .font-cormorant {
-    font-family: 'Cormorant Garamond', Georgia, serif;
+    font-family: var(--font-conquera);
   }
 }
 

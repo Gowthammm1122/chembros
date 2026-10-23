@@ -254,27 +254,27 @@ export const Hero: React.FC<HeroProps> = ({ onSelectFragrance, onIntroCompleteCh
         <span className="hidden sm:inline">REPLAY INTRO</span>
       </button>
 
-      {/* 2. Headline Layer — Editorial Luxury Typography (Instrument Serif · Space Grotesk) */}
+      {/* 2. Headline Layer — Conquera display type with Poppins supporting type */}
       <div
         ref={titleRef}
-        className="relative z-10 max-w-4xl mx-auto px-6 w-full text-center mt-2 sm:mt-4 md:mt-6 shrink-0 will-change-transform select-none flex flex-col items-center"
+        className="relative z-10 max-w-3xl mx-auto px-6 w-full text-center mt-2 sm:mt-3 md:mt-4 shrink-0 will-change-transform select-none flex flex-col items-center"
       >
         {/* Ambient atmospheric backdrop glow for pristine legibility */}
         <div className="absolute -inset-x-16 -inset-y-10 bg-[radial-gradient(ellipse_at_center,rgba(72,184,206,0.12)_0%,transparent_70%)] pointer-events-none -z-10 blur-2xl" />
 
-        {/* Eyebrow: Space Grotesk */}
-        <div className="inline-flex items-center gap-2.5 px-3.5 py-1 bg-white/[0.04] border border-white/10 backdrop-blur-md mb-3 sm:mb-4 shadow-[0_2px_14px_rgba(0,0,0,0.4)]">
-          <span className="font-space text-[10px] sm:text-[11px] md:text-xs tracking-[0.24em] uppercase text-[#DCE3E8]/90 font-medium">
+        {/* Eyebrow: Poppins supporting type */}
+        <div className="inline-flex items-center gap-2 px-3 py-0.5 bg-white/[0.04] border border-white/10 backdrop-blur-md mb-2 sm:mb-3 shadow-[0_2px_14px_rgba(0,0,0,0.4)]">
+          <span className="font-poppins text-[9px] sm:text-[10px] md:text-[11px] tracking-[0.2em] uppercase text-[#DCE3E8]/90 font-medium">
             Luxury meets modern science
           </span>
         </div>
 
-        {/* Headline: Instrument Serif */}
-        <h1 className="font-instrument text-4xl sm:text-5xl md:text-6xl lg:text-[72px] xl:text-[80px] leading-[1.08] sm:leading-[1.04] text-center drop-shadow-[0_4px_30px_rgba(0,0,0,0.9)] tracking-[-0.01em]">
-          <span className="block text-white font-normal">
+        {/* Headline: Conquera display type */}
+        <h1 className="font-conquera text-2xl sm:text-3xl md:text-4xl lg:text-[48px] xl:text-[56px] font-bold leading-[1.1] sm:leading-[1.06] text-center drop-shadow-[0_4px_30px_rgba(0,0,0,0.9)] tracking-[-0.01em]">
+          <span className="block text-white font-bold">
             Chemistry,
           </span>
-          <span className="block mt-0.5 sm:mt-1 italic font-normal text-transparent bg-clip-text bg-gradient-to-r from-[#FFFFFF] via-[#DCE3E8] to-[#9CBAC7] pr-2">
+          <span className="block mt-0.5 sm:mt-1 italic font-bold text-transparent bg-clip-text bg-gradient-to-r from-[#FFFFFF] via-[#DCE3E8] to-[#9CBAC7] pr-1">
             captured in a bottle.
           </span>
         </h1>
@@ -306,7 +306,7 @@ export const Hero: React.FC<HeroProps> = ({ onSelectFragrance, onIntroCompleteCh
                   {/* Active Indicator Light Beam */}
                   {isActive && isIntroComplete && (
                     <div className="absolute -top-10 left-1/2 -translate-x-1/2 flex flex-col items-center pointer-events-none animate-fadeIn">
-                      <span className="font-space text-[10px] tracking-[0.22em] uppercase text-[#03151D] bg-white/95 px-2.5 py-0.5 font-medium shadow-sm whitespace-nowrap">
+                      <span className="font-poppins text-[10px] tracking-[0.22em] uppercase text-[#03151D] bg-white/95 px-2.5 py-0.5 font-medium shadow-sm whitespace-nowrap">
                         {fragrance.name}
                       </span>
                       <div className="w-[1px] h-2.5 bg-[#48B8CE]" />
