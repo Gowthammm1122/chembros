@@ -9,7 +9,7 @@ interface DetailMosaicProps {
 
 export const DetailMosaic: React.FC<DetailMosaicProps> = ({ onSelectFragrance }) => {
   return (
-    <section className="relative bg-white py-24 border-b border-[#0A2533]/10">
+    <section className="relative bg-transparent py-24 border-b border-[#0A2533]/10">
       <div className="max-w-7xl mx-auto px-6">
         
         {/* Section Eyebrow */}

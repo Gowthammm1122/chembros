@@ -27,14 +27,17 @@ export const HomePage: React.FC = () => {
         onIntroCompleteChange={setIsHeroIntroComplete}
       />
 
-      {/* Dynamic GSAP Scroll Transition: Hero 4th Bottle floats and docks into Collection Formula 001 card */}
-      <ScrollBottleTransition isIntroComplete={isHeroIntroComplete} />
-
-      {/* SECTION 02 & 03 — Continuous background container spanning ProductCollection through ConversionSection / WaterRippleImage */}
+      {/* All post-hero sections share one fixed atmospheric background up to the footer. */}
       <div
         className="relative w-full bg-cover bg-top bg-no-repeat"
-        style={{ backgroundImage: "url('/bg/whitebg.jpeg')" }}
+        style={{
+          backgroundImage: "url('/bg/whitebg.jpeg')",
+          backgroundAttachment: 'fixed',
+        }}
       >
+        {/* Dynamic GSAP Scroll Transition: Hero 4th Bottle floats and docks into Collection Formula 001 card */}
+        <ScrollBottleTransition isIntroComplete={isHeroIntroComplete} />
+
         <ProductCollection
           onSelectFragrance={handleSelectFragrance}
           onAddToCart={addToCart}
@@ -44,18 +47,17 @@ export const HomePage: React.FC = () => {
           onSelectFragrance={handleSelectFragrance}
           onAddToCart={addToCart}
         />
+
+        {/* SECTION 04 — Asymmetrical Editorial Mosaic */}
+        <DetailMosaic
+          onSelectFragrance={handleSelectFragrance}
+        />
+
+        {/* SECTION 06 — Brand Philosophy */}
+        <BrandPhilosophy
+          onOpenStory={openStory}
+        />
       </div>
-
-      {/* SECTION 04 — Asymmetrical Editorial Mosaic */}
-      <DetailMosaic
-        onSelectFragrance={handleSelectFragrance}
-      />
-
-      {/* SECTION 06 — Brand Philosophy */}
-      <BrandPhilosophy
-        onOpenStory={openStory}
-      />
     </div>
   );
 };
-

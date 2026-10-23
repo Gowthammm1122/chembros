@@ -7,7 +7,7 @@ interface BrandPhilosophyProps {
 
 export const BrandPhilosophy: React.FC<BrandPhilosophyProps> = ({ onOpenStory }) => {
   return (
-    <section id="philosophy" className="relative bg-philosophy-gradient py-32 text-[#0A2533] overflow-hidden border-b border-[#0A2533]/10">
+    <section id="philosophy" className="relative bg-transparent py-32 text-[#0A2533] overflow-hidden border-b border-[#0A2533]/10">
       {/* Soft Lab Fog & Frost Sheen */}
       <div className="absolute inset-0 pointer-events-none">
         <div className="absolute bottom-0 right-1/4 w-[600px] h-[300px] bg-white/70 blur-[100px] transform-gpu will-change-transform pointer-events-none" />
