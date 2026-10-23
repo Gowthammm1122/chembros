@@ -1,5 +1,6 @@
+
 import React, { useState, useEffect } from 'react';
-import { ShoppingBag, Menu, X, Sparkles } from 'lucide-react';
+import { ShoppingBag, Menu, X, ArrowUpRight } from 'lucide-react';
 import { Link, NavLink, useLocation } from 'react-router-dom';
 import { ChemBrosLogo } from './ChemBrosLogo';
 import { useCart } from '../context/CartContext';
@@ -14,168 +15,180 @@ interface NavbarProps {
 export const Navbar: React.FC<NavbarProps> = ({
   cartCount: propCartCount,
   onOpenCart: propOpenCart,
-  onOpenStory: propOpenStory,
 }) => {
-  const { totalCartCount, openCart, openStory } = useCart();
-  const effectiveCartCount = propCartCount ?? totalCartCount;
-  const effectiveOpenCart = propOpenCart ?? openCart;
-  const effectiveOpenStory = propOpenStory ?? openStory;
+  const { totalCartCount, openCart } = useCart();
+
+  const cartCount = propCartCount ?? totalCartCount;
+  const handleOpenCart = propOpenCart ?? openCart;
 
   const [scrolled, setScrolled] = useState(false);
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [menuOpen, setMenuOpen] = useState(false);
+
   const location = useLocation();
-  const isHomePage = location.pathname === '/';
+  const isHome = location.pathname === '/';
+  const light = isHome && scrolled;
 
   useEffect(() => {
-    const handleScroll = () => {
-      setScrolled(window.scrollY > 40);
-    };
-    window.addEventListener('scroll', handleScroll, { passive: true });
-    return () => window.removeEventListener('scroll', handleScroll);
+    const updateScroll = () => setScrolled(window.scrollY > 32);
+
+    updateScroll();
+    window.addEventListener('scroll', updateScroll, { passive: true });
+
+    return () => window.removeEventListener('scroll', updateScroll);
   }, []);
 
-  // When not on home page, keep a sleek dark luxury backdrop
-  const showDarkNavbar = !isHomePage || !scrolled;
-  const isLightMode = isHomePage && scrolled;
+  useEffect(() => {
+    setMenuOpen(false);
+  }, [location.pathname]);
+
+  const links = [
+    { label: 'Fragrances', to: '/products' },
+    { label: 'Our Story', to: '/story' },
+  ];
+
+  const surface = light
+    ? 'border-[#0A2533]/10 bg-white/85 text-[#0A2533] shadow-[0_6px_28px_rgba(10,37,51,0.06)]'
+    : 'border-white/[0.12] bg-[#061A22]/80 text-[#E8EEF0] shadow-[0_6px_28px_rgba(0,0,0,0.12)]';
 
   return (
-    <header
-      id="main-navbar"
-      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
-        isLightMode
-          ? 'bg-white/90 backdrop-blur-md border-b border-[#0A2533]/[0.08] shadow-[0_2px_16px_rgba(10,37,51,0.04)] text-[#0A2533]'
-          : 'bg-[#03151D]/80 backdrop-blur-md border-b border-white/[0.08] text-[#DCE3E8]'
-      }`}
-    >
-      <div className="max-w-7xl mx-auto px-6 sm:px-8 h-16 sm:h-18 flex items-center justify-between gap-6">
-        {/* Brand / Logo */}
-        <Link
-          to="/"
-          className="shrink-0 transition-opacity duration-300 hover:opacity-85 select-none"
-          aria-label="CHEM BROS Homepage"
-        >
-          <ChemBrosLogo
-            variant={isLightMode ? 'black' : 'white'}
-            size="sm"
-            showTagline={false}
-          />
-        </Link>
+    <header className="fixed inset-x-0 top-0 z-50 px-4 pt-3 sm:px-6 sm:pt-4">
+      <div className="relative mx-auto max-w-[960px]">
 
-        {/* Desktop Navigation Links */}
-        <nav
-          className={`hidden md:flex items-center gap-8 lg:gap-10 text-[11px] lg:text-[12px] font-sans font-medium tracking-[0.18em] uppercase transition-colors duration-300 ${
-            isLightMode ? 'text-[#0A2533]/80' : 'text-[#DCE3E8]/80'
-          }`}
-        >
-          <NavLink
-            to="/products"
-            className={({ isActive }) =>
-              `py-1.5 transition-colors relative after:absolute after:bottom-0 after:left-0 after:h-[1px] after:transition-all ${
-                isActive
-                  ? isLightMode
-                    ? 'text-[#0A2533] font-semibold after:w-full after:bg-[#0A2533]'
-                    : 'text-white font-semibold after:w-full after:bg-white'
-                  : isLightMode
-                  ? 'hover:text-[#0A2533] after:w-0 hover:after:w-full after:bg-[#0A2533]'
-                  : 'hover:text-white after:w-0 hover:after:w-full after:bg-white'
-              }`
-            }
-          >
-            Fragrances
-          </NavLink>
-
-          <NavLink
-            to="/philosophy"
-            className={({ isActive }) =>
-              `py-1.5 transition-colors relative after:absolute after:bottom-0 after:left-0 after:h-[1px] after:transition-all ${
-                isActive
-                  ? isLightMode
-                    ? 'text-[#0A2533] font-semibold after:w-full after:bg-[#0A2533]'
-                    : 'text-white font-semibold after:w-full after:bg-white'
-                  : isLightMode
-                  ? 'hover:text-[#0A2533] after:w-0 hover:after:w-full after:bg-[#0A2533]'
-                  : 'hover:text-white after:w-0 hover:after:w-full after:bg-white'
-              }`
-            }
-          >
-            Philosophy
-          </NavLink>
-        </nav>
-
-        {/* Right Action: Shopping Bag */}
-        <div className="flex items-center gap-4 shrink-0">
-          <button
-            onClick={effectiveOpenCart}
-            aria-label={`View shopping bag (${effectiveCartCount} items)`}
-            className={`flex items-center gap-2 py-1.5 px-3 border border-current/15 hover:border-current text-[11px] lg:text-[12px] font-sans font-medium tracking-[0.18em] uppercase transition-all cursor-pointer select-none ${
-              isLightMode
-                ? 'text-[#0A2533] hover:bg-[#0A2533]/5'
-                : 'text-white hover:bg-white/5'
-            }`}
-          >
-            <ShoppingBag className="w-3.5 h-3.5 stroke-[1.6]" />
-            <span>BAG</span>
-            <span className="tabular-nums font-semibold">
-              ({effectiveCartCount})
-            </span>
-          </button>
-
-          {/* Minimal Mobile Menu Toggle */}
-          <button
-            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            className={`md:hidden p-1.5 cursor-pointer transition-colors ${
-              isLightMode ? 'text-[#0A2533]' : 'text-white'
-            }`}
-            aria-label="Toggle navigation menu"
-          >
-            {mobileMenuOpen ? (
-              <X className="w-5 h-5 stroke-[1.5]" />
-            ) : (
-              <Menu className="w-5 h-5 stroke-[1.5]" />
-            )}
-          </button>
-        </div>
-      </div>
-
-      {/* Mobile Drawer */}
-      {mobileMenuOpen && (
+        {/* Floating navigation */}
         <div
-          className={`md:hidden backdrop-blur-xl border-b px-6 py-6 flex flex-col gap-4 text-xs font-sans font-medium uppercase tracking-[0.18em] shadow-lg animate-in fade-in duration-200 ${
-            isLightMode
-              ? 'bg-white/98 border-[#0A2533]/10 text-[#0A2533]'
-              : 'bg-[#03151D]/98 border-white/10 text-[#DCE3E8]'
-          }`}
+          className={`relative flex h-[48px] items-center justify-between rounded-full border px-2.5 pl-4 backdrop-blur-2xl transition-all duration-500 sm:h-[54px] sm:px-3.5 sm:pl-5 ${surface}`}
         >
+          {/* Brand */}
           <Link
-            to="/products"
-            onClick={() => setMobileMenuOpen(false)}
-            className="hover:opacity-60 transition-opacity py-1.5"
+            to="/"
+            aria-label="Chem Bros homepage"
+            className="flex min-w-0 flex-1 items-center transition-opacity duration-200 hover:opacity-70"
           >
-            Fragrances
+            <ChemBrosLogo
+              variant={light ? 'black' : 'white'}
+              size="sm"
+              showTagline={false}
+            />
           </Link>
 
-          <Link
-            to="/philosophy"
-            onClick={() => setMobileMenuOpen(false)}
-            className="hover:opacity-60 transition-opacity py-1.5"
+          {/* Desktop navigation */}
+          <nav
+            aria-label="Main navigation"
+            className="absolute left-1/2 hidden -translate-x-1/2 items-center gap-0.5 rounded-full border border-current/[0.06] bg-current/[0.035] p-0.5 md:flex"
           >
-            Philosophy
-          </Link>
+            {links.map((item) => (
+              <NavLink
+                key={item.to}
+                to={item.to}
+                className={({ isActive }) =>
+                  `rounded-full px-3.5 py-2 text-[10px] font-medium tracking-wide transition-all duration-300 lg:px-4 ${
+                    isActive
+                      ? light
+                        ? 'bg-[#0A2533] text-white shadow-sm'
+                        : 'bg-white text-[#071B23] shadow-sm'
+                      : 'opacity-65 hover:bg-current/[0.07] hover:opacity-100'
+                  }`
+                }
+              >
+                {item.label}
+              </NavLink>
+            ))}
+          </nav>
 
-          <div className="pt-3 border-t border-current/10 flex items-center justify-between">
+          {/* Cart and mobile menu */}
+          <div className="flex flex-1 items-center justify-end gap-2">
             <button
-              onClick={() => {
-                setMobileMenuOpen(false);
-                effectiveOpenCart();
-              }}
-              className="flex items-center gap-2 text-xs font-mono tracking-wider cursor-pointer py-1"
+              type="button"
+              onClick={handleOpenCart}
+              aria-label={`Open shopping bag, ${cartCount} items`}
+              className={`group relative flex h-8 items-center gap-2 rounded-full border border-current/10 px-2.5 transition-all duration-300 hover:border-current/25 hover:bg-current/[0.06] sm:h-9 sm:px-3 ${
+                light ? 'text-[#0A2533]' : 'text-white'
+              }`}
             >
-              <ShoppingBag className="w-3.5 h-3.5" />
-              <span>SHOPPING BAG ({effectiveCartCount})</span>
+              <ShoppingBag
+                size={15}
+                strokeWidth={1.6}
+                className="transition-transform duration-300 group-hover:-rotate-6"
+              />
+
+              <span className="text-[10px] font-medium tabular-nums">
+                {cartCount}
+              </span>
+
+              {cartCount > 0 && (
+                <span className="absolute right-1.5 top-1.5 h-1.5 w-1.5 rounded-full bg-[#A8C9A5]" />
+              )}
+            </button>
+
+            <button
+              type="button"
+              onClick={() => setMenuOpen((prev) => !prev)}
+              aria-label={menuOpen ? 'Close menu' : 'Open menu'}
+              aria-expanded={menuOpen}
+              className="flex h-8 w-8 items-center justify-center rounded-full border border-current/10 transition-colors hover:bg-current/[0.06] md:hidden"
+            >
+              {menuOpen ? (
+                <X size={16} strokeWidth={1.6} />
+              ) : (
+                <Menu size={16} strokeWidth={1.6} />
+              )}
             </button>
           </div>
         </div>
-      )}
+
+        {/* Mobile dropdown */}
+        <div
+          className={`absolute inset-x-0 top-[calc(100%+8px)] overflow-hidden rounded-[20px] border backdrop-blur-2xl transition-all duration-300 md:hidden ${surface} ${
+            menuOpen
+              ? 'visible translate-y-0 opacity-100'
+              : 'invisible -translate-y-2 opacity-0'
+          }`}
+          aria-hidden={!menuOpen}
+        >
+          <div className="p-2.5">
+            <p className="px-3 pb-2 pt-2 text-[9px] uppercase tracking-[0.2em] opacity-45">
+              Discover
+            </p>
+
+            {links.map((item) => (
+              <NavLink
+                key={item.to}
+                to={item.to}
+                tabIndex={menuOpen ? 0 : -1}
+                onClick={() => setMenuOpen(false)}
+                className={({ isActive }) =>
+                  `flex items-center justify-between rounded-xl px-3.5 py-3 text-[13px] transition-colors ${
+                    isActive
+                      ? 'bg-current/[0.07]'
+                      : 'hover:bg-current/[0.04]'
+                  }`
+                }
+              >
+                <span>{item.label}</span>
+                <ArrowUpRight
+                  size={15}
+                  strokeWidth={1.5}
+                  className="opacity-50"
+                />
+              </NavLink>
+            ))}
+
+            <div className="mx-3 my-2 border-t border-current/10" />
+
+            <button
+              type="button"
+              onClick={() => {
+                setMenuOpen(false);
+                handleOpenCart();
+              }}
+              className="flex w-full items-center justify-between rounded-xl px-3.5 py-3 text-[13px] transition-colors hover:bg-current/[0.05]"
+            >
+              <span>Shopping bag</span>
+              <span className="text-xs opacity-60">({cartCount})</span>
+            </button>
+          </div>
+        </div>
+      </div>
     </header>
   );
 };

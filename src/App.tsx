@@ -5,7 +5,7 @@ import { RootLayout } from './layouts/RootLayout';
 import { HomePage } from './pages/HomePage';
 import { ProductsPage } from './pages/ProductsPage';
 import { ProductDetailPage } from './pages/ProductDetailPage';
-import { PhilosophyPage } from './pages/PhilosophyPage';
+import { OurStoryPage } from './pages/OurStoryPage';
 import { ConciergePage } from './pages/ConciergePage';
 import { PoliciesPage } from './pages/PoliciesPage';
 import { CartPage } from './pages/CartPage';
@@ -34,8 +34,9 @@ export default function App() {
             <Route path="order/success" element={<PaymentVerifyPage />} />
             <Route path="order/:ref" element={<PaymentVerifyPage />} />
             <Route path="admin" element={<AdminPage />} />
-            <Route path="philosophy" element={<PhilosophyPage />} />
-            <Route path="story" element={<PhilosophyPage />} />
+            <Route path="story" element={<OurStoryPage />} />
+            <Route path="our-story" element={<OurStoryPage />} />
+            <Route path="philosophy" element={<OurStoryPage />} />
             <Route path="concierge" element={<ConciergePage />} />
             <Route path="contact" element={<ConciergePage />} />
             <Route path="policies" element={<PoliciesPage />} />

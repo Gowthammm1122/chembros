@@ -17,7 +17,7 @@ export const ProductCollection: React.FC<ProductCollectionProps> = ({
   return (
     <section
       id="collection"
-      className="relative min-h-screen py-14 sm:py-18 lg:py-24 bg-gradient-to-b from-[#FFFFFF] via-[#F4F8FA] to-[#FFFFFF] px-4 sm:px-8 lg:px-12 flex flex-col justify-center overflow-hidden border-b border-[#0A2533]/10"
+      className="relative min-h-screen py-14 sm:py-18 lg:py-24 px-4 sm:px-8 lg:px-12 flex flex-col justify-center overflow-hidden bg-transparent"
     >
       {/* Seamless Top Blend from Hero */}
       <div className="absolute top-0 inset-x-0 h-10 bg-gradient-to-b from-[#03151D]/5 to-transparent pointer-events-none" />

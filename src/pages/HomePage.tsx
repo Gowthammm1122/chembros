@@ -3,7 +3,6 @@ import { useNavigate } from 'react-router-dom';
 import { Hero } from '../components/Hero';
 import { ScrollBottleTransition } from '../components/ScrollBottleTransition';
 import { ProductCollection } from '../components/ProductCollection';
-import { PrmptExperience } from '../components/PrmptExperience';
 import { DetailMosaic } from '../components/DetailMosaic';
 import { BrandPhilosophy } from '../components/BrandPhilosophy';
 import { ConversionSection } from '../components/ConversionSection';
@@ -31,22 +30,23 @@ export const HomePage: React.FC = () => {
       {/* Dynamic GSAP Scroll Transition: Hero 4th Bottle floats and docks into Collection Formula 001 card */}
       <ScrollBottleTransition isIntroComplete={isHeroIntroComplete} />
 
-      {/* SECTION 02 — Product Introduction / The Four Formulas */}
-      <ProductCollection
-        onSelectFragrance={handleSelectFragrance}
-        onAddToCart={addToCart}
-      />
+      {/* SECTION 02 & 03 — Continuous background container spanning ProductCollection through ConversionSection / WaterRippleImage */}
+      <div
+        className="relative w-full bg-cover bg-top bg-no-repeat"
+        style={{ backgroundImage: "url('/bg/whitebg.jpeg')" }}
+      >
+        <ProductCollection
+          onSelectFragrance={handleSelectFragrance}
+          onAddToCart={addToCart}
+        />
 
-      {/* SECTION 03 — Interactive Olfactory Alignment Matcher */}
-      <ConversionSection
-        onSelectFragrance={handleSelectFragrance}
-        onAddToCart={addToCart}
-      />
+        <ConversionSection
+          onSelectFragrance={handleSelectFragrance}
+          onAddToCart={addToCart}
+        />
+      </div>
 
-      {/* SECTION 04 — Scroll-Driven Fashion/Archive Experience */}
-      <PrmptExperience />
-
-      {/* SECTION 05 — Asymmetrical Editorial Mosaic */}
+      {/* SECTION 04 — Asymmetrical Editorial Mosaic */}
       <DetailMosaic
         onSelectFragrance={handleSelectFragrance}
       />

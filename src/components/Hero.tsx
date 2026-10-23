@@ -24,16 +24,15 @@ export const Hero: React.FC<HeroProps> = ({ onSelectFragrance, onIntroCompleteCh
   const blackScreenRef = useRef<HTMLDivElement | null>(null);
   const titleRef = useRef<HTMLDivElement | null>(null);
   const replayBtnRef = useRef<HTMLButtonElement | null>(null);
-  const cloudRef = useRef<HTMLDivElement | null>(null);
   const timelineRef = useRef<gsap.core.Timeline | null>(null);
   const scrollTriggerInstanceRef = useRef<gsap.plugins.ScrollTriggerInstance | null>(null);
 
-  // Stepped pedestal heights that extend all the way down to the bottom of the screen
+  // Stepped pedestal heights calibrated to stay grounded at the bottom of the screen
   const heroPedestalHeights = [
-    'clamp(160px, 25vh, 260px)',
-    'clamp(110px, 17vh, 180px)',
-    'clamp(135px, 21vh, 220px)',
-    'clamp(90px, 14vh, 150px)',
+    'clamp(100px, 19vh, 175px)',
+    'clamp(55px, 11vh, 110px)',
+    'clamp(75px, 12.5vh, 145px)',
+    'clamp(45px, 12vh, 90px)',
   ];
 
   // Function to run the cinematic bottle splitting opening animation
@@ -41,7 +40,6 @@ export const Hero: React.FC<HeroProps> = ({ onSelectFragrance, onIntroCompleteCh
     const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     if (prefersReducedMotion || !sectionRef.current) {
       if (blackScreenRef.current) blackScreenRef.current.style.display = 'none';
-      if (cloudRef.current) gsap.set(cloudRef.current, { opacity: 1 });
       gsap.set('#main-navbar', { opacity: 1 });
       setIsIntroComplete(true);
       onIntroCompleteChange?.(true);
@@ -72,7 +70,6 @@ export const Hero: React.FC<HeroProps> = ({ onSelectFragrance, onIntroCompleteCh
     gsap.set('#main-navbar', { opacity: 0 });
     if (titleRef.current) gsap.set(titleRef.current, { opacity: 0, y: -25 });
     if (replayBtnRef.current) gsap.set(replayBtnRef.current, { opacity: 0 });
-    if (cloudRef.current) gsap.set(cloudRef.current, { opacity: 0 });
     gsap.set('.hero-pedestal', { opacity: 0, y: 70 });
 
     // Clear previous inline transforms on bottles to measure natural base layout
@@ -113,21 +110,12 @@ export const Hero: React.FC<HeroProps> = ({ onSelectFragrance, onIntroCompleteCh
         // Clear transforms so natural hover and responsive positioning remain 100% fluid
         gsap.set(entranceRefs.current, { clearProps: 'transform,zIndex,position' });
         gsap.set('.hero-pedestal', { clearProps: 'transform,opacity' });
-        if (cloudRef.current) gsap.set(cloudRef.current, { clearProps: 'opacity' });
         document.body.style.overflow = '';
         setIsIntroComplete(true);
         onIntroCompleteChange?.(true);
 
-        // Initialize smooth scroll parallax on stage after intro completes
-        if (sectionRef.current && stageRef.current) {
-          const st = ScrollTrigger.create({
-            trigger: sectionRef.current,
-            start: 'top top',
-            end: 'bottom top',
-            scrub: 1.2,
-            animation: gsap.to(stageRef.current, { y: 25, ease: 'none' }),
-          });
-          scrollTriggerInstanceRef.current = st;
+        if (stageRef.current) {
+          gsap.set(stageRef.current, { clearProps: 'transform' });
         }
       },
     });
@@ -174,18 +162,6 @@ export const Hero: React.FC<HeroProps> = ({ onSelectFragrance, onIntroCompleteCh
       },
       'split+=1.3'
     );
-
-    if (cloudRef.current) {
-      tl.to(
-        cloudRef.current,
-        {
-          opacity: 1,
-          duration: 1.6,
-          ease: 'power2.out',
-        },
-        'split+=1.2'
-      );
-    }
 
     // 5. PHASE 5: Headline "CHEMISTRY, CAPTURED IN A BOTTLE" reveals with soft descent
     if (titleRef.current) {
@@ -244,7 +220,7 @@ export const Hero: React.FC<HeroProps> = ({ onSelectFragrance, onIntroCompleteCh
   return (
     <section
       ref={sectionRef}
-      className="relative z-20 h-screen h-[100vh] h-[100svh] w-full bg-[#03151D] flex flex-col items-center justify-between pt-20 sm:pt-22 md:pt-24 pb-0 overflow-visible"
+      className="relative z-20 h-screen h-[100vh] h-[100svh] w-full bg-[#03151D] flex flex-col items-center justify-between pt-16 sm:pt-18 md:pt-20 pb-0 overflow-hidden"
     >
       {/* Black Screen Overlay for Cinematic Opening — z-10 behind bottles (z-20) */}
       <div
@@ -307,7 +283,7 @@ export const Hero: React.FC<HeroProps> = ({ onSelectFragrance, onIntroCompleteCh
       {/* 3. Central Physical Product Display: Four Flacons with Plinths extending to bottom of screen */}
       <div
         ref={stageRef}
-        className="relative z-20 w-full max-w-6xl xl:max-w-7xl mx-auto px-4 flex-1 flex flex-col justify-end items-center will-change-transform pb-0"
+        className="relative z-20 w-full max-w-6xl xl:max-w-7xl mx-auto px-4 flex-1 min-h-0 flex flex-col justify-end items-center pb-0"
       >
         {/* The 4 Staggered Plinths & Bottles extending to the bottom edge */}
         <div className="relative flex items-end justify-center gap-3 sm:gap-6 md:gap-8 lg:gap-11 w-full">
@@ -356,17 +332,6 @@ export const Hero: React.FC<HeroProps> = ({ onSelectFragrance, onIntroCompleteCh
         </div>
       </div>
 
-      {/* 4. Atmospheric Cloud Transition Layer — overlays pedestals and extends half into the next section */}
-      <div
-        ref={cloudRef}
-        className="absolute bottom-0 inset-x-0 translate-y-1/2 z-25 pointer-events-none flex justify-center items-center overflow-visible"
-      >
-        <img
-          src="/bg/Cloud.png"
-          alt="Atmospheric Cloud Transition"
-          className="w-full min-w-[1100px] max-w-none h-auto select-none pointer-events-none drop-shadow-[0_-15px_35px_rgba(255,255,255,0.06)]"
-        />
-      </div>
     </section>
   );
 };
